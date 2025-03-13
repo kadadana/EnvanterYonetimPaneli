@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
+    @RenderSection("Styles", false)
+    <title>Envanter Yönetim Paneli</title>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            <div>
+                <a class="navbar-brand mx-auto" href="/Dashboard/DashboardMain">Envanter Yönetim Paneli</a>
+
+            </div>
+            <a class="nav-link text-white" href="@Url.Action("Logout", "Login")">Çıkış Yap</a>
+
+        </div>
+    </nav>
+
+    @if (@TempData["Alert"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["Alert"]
+        </div>
+    }
+    @if (@TempData["Info"] != null)
+    {
+        <div class=" alert alert-info" role="alert">
+            @TempData["Info"]
+        </div>
+    }
+    @RenderBody()
+</body>
+
+</html>

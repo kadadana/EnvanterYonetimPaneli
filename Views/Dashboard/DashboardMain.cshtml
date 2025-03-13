@@ -1,0 +1,110 @@
+@{
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+@model X.PagedList.IPagedList<EnvanterApiProjesi.Models.EnvanterModel>
+@using X.PagedList.Mvc.Core
+
+<div class="container">
+    <div class="col-md-12 mt-2 ">
+        <a class="btn btn-primary" href="@Url.Action("DashboardAssetSNMatcher", "Dashboard")">Seri No ile Asset
+            Eşleştirme</a>
+    </div>
+</div>
+
+
+<div class="container-fluid mt-2">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-sm" style="border: 2px solid #3498db;">
+                <thead>
+                    <tr>
+                        <th style="background-color: #3498db; color:white">
+                            Asset
+                        </th>
+                        <th style="background-color: #3498db; color:white">
+                            Seri No
+                        </th>
+                        <th style="background-color: #3498db; color:white">
+                            Bilgisayar Modeli
+                        </th>
+                        <th style="background-color: #3498db; color:white">
+                            Bilgisayar Adı
+                        </th>
+                        <th style="background-color: #3498db; color:white">
+                            RAM
+                        </th>
+                        <th style="background-color: #3498db; color:white">
+                            Disk Boyutu
+                        </th>
+                        <th style="background-color: #3498db; color:white">
+                            MAC Adresi
+                        </th>
+                        <th style="background-color: #3498db; color:white">
+                            İşlemci Modeli
+                        </th>
+                        <th style="background-color: #3498db; color:white">
+                            Kullanıcı
+                        </th>
+                        <th style="background-color: #3498db; color:white">
+                            Değişiklik Tarihi
+                        </th>
+                    </tr>
+                </thead>
+                @foreach (var comp in Model)
+                {
+                    <tbody>
+                        <tr>
+                            <td>
+                                @comp.Asset
+                            </td>
+                            <td>
+                                @comp.SeriNo
+                            </td>
+                            <td>
+                                @comp.CompModel
+                            </td>
+                            <td>
+                                @comp.CompName
+                            </td>
+                            <td>
+                                @comp.RAM
+                            </td>
+                            <td>
+                                @comp.DiskBoyutu
+                            </td>
+                            <td>
+                                @comp.MacAddress
+                            </td>
+                            <td>
+                                @comp.ProcModel
+                            </td>
+                            <td>
+                                @comp.User
+                            </td>
+                            <td>
+                                @comp.DegisiklikTarihi
+                            </td>
+                        </tr>
+                    </tbody>
+                }
+            </table>
+            <!-- Sayfalama Kontrolleri -->
+            <div>
+                @Html.PagedListPager(Model, page => Url.Action("DashboardMain", new { page }),
+                new PagedListRenderOptions
+                {
+                    DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                    DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                    DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                    DisplayEllipsesWhenNotShowingAllPageNumbers = true, // "..." koyarak fazla sayfaları gizler
+                    MaximumPageNumbersToDisplay = 5, // Aynı anda gösterilecek sayfa sayısı
+                    UlElementClasses = new[] { "pagination", "justify-content-center" },
+                    LiElementClasses = new[] { "page-item" },
+                    PageClasses = new[] { "page-link" }
+                })
+
+            </div>
+        </div>
+    </div>
+</div>

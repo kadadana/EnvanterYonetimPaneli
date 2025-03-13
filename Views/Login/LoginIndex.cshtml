@@ -1,0 +1,18 @@
+﻿@model EnvanterApiProjesi.Models.UserModel
+
+<div class="d-flex justify-content-center align-items-center">
+    <div class="login-container p-4" style="width: 350px;">
+        <form method="post" action="/Login/LoginIndex">
+            <h2 class="text-center">Giriş Yap</h2>
+            <div class="mb-2 text-start">
+                <label class="mb-1" for="Username" class="form-label">Kullanıcı Adı</label>
+                <input type="text" name="Username" id="Username" class="form-control">
+            </div>
+            <div class="mb-3 text-start">
+                <label class="mb-1" for="Password" class="form-label">Şifre</label>
+                <input type="password" name="Password" id="Password" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Giriş Yap</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+@{
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+
+<div class="d-flex justify-content-center align-items-center">
+    <div class="login-container p-4" style="width: 350px;">
+        <!-- ASP.NET MVC routing yapısına uygun şekilde değiştirildi -->
+        <form method="post" asp-controller="Dashboard" asp-action="AssetSNMatcher">
+            <h2 class="text-center">Seri No ile Asset Eşleştirme</h2>
+            
+            <div class="mb-2 text-start">
+                <label class="mb-1" for="seriNo" class="form-label">Seri No</label>
+                <input type="text" name="seriNo" id="seriNo" class="form-control">
+            </div>
+            
+            <div class="mb-3 text-start">
+                <label class="mb-1" for="asset" class="form-label">Asset</label>
+                <input type="text" name="asset" id="asset" class="form-control">
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100">Kaydet</button>
+        </form>
+    </div>
+</div>
