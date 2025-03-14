@@ -142,3 +142,14 @@ C:\Users\PC\VSCode Projects\EnvanterApiProjesi\obj\Debug\net9.0\refint\EnvanterA
 C:\Users\PC\VSCode Projects\EnvanterApiProjesi\obj\Debug\net9.0\EnvanterApiProjesi.pdb
 C:\Users\PC\VSCode Projects\EnvanterApiProjesi\obj\Debug\net9.0\EnvanterApiProjesi.genruntimeconfig.cache
 C:\Users\PC\VSCode Projects\EnvanterApiProjesi\obj\Debug\net9.0\ref\EnvanterApiProjesi.dll
+C:\Users\PC\VSCode Projects\EnvanterApiProjesi\obj\Debug\net9.0\EnvanterApiProjesi.sourcelink.json
+C:\Users\PC\VSCode Projects\EnvanterApiProjesi\bin\Debug\net9.0\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\PC\VSCode Projects\EnvanterApiProjesi\bin\Debug\net9.0\Microsoft.AspNetCore.Mvc.Razor.Extensions.dll
+C:\Users\PC\VSCode Projects\EnvanterApiProjesi\bin\Debug\net9.0\Microsoft.AspNetCore.Razor.Language.dll
+C:\Users\PC\VSCode Projects\EnvanterApiProjesi\bin\Debug\net9.0\Microsoft.CodeAnalysis.dll
+C:\Users\PC\VSCode Projects\EnvanterApiProjesi\bin\Debug\net9.0\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\PC\VSCode Projects\EnvanterApiProjesi\bin\Debug\net9.0\Microsoft.CodeAnalysis.Razor.dll
+C:\Users\PC\VSCode Projects\EnvanterApiProjesi\bin\Debug\net9.0\Microsoft.DotNet.PlatformAbstractions.dll
+C:\Users\PC\VSCode Projects\EnvanterApiProjesi\bin\Debug\net9.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\PC\VSCode Projects\EnvanterApiProjesi\bin\Debug\net9.0\Newtonsoft.Json.dll
+C:\Users\PC\VSCode Projects\EnvanterApiProjesi\bin\Debug\net9.0\Newtonsoft.Json.Bson.dll

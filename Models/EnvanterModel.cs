@@ -7,11 +7,11 @@ namespace EnvanterApiProjesi.Models
         public string? CompModel { get; set; }
         public string?  CompName { get; set; }
         public string?  RAM { get; set; }
-        public string?  DiskBoyutu { get; set; }
-        public string?  MacAddress { get; set; }
+        public string?  DiskGB { get; set; }
+        public string?  MAC { get; set; }
         public string?  ProcModel {get; set; }
-        public string?  User { get; set; }
-        public string?  DegisiklikTarihi { get; set; }
+        public string?  Username { get; set; }
+        public string?  DateChanged { get; set; }
 
     }
 }

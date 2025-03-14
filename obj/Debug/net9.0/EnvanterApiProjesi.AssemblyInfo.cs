@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EnvanterApiProjesi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+08c6024d0fc6cf902cc44fc8cc236e1618588766")]
 [assembly: System.Reflection.AssemblyProductAttribute("EnvanterApiProjesi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EnvanterApiProjesi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
