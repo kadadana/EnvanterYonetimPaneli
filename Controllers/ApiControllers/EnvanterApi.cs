@@ -23,7 +23,7 @@ public class EnvanterApi : ControllerBase
         return BadRequest("Gecersiz Veri!");
 
         _envanterRepo.AddToSql(model);
-        return Ok("Envanter basariyla eklendi");
+        return Ok("Envanter basariyla eklendi.");
     }
 
 }

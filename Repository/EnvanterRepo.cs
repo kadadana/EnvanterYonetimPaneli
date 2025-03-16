@@ -211,42 +211,10 @@ public class EnvanterRepo
     }
     public List<EnvanterModel>? GetEnvanterList(string tableName)
     {
-        List<EnvanterModel> envanterList = new List<EnvanterModel>();
-
-        using (SqlConnection conn = new SqlConnection(_connectionString))
-        {
-            try
-            {
-                conn.Open();
-                string query = $"SELECT Asset, SeriNo, CompModel, CompName, RAM, DiskGB, MAC, ProcModel, Username, DateChanged FROM [{tableName}]";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        envanterList.Add(new EnvanterModel
-                        {
-                            Asset = reader.IsDBNull(0) ? "Bilinmiyor" : reader.GetString(0),
-                            SeriNo = reader.IsDBNull(1) ? "Bilinmiyor" : reader.GetString(1),
-                            CompModel = reader.IsDBNull(2) ? "Bilinmiyor" : reader.GetString(2),
-                            CompName = reader.IsDBNull(3) ? "Bilinmiyor" : reader.GetString(3),
-                            RAM = reader.IsDBNull(4) ? "Bilinmiyor" : reader.GetString(4),
-                            DiskGB = reader.IsDBNull(5) ? "Bilinmiyor" : reader.GetString(5),
-                            MAC = reader.IsDBNull(6) ? "Bilinmiyor" : reader.GetString(6),
-                            ProcModel = reader.IsDBNull(7) ? "Bilinmiyor" : reader.GetString(7),
-                            Username = reader.IsDBNull(8) ? "Bilinmiyor" : reader.GetString(8),
-                            DateChanged = reader.IsDBNull(9) ? "Bilinmiyor" : reader.GetString(9)
-                        });
-                    }
-                }
-            }
-            catch(Exception)
-            {
-                return null;
-            }
-                return envanterList;
-        }
+        List<EnvanterModel>? envanterList = new List<EnvanterModel>();
+        string query = $"SELECT Asset, SeriNo, CompModel, CompName, RAM, DiskGB, MAC, ProcModel, Username, DateChanged FROM [{tableName}]";
+        envanterList = TableFiller(query);
+        return envanterList;
     }
     public string GetAssetFromSN(string seriNo)
     {
@@ -271,5 +239,83 @@ public class EnvanterRepo
             return "HATA";
         }
     }
+    public List<EnvanterModel>? GetSortedByDate(string tableName)
+    {
+        List<EnvanterModel>? envanterList = new List<EnvanterModel>();
+        string sorter = $"SELECT * FROM [{tableName}] ORDER BY CONVERT(DATETIME, DateChanged, 104) DESC";
+
+        envanterList = TableFiller(sorter);
+        return envanterList;
+    }
+    public List<EnvanterModel>? GetOrderedList(string tableName, string columnName, string method)
+    {
+        List<EnvanterModel>? envanterList = new List<EnvanterModel>();
+
+        switch (columnName)
+        {
+            case "DateChanged":
+                string query = $"SELECT * FROM [{tableName}] ORDER BY CONVERT(DATETIME, DateChanged, 104) {method}";
+                envanterList = TableFiller(query);
+                break;
+            case "RAM":
+                query = method == "asc" ? $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(REPLACE(RAM, ' GB', ''), ',', '.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(REPLACE(RAM, ' GB', ''), ',', '.') AS FLOAT) ELSE CAST(1.0E+38 AS FLOAT) END ASC; "
+                : $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(REPLACE(RAM, ' GB', ''), ',', '.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(REPLACE(RAM, ' GB', ''), ',', '.') AS FLOAT) ELSE CAST(-1.0E+38 AS FLOAT) END DESC;";
+                envanterList = TableFiller(query);
+                break;
+            case "DiskGB":
+                query = method == "asc" ? $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(REPLACE(DiskGB, ' GB', ''), ',', '.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(REPLACE(DiskGB, ' GB', ''), ',', '.') AS FLOAT) ELSE CAST(1.0E+38 AS FLOAT) END ASC; "
+                : $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(REPLACE(DiskGB, ' GB', ''), ',', '.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(REPLACE(DiskGB, ' GB', ''), ',', '.') AS FLOAT) ELSE CAST(-1.0E+38 AS FLOAT) END DESC;";
+                envanterList = TableFiller(query);
+                break;
+            default:
+                query = $"SELECT * FROM [{tableName}] ORDER BY {columnName} {method}";
+                envanterList = TableFiller(query);
+                break;
+        }
+        return envanterList;
+    }
+    public List<EnvanterModel>? TableFiller(string command)
+    {
+        List<EnvanterModel>? envanterList = new List<EnvanterModel>();
+        try
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                using (SqlCommand fillerCmd = new SqlCommand(command, conn))
+                using (SqlDataReader reader = fillerCmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        envanterList?.Add(new EnvanterModel
+                        {
+                            Asset = reader.IsDBNull(0) ? "Bilinmiyor" : reader.GetString(0),
+                            SeriNo = reader.IsDBNull(1) ? "Bilinmiyor" : reader.GetString(1),
+                            CompModel = reader.IsDBNull(2) ? "Bilinmiyor" : reader.GetString(2),
+                            CompName = reader.IsDBNull(3) ? "Bilinmiyor" : reader.GetString(3),
+                            RAM = reader.IsDBNull(4) ? "Bilinmiyor" : reader.GetString(4),
+                            DiskGB = reader.IsDBNull(5) ? "Bilinmiyor" : reader.GetString(5),
+                            MAC = reader.IsDBNull(6) ? "Bilinmiyor" : reader.GetString(6),
+                            ProcModel = reader.IsDBNull(7) ? "Bilinmiyor" : reader.GetString(7),
+                            Username = reader.IsDBNull(8) ? "Bilinmiyor" : reader.GetString(8),
+                            DateChanged = reader.IsDBNull(9) ? "Bilinmiyor" : reader.GetString(9)
+                        });
+                    }
+                }
+            }
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+        return envanterList;
+    }
+    public List<EnvanterModel>? GetSearchedTable(string tableName, string searchedColumn, string searchedValue){
+        List<EnvanterModel>? envanterList = new List<EnvanterModel>();
+        string query = $"SELECT * FROM [{tableName}] WHERE {searchedColumn} LIKE '%{searchedValue}%'";
+        envanterList = TableFiller(query);
+        return envanterList;
+    }
+
 
 }

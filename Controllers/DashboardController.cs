@@ -18,39 +18,32 @@ public class DashboardController : Controller
         _envanterRepo = new EnvanterRepo(configuration);
     }
     [HttpGet]
-    public IActionResult DashboardMain(int page, string sortColumn = "Asset", string sortOrder = "des")
+    public IActionResult DashboardMain(int page = 1, string sortColumn = "Asset", string sortOrder = "desc", string? searchedColumn = null, string? searchedValue = null)
     {
         if (HttpContext.Session.GetString("IsLoggedIn") == "true")
         {
-            List<EnvanterModel>? comps = _envanterRepo.GetEnvanterList("EnvanterTablosu");
-
-
-
-            var sortedComps = sortColumn switch
+            List<EnvanterModel>? comps = _envanterRepo.GetOrderedList("EnvanterTablosu", sortColumn, sortOrder);
+            if (!string.IsNullOrEmpty(searchedColumn) && !string.IsNullOrEmpty(searchedValue))
             {
+                comps = _envanterRepo.GetSearchedTable("EnvanterTablosu", searchedColumn, searchedValue);
+            }
+            else if (ViewBag.SearchedTable != null)
+            {
+                comps = (List<EnvanterModel>)ViewBag.SearchedTable;
+            }
+            else
+            {
+                comps = _envanterRepo.GetOrderedList("EnvanterTablosu", sortColumn, sortOrder);
+            }
 
-                "Asset" => sortOrder == "asc" ? comps?.OrderBy(x => x.Asset) : comps?.OrderByDescending(x => x.Asset),
-                "SeriNo" => sortOrder == "asc" ? comps?.OrderBy(x => x.SeriNo) : comps?.OrderByDescending(x => x.SeriNo),
-                "CompModel" => sortOrder == "asc" ? comps?.OrderBy(x => x.CompModel) : comps?.OrderByDescending(x => x.CompModel),
-                "CompName" => sortOrder == "asc" ? comps?.OrderBy(x => x.CompName) : comps?.OrderByDescending(x => x.CompName),
-                "RAM" => sortOrder == "asc" ? comps?.OrderBy(x => float.TryParse(x.RAM?.Replace(" GB", ""), out float ram) ? ram : float.MaxValue)
-                                            : comps?.OrderByDescending(x => float.TryParse(x.RAM?.Replace(" GB", ""), out float ram) ? ram : float.MinValue),
-                "DiskGB" => sortOrder == "asc" ? comps?.OrderBy(x => float.TryParse(x.DiskGB?.Replace(" GB", ""), out float disk) ? disk : float.MaxValue)
-                                            : comps?.OrderByDescending(x => float.TryParse(x.DiskGB?.Replace(" GB", ""), out float disk) ? disk : float.MinValue),
-                "MAC" => sortOrder == "asc" ? comps?.OrderBy(x => x.MAC) : comps?.OrderByDescending(x => x.MAC),
-                "ProcModel" => sortOrder == "asc" ? comps?.OrderBy(x => x.ProcModel) : comps?.OrderByDescending(x => x.ProcModel),
-                "Username" => sortOrder == "asc" ? comps?.OrderBy(x => x.Username) : comps?.OrderByDescending(x => x.Username),
-                "DateChanged" => sortOrder == "asc" ? comps?.OrderBy(x => DateTime.TryParse(x.DateChanged, out DateTime dt) ? dt : DateTime.MaxValue)
-                                            : comps?.OrderByDescending(x => DateTime.TryParse(x.DateChanged, out DateTime dt) ? dt : DateTime.MinValue),
-                _ => comps?.OrderBy(x => x.Asset)
-
-            };
             int pageSize = 10;
             page = page >= 1 ? page : 1;
-            IPagedList<EnvanterModel>? pagedList = sortedComps?.ToPagedList(page, pageSize);
+            IPagedList<EnvanterModel>? pagedList = comps?.ToPagedList(page, pageSize);
 
             ViewBag.SortColumn = sortColumn;
             ViewBag.SortOrder = sortOrder;
+            ViewBag.SearchedColumn = searchedColumn;
+            ViewBag.SearchedValue = searchedValue;
             return View(pagedList);
 
         }
@@ -97,7 +90,7 @@ public class DashboardController : Controller
     {
         if (HttpContext.Session.GetString("IsLoggedIn") == "true")
         {
-            List<EnvanterModel>? comps = _envanterRepo.GetEnvanterList(seriNo);
+            List<EnvanterModel>? comps = _envanterRepo.GetSortedByDate(seriNo);
             int pageSize = 10;
             page = page >= 1 ? page : 1;
             IPagedList<EnvanterModel>? pagedList = comps?.ToPagedList(page, pageSize);
