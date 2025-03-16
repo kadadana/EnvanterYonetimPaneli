@@ -19,40 +19,52 @@
                 <thead>
                     <tr>
                         <th style="background-color: #3498db; color:white">
-                            Asset
+                            <a asp-action="DashboardMain" asp-route-sortColumn="Asset" asp-route-sortOrder="@(ViewBag.SortColumn == "Asset" && ViewBag.SortOrder == "asc" ? "desc" : "asc")">
+                    Asset @Html.Raw(ViewBag.SortColumn == "Asset" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
                         <th style="background-color: #3498db; color:white">
-                            Seri No
+                            <a asp-action="DashboardMain" asp-route-sortColumn="SeriNo" asp-route-sortOrder="@(ViewBag.SortColumn == "SeriNo" && ViewBag.SortOrder == "asc" ? "desc" : "asc")">
+                    SeriNo @Html.Raw(ViewBag.SortColumn == "SeriNo" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
                         <th style="background-color: #3498db; color:white">
-                            Bilgisayar Modeli
+                            <a asp-action="DashboardMain" asp-route-sortColumn="CompModel" asp-route-sortOrder="@(ViewBag.SortColumn == "CompModel" && ViewBag.SortOrder == "asc" ? "desc" : "asc")">
+                    Bilgisayar Modeli @Html.Raw(ViewBag.SortColumn == "CompModel" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
                         <th style="background-color: #3498db; color:white">
-                            Bilgisayar Adı
+                            <a asp-action="DashboardMain" asp-route-sortColumn="CompName" asp-route-sortOrder="@(ViewBag.SortColumn == "CompName" && ViewBag.SortOrder == "asc" ? "desc" : "asc")">
+                    Bilgisayar Adı @Html.Raw(ViewBag.SortColumn == "CompName" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
                         <th style="background-color: #3498db; color:white">
-                            RAM
+                            <a asp-action="DashboardMain" asp-route-sortColumn="RAM" asp-route-sortOrder="@(ViewBag.SortColumn == "RAM" && ViewBag.SortOrder == "asc" ? "desc" : "asc")">
+                    RAM @Html.Raw(ViewBag.SortColumn == "RAM" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
                         <th style="background-color: #3498db; color:white">
-                            Disk Boyutu
+                            <a asp-action="DashboardMain" asp-route-sortColumn="DiskGB" asp-route-sortOrder="@(ViewBag.SortColumn == "DiskGB" && ViewBag.SortOrder == "asc" ? "desc" : "asc")">
+                    Disk Boyutu @Html.Raw(ViewBag.SortColumn == "DiskGB" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
                         <th style="background-color: #3498db; color:white">
-                            MAC Adresi
+                            <a asp-action="DashboardMain" asp-route-sortColumn="MAC" asp-route-sortOrder="@(ViewBag.SortColumn == "MAC" && ViewBag.SortOrder == "asc" ? "desc" : "asc")">
+                    MAC Adresi @Html.Raw(ViewBag.SortColumn == "MAC" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
                         <th style="background-color: #3498db; color:white">
-                            İşlemci Modeli
+                            <a asp-action="DashboardMain" asp-route-sortColumn="ProcModel" asp-route-sortOrder="@(ViewBag.SortColumn == "ProcModel" && ViewBag.SortOrder == "asc" ? "desc" : "asc")">
+                    İşlemci Modeli @Html.Raw(ViewBag.SortColumn == "ProcModel" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
                         <th style="background-color: #3498db; color:white">
-                            Kullanıcı
+                            <a asp-action="DashboardMain" asp-route-sortColumn="Username" asp-route-sortOrder="@(ViewBag.SortColumn == "Username" && ViewBag.SortOrder == "asc" ? "desc" : "asc")">
+                    Kullanıcı @Html.Raw(ViewBag.SortColumn == "Username" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
                         <th style="background-color: #3498db; color:white">
-                            Değişiklik Tarihi
+                            <a asp-action="DashboardMain" asp-route-sortColumn="DateChanged" asp-route-sortOrder="@(ViewBag.SortColumn == "DateChanged" && ViewBag.SortOrder == "asc" ? "desc" : "asc")">
+                    Değişiklik Tarihi @Html.Raw(ViewBag.SortColumn == "DateChanged" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
+                        </th>
+                        <th style="background-color: #3498db; color:white">
                         </th>
                     </tr>
                 </thead>
-                @foreach (var comp in Model)
-                {
                     <tbody>
+                         @foreach (var comp in Model)
+                {
                         <tr>
                             <td>
                                 @comp.Asset
@@ -84,9 +96,13 @@
                             <td>
                                 @comp.DateChanged
                             </td>
+                            <td>
+                            <a asp-controller="Dashboard" asp-action="Details" asp-route-seriNO="@comp.SeriNo" asp-route-page="1" class="btn btn-primary">Detay</a>
+                            </td>
                         </tr>
+                        }
                     </tbody>
-                }
+                
             </table>
             <!-- Sayfalama Kontrolleri -->
             <div>

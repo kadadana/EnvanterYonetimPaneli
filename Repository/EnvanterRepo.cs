@@ -1,4 +1,5 @@
 using EnvanterApiProjesi.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 namespace EnvanterApiProjesi;
 public class EnvanterRepo
@@ -55,7 +56,7 @@ public class EnvanterRepo
     public string AddToSql(EnvanterModel envanterModel)
     {
 
-        envanterModel.Asset = string.IsNullOrEmpty(envanterModel.Asset) ? "Bilinmiyor" : envanterModel.Asset;
+
         envanterModel.SeriNo = string.IsNullOrEmpty(envanterModel.SeriNo) ? "Bilinmiyor" : envanterModel.SeriNo;
         envanterModel.CompModel = string.IsNullOrEmpty(envanterModel.CompModel) ? "Bilinmiyor" : envanterModel.CompModel;
         envanterModel.CompName = string.IsNullOrEmpty(envanterModel.CompName) ? "Bilinmiyor" : envanterModel.CompName;
@@ -65,6 +66,7 @@ public class EnvanterRepo
         envanterModel.ProcModel = string.IsNullOrEmpty(envanterModel.ProcModel) ? "Bilinmiyor" : envanterModel.ProcModel;
         envanterModel.Username = string.IsNullOrEmpty(envanterModel.Username) ? "Bilinmiyor" : envanterModel.Username;
         envanterModel.DateChanged = string.IsNullOrEmpty(envanterModel.DateChanged) ? "Bilinmiyor" : envanterModel.DateChanged;
+        envanterModel.Asset = GetAssetFromSN(envanterModel.SeriNo);
 
 
 
@@ -80,9 +82,9 @@ public class EnvanterRepo
 
                 count = (int)counterCmd.ExecuteScalar();
             }
-            string creator = $"IF NOT EXISTS(SELECT * FROM sys.tables WHERE name = '{envanterModel.Asset}') " +
+            string creator = $"IF NOT EXISTS(SELECT * FROM sys.tables WHERE name = '{envanterModel.SeriNo}') " +
                                     "BEGIN " +
-                                    $"CREATE TABLE {envanterModel.Asset} " +
+                                    $"CREATE TABLE \"{envanterModel.SeriNo}\" " +
                                     "(Asset NVARCHAR(Max), " +
                                     "SeriNo NVARCHAR(Max), " +
                                     "CompModel NVARCHAR(Max), " +
@@ -130,8 +132,8 @@ public class EnvanterRepo
                         updaterCmd.Parameters.AddWithValue("@dateChanged", envanterModel.DateChanged);
                         updaterCmd.ExecuteNonQuery();
                     }
-                    
-                    string inserter2 = $"INSERT INTO {envanterModel.Asset}" +
+
+                    string inserter2 = $"INSERT INTO [{envanterModel.SeriNo}]" +
                     "(Asset, SeriNo, CompModel, CompName, RAM, DiskGB, MAC, ProcModel, Username, DateChanged)" +
                     "VALUES (@asset, @seriNo, @compModel, @compName, @RAM, @diskGB, @MAC, @procModel, @username, @dateChanged)";
 
@@ -154,11 +156,11 @@ public class EnvanterRepo
                 else
                 {
 
-                    
+
                     string inserter1 = "INSERT INTO EnvanterTablosu" +
                     "(Asset, SeriNo, CompModel, CompName, RAM, DiskGB, MAC, ProcModel, Username, DateChanged)" +
                     "VALUES (@asset, @seriNo, @compModel, @compName, @RAM, @diskGB, @MAC, @procModel, @username, @dateChanged)";
-                
+
                     using (SqlCommand inserter1Cmd = new SqlCommand(inserter1, conn))
                     {
                         inserter1Cmd.Parameters.AddWithValue("@asset", envanterModel.Asset);
@@ -174,7 +176,7 @@ public class EnvanterRepo
                         inserter1Cmd.ExecuteNonQuery();
                     }
 
-                    string inserter2 = $"INSERT INTO {envanterModel.Asset}" +
+                    string inserter2 = $"INSERT INTO [{envanterModel.SeriNo}]" +
                     "(Asset, SeriNo, CompModel, CompName, RAM, DiskGB, MAC, ProcModel, Username, DateChanged)" +
                     "VALUES (@asset, @seriNo, @compModel, @compName, @RAM, @diskGB, @MAC, @procModel, @username, @dateChanged)";
 
@@ -207,40 +209,67 @@ public class EnvanterRepo
 
         }
     }
-    public List<EnvanterModel> GetEnvanterList(string tableName)
+    public List<EnvanterModel>? GetEnvanterList(string tableName)
     {
         List<EnvanterModel> envanterList = new List<EnvanterModel>();
 
-
-
         using (SqlConnection conn = new SqlConnection(_connectionString))
         {
-            conn.Open();
-            string query = $"SELECT Asset, SeriNo, CompModel, CompName, RAM, DiskGB, MAC, ProcModel, Username, DateChanged FROM {tableName}";
-
-            using (SqlCommand cmd = new SqlCommand(query, conn))
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            try
             {
-                while (reader.Read())
+                conn.Open();
+                string query = $"SELECT Asset, SeriNo, CompModel, CompName, RAM, DiskGB, MAC, ProcModel, Username, DateChanged FROM [{tableName}]";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    envanterList.Add(new EnvanterModel
+                    while (reader.Read())
                     {
-                        Asset = reader.IsDBNull(0) ? "Bilinmiyor" : reader.GetString(0),
-                        SeriNo = reader.IsDBNull(1) ? "Bilinmiyor" : reader.GetString(1),
-                        CompModel = reader.IsDBNull(2) ? "Bilinmiyor" : reader.GetString(2),
-                        CompName = reader.IsDBNull(3) ? "Bilinmiyor" : reader.GetString(3),
-                        RAM = reader.IsDBNull(4) ? "Bilinmiyor" : reader.GetString(4),
-                        DiskGB = reader.IsDBNull(5) ? "Bilinmiyor" : reader.GetString(5),
-                        MAC = reader.IsDBNull(6) ? "Bilinmiyor" : reader.GetString(6),
-                        ProcModel = reader.IsDBNull(7) ? "Bilinmiyor" : reader.GetString(7),
-                        Username = reader.IsDBNull(8) ? "Bilinmiyor" : reader.GetString(8),
-                        DateChanged = reader.IsDBNull(9) ? "Bilinmiyor" : reader.GetString(9)
-                    });
+                        envanterList.Add(new EnvanterModel
+                        {
+                            Asset = reader.IsDBNull(0) ? "Bilinmiyor" : reader.GetString(0),
+                            SeriNo = reader.IsDBNull(1) ? "Bilinmiyor" : reader.GetString(1),
+                            CompModel = reader.IsDBNull(2) ? "Bilinmiyor" : reader.GetString(2),
+                            CompName = reader.IsDBNull(3) ? "Bilinmiyor" : reader.GetString(3),
+                            RAM = reader.IsDBNull(4) ? "Bilinmiyor" : reader.GetString(4),
+                            DiskGB = reader.IsDBNull(5) ? "Bilinmiyor" : reader.GetString(5),
+                            MAC = reader.IsDBNull(6) ? "Bilinmiyor" : reader.GetString(6),
+                            ProcModel = reader.IsDBNull(7) ? "Bilinmiyor" : reader.GetString(7),
+                            Username = reader.IsDBNull(8) ? "Bilinmiyor" : reader.GetString(8),
+                            DateChanged = reader.IsDBNull(9) ? "Bilinmiyor" : reader.GetString(9)
+                        });
+                    }
+                }
+            }
+            catch(Exception)
+            {
+                return null;
+            }
+                return envanterList;
+        }
+    }
+    public string GetAssetFromSN(string seriNo)
+    {
+        string asset;
+        try
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                string finder = $"SELECT Asset FROM EnvanterTablosu where SeriNo = '{seriNo}' AND Asset <> 'Bilinmiyor' AND Asset <> 'HATA'";
+
+                using (SqlCommand finderCmd = new SqlCommand(finder, conn))
+                {
+                    asset = (string)finderCmd.ExecuteScalar();
+                    return asset;
                 }
             }
 
         }
-        return envanterList;
+        catch
+        {
+            return "HATA";
+        }
     }
 
 }
