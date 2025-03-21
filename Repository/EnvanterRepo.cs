@@ -211,9 +211,9 @@ public class EnvanterRepo
     }
     public List<EnvanterModel>? GetEnvanterList(string tableName)
     {
-        List<EnvanterModel>? envanterList = new List<EnvanterModel>();
+        List<EnvanterModel>? envanterList;
         string query = $"SELECT Asset, SeriNo, CompModel, CompName, RAM, DiskGB, MAC, ProcModel, Username, DateChanged FROM [{tableName}]";
-        envanterList = TableFiller(query);
+        envanterList = ListFillerByTable(query);
         return envanterList;
     }
     public string GetAssetFromSN(string seriNo)
@@ -241,40 +241,40 @@ public class EnvanterRepo
     }
     public List<EnvanterModel>? GetSortedByDate(string tableName)
     {
-        List<EnvanterModel>? envanterList = new List<EnvanterModel>();
+        List<EnvanterModel>? envanterList;
         string sorter = $"SELECT * FROM [{tableName}] ORDER BY CONVERT(DATETIME, DateChanged, 104) DESC";
 
-        envanterList = TableFiller(sorter);
+        envanterList = ListFillerByTable(sorter);
         return envanterList;
     }
     public List<EnvanterModel>? GetOrderedList(string tableName, string columnName, string method)
     {
-        List<EnvanterModel>? envanterList = new List<EnvanterModel>();
+        List<EnvanterModel>? envanterList;
 
         switch (columnName)
         {
             case "DateChanged":
                 string query = $"SELECT * FROM [{tableName}] ORDER BY CONVERT(DATETIME, DateChanged, 104) {method}";
-                envanterList = TableFiller(query);
+                envanterList = ListFillerByTable(query);
                 break;
             case "RAM":
-                query = method == "asc" ? $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(REPLACE(RAM, ' GB', ''), ',', '.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(REPLACE(RAM, ' GB', ''), ',', '.') AS FLOAT) ELSE CAST(1.0E+38 AS FLOAT) END ASC; "
-                : $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(REPLACE(RAM, ' GB', ''), ',', '.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(REPLACE(RAM, ' GB', ''), ',', '.') AS FLOAT) ELSE CAST(-1.0E+38 AS FLOAT) END DESC;";
-                envanterList = TableFiller(query);
+                query = method == "asc" ? $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(RAM,',','.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(RAM,',','.') AS FLOAT) ELSE CAST(1.0E+38 AS FLOAT) END ASC; "
+                : $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(RAM,',','.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(RAM,',','.') AS FLOAT) ELSE CAST(-1.0E+38 AS FLOAT) END DESC;";
+                envanterList = ListFillerByTable(query);
                 break;
             case "DiskGB":
-                query = method == "asc" ? $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(REPLACE(DiskGB, ' GB', ''), ',', '.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(REPLACE(DiskGB, ' GB', ''), ',', '.') AS FLOAT) ELSE CAST(1.0E+38 AS FLOAT) END ASC; "
-                : $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(REPLACE(DiskGB, ' GB', ''), ',', '.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(REPLACE(DiskGB, ' GB', ''), ',', '.') AS FLOAT) ELSE CAST(-1.0E+38 AS FLOAT) END DESC;";
-                envanterList = TableFiller(query);
+                query = method == "asc" ? $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(DiskGB, ',', '.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(DiskGB, ',', '.') AS FLOAT) ELSE CAST(1.0E+38 AS FLOAT) END ASC; "
+                : $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(DiskGB, ',', '.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(DiskGB, ',', '.') AS FLOAT) ELSE CAST(-1.0E+38 AS FLOAT) END DESC;";
+                envanterList = ListFillerByTable(query);
                 break;
             default:
                 query = $"SELECT * FROM [{tableName}] ORDER BY {columnName} {method}";
-                envanterList = TableFiller(query);
+                envanterList = ListFillerByTable(query);
                 break;
         }
         return envanterList;
     }
-    public List<EnvanterModel>? TableFiller(string command)
+    public List<EnvanterModel>? ListFillerByTable(string command)
     {
         List<EnvanterModel>? envanterList = new List<EnvanterModel>();
         try
@@ -310,12 +310,30 @@ public class EnvanterRepo
         }
         return envanterList;
     }
-    public List<EnvanterModel>? GetSearchedTable(string tableName, string searchedColumn, string searchedValue){
-        List<EnvanterModel>? envanterList = new List<EnvanterModel>();
-        string query = $"SELECT * FROM [{tableName}] WHERE {searchedColumn} LIKE '%{searchedValue}%'";
-        envanterList = TableFiller(query);
-        return envanterList;
-    }
+    
+    public List<EnvanterModel>? GetSearchedTable(string tableName, string searchedColumn, string searchedValue1, string? searchedValue2)
+    {
+        List<EnvanterModel>? envanterList;
+        string query;
+        if (searchedColumn == "RAM" || searchedColumn == "DiskGB")
+        {
+            query = $"SELECT * FROM [{tableName}] WHERE TRY_CAST(REPLACE({searchedColumn},',','.') AS FLOAT) >= {searchedValue1} and TRY_CAST(REPLACE({searchedColumn},',','.') AS FLOAT) <= {searchedValue2}";
+            envanterList = ListFillerByTable(query);
+            return envanterList;
+        }
+        else if (searchedColumn == "DateChanged")
+        {
+            query = $"SELECT * FROM [{tableName}] WHERE TRY_CONVERT(datetime, DateChanged, 104) BETWEEN '{searchedValue1}' AND '{searchedValue2}'";
+            envanterList = ListFillerByTable(query);
+            return envanterList;
+        }
+        else
+        {
+            query = $"SELECT * FROM [{tableName}] WHERE {searchedColumn} LIKE '%{searchedValue1}%'";
+            envanterList = ListFillerByTable(query);
+            return envanterList;
+        }
 
+    }
 
 }

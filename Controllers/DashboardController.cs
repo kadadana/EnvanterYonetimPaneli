@@ -2,7 +2,6 @@ using EnvanterApiProjesi.Models;
 using Microsoft.AspNetCore.Mvc;
 using X.PagedList;
 using X.PagedList.Extensions;
-using Microsoft.Data.SqlClient;
 
 
 namespace EnvanterApiProjesi.Controllers;
@@ -18,14 +17,18 @@ public class DashboardController : Controller
         _envanterRepo = new EnvanterRepo(configuration);
     }
     [HttpGet]
-    public IActionResult DashboardMain(int page = 1, string sortColumn = "Asset", string sortOrder = "desc", string? searchedColumn = null, string? searchedValue = null)
+    public IActionResult DashboardMain(int page = 1, string sortColumn = "Asset", string sortOrder = "desc", string? searchedColumn = null, string? searchedValue1 = null, string? searchedValue2 = null)
     {
         if (HttpContext.Session.GetString("IsLoggedIn") == "true")
         {
             List<EnvanterModel>? comps = _envanterRepo.GetOrderedList("EnvanterTablosu", sortColumn, sortOrder);
-            if (!string.IsNullOrEmpty(searchedColumn) && !string.IsNullOrEmpty(searchedValue))
+            if (!string.IsNullOrEmpty(searchedColumn) && !string.IsNullOrEmpty(searchedValue1))
             {
-                comps = _envanterRepo.GetSearchedTable("EnvanterTablosu", searchedColumn, searchedValue);
+                comps = _envanterRepo.GetSearchedTable("EnvanterTablosu", searchedColumn, searchedValue1, searchedValue2);
+            }
+            else if (!string.IsNullOrEmpty(searchedColumn) && !string.IsNullOrEmpty(searchedValue1) && !string.IsNullOrEmpty(searchedValue2))
+            {
+                comps = _envanterRepo.GetSearchedTable("EnvanterTablosu", searchedColumn, searchedValue1, searchedValue2);
             }
             else if (ViewBag.SearchedTable != null)
             {
@@ -43,7 +46,9 @@ public class DashboardController : Controller
             ViewBag.SortColumn = sortColumn;
             ViewBag.SortOrder = sortOrder;
             ViewBag.SearchedColumn = searchedColumn;
-            ViewBag.SearchedValue = searchedValue;
+            ViewBag.SearchedValue1 = searchedValue1;
+            ViewBag.SearchedValue2 = searchedValue2;
+
             return View(pagedList);
 
         }

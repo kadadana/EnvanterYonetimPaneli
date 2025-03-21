@@ -18,7 +18,7 @@
 {
     <style>
         #myModal {
-            display: block;
+            display:block;
         }
     </style>
 }
@@ -27,90 +27,110 @@
 <div class="container-fluid mt-2">
     <div class="row">
         <div class="col-md-12">
-            <table class="table table-sm" style="border: 2px solid #3498db;">
+            <table class="table table-sm" style="border: 2px solid #0D6EFD;">
                 <thead>
                     <tr>
-                        <th style="background-color: #3498db; color:white">
+                        <th style="background-color: #0d6efd; color:white">
                             <a asp-action="DashboardMain" 
                             asp-route-sortColumn="Asset" 
                             asp-route-sortOrder="@(ViewBag.SortColumn == "Asset" && ViewBag.SortOrder == "asc" ? "desc" : "asc")"
                             asp-route-searchedColumn ="@(ViewBag.SearchedColumn)"
-                            asp-route-searchedValue ="@(ViewBag.Searchedvalue)">
+                            asp-route-searchedValue1 ="@(ViewBag.SearchedValue1)"
+                            asp-route-searchedValue2 ="@(ViewBag.SearchedValue2)"
+                            style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
                     Asset @Html.Raw(ViewBag.SortColumn == "Asset" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
-                        <th style="background-color: #3498db; color:white">
+                        <th style="background-color: #0d6efd; color:white">
                             <a asp-action="DashboardMain" 
                             asp-route-sortColumn="SeriNo" 
                             asp-route-sortOrder="@(ViewBag.SortColumn == "SeriNo" && ViewBag.SortOrder == "asc" ? "desc" : "asc")"
                             asp-route-searchedColumn ="@(ViewBag.SearchedColumn)"
-                            asp-route-searchedValue ="@(ViewBag.Searchedvalue)">
-                    SeriNo @Html.Raw(ViewBag.SortColumn == "SeriNo" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
+                            asp-route-searchedValue1 ="@(ViewBag.SearchedValue1)"
+                            asp-route-searchedValue2 ="@(ViewBag.SearchedValue2)"
+                            style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
+
+                    Seri No @Html.Raw(ViewBag.SortColumn == "SeriNo" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
-                        <th style="background-color: #3498db; color:white">
+                        <th style="background-color: #0d6efd; color:white">
                             <a asp-action="DashboardMain" 
                             asp-route-sortColumn="CompModel" 
                             asp-route-sortOrder="@(ViewBag.SortColumn == "CompModel" && ViewBag.SortOrder == "asc" ? "desc" : "asc")"
                             asp-route-searchedColumn ="@(ViewBag.SearchedColumn)"
-                            asp-route-searchedValue ="@(ViewBag.Searchedvalue)">
+                            asp-route-searchedValue1 ="@(ViewBag.SearchedValue1)"
+                            asp-route-searchedValue2 ="@(ViewBag.SearchedValue2)"
+                            style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
                     Bilgisayar Modeli @Html.Raw(ViewBag.SortColumn == "CompModel" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
-                        <th style="background-color: #3498db; color:white">
+                        <th style="background-color: #0d6efd; color:white">
                             <a asp-action="DashboardMain" 
                             asp-route-sortColumn="CompName" 
                             asp-route-sortOrder="@(ViewBag.SortColumn == "CompName" && ViewBag.SortOrder == "asc" ? "desc" : "asc")"
                             asp-route-searchedColumn ="@(ViewBag.SearchedColumn)"
-                            asp-route-searchedValue ="@(ViewBag.Searchedvalue)">
+                            asp-route-searchedValue1 ="@(ViewBag.SearchedValue1)"
+                            asp-route-searchedValue2 ="@(ViewBag.SearchedValue2)"
+                            style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
                     Bilgisayar Adı @Html.Raw(ViewBag.SortColumn == "CompName" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
-                        <th style="background-color: #3498db; color:white">
+                        <th style="background-color: #0d6efd; color:white">
                             <a asp-action="DashboardMain" 
                             asp-route-sortColumn="RAM" 
                             asp-route-sortOrder="@(ViewBag.SortColumn == "RAM" && ViewBag.SortOrder == "asc" ? "desc" : "asc")"
                             asp-route-searchedColumn ="@(ViewBag.SearchedColumn)"
-                            asp-route-searchedValue ="@(ViewBag.Searchedvalue)">
-                    RAM @Html.Raw(ViewBag.SortColumn == "RAM" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
+                            asp-route-searchedValue1 ="@(ViewBag.SearchedValue1)"
+                            asp-route-searchedValue2 ="@(ViewBag.SearchedValue2)"
+                            style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
+                    RAM Miktarı(GB) @Html.Raw(ViewBag.SortColumn == "RAM" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
-                        <th style="background-color: #3498db; color:white">
+                        <th style="background-color: #0d6efd; color:white">
                             <a asp-action="DashboardMain" 
                             asp-route-sortColumn="DiskGB" 
                             asp-route-sortOrder="@(ViewBag.SortColumn == "DiskGB" && ViewBag.SortOrder == "asc" ? "desc" : "asc")"
                             asp-route-searchedColumn ="@(ViewBag.SearchedColumn)"
-                            asp-route-searchedValue ="@(ViewBag.Searchedvalue)">
-                    Disk Boyutu @Html.Raw(ViewBag.SortColumn == "DiskGB" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
+                            asp-route-searchedValue1 ="@(ViewBag.SearchedValue1)"
+                            asp-route-searchedValue2 ="@(ViewBag.SearchedValue2)"
+                            style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
+                    Disk Miktarı(GB) @Html.Raw(ViewBag.SortColumn == "DiskGB" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
-                        <th style="background-color: #3498db; color:white">
+                        <th style="background-color: #0d6efd; color:white">
                             <a asp-action="DashboardMain" 
                             asp-route-sortColumn="MAC" 
                             asp-route-sortOrder="@(ViewBag.SortColumn == "MAC" && ViewBag.SortOrder == "asc" ? "desc" : "asc")"
                             asp-route-searchedColumn ="@(ViewBag.SearchedColumn)"
-                            asp-route-searchedValue ="@(ViewBag.Searchedvalue)">
+                            asp-route-searchedValue1 ="@(ViewBag.SearchedValue1)"
+                            asp-route-searchedValue2 ="@(ViewBag.SearchedValue2)"
+                            style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
                     MAC Adresi @Html.Raw(ViewBag.SortColumn == "MAC" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
-                        <th style="background-color: #3498db; color:white">
+                        <th style="background-color: #0d6efd; color:white">
                             <a asp-action="DashboardMain" 
                             asp-route-sortColumn="ProcModel" 
                             asp-route-sortOrder="@(ViewBag.SortColumn == "ProcModel" && ViewBag.SortOrder == "asc" ? "desc" : "asc")"
                             asp-route-searchedColumn ="@(ViewBag.SearchedColumn)"
-                            asp-route-searchedValue ="@(ViewBag.Searchedvalue)">
+                            asp-route-searchedValue1 ="@(ViewBag.SearchedValue1)"
+                            asp-route-searchedValue2 ="@(ViewBag.SearchedValue2)"
+                            style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
                     İşlemci Modeli @Html.Raw(ViewBag.SortColumn == "ProcModel" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
-                        <th style="background-color: #3498db; color:white">
+                        <th style="background-color: #0d6efd; color:white">
                             <a asp-action="DashboardMain" 
                             asp-route-sortColumn="Username" 
                             asp-route-sortOrder="@(ViewBag.SortColumn == "Username" && ViewBag.SortOrder == "asc" ? "desc" : "asc")"
                             asp-route-searchedColumn ="@(ViewBag.SearchedColumn)"
-                            asp-route-searchedValue ="@(ViewBag.Searchedvalue)">
+                            asp-route-searchedValue1 ="@(ViewBag.SearchedValue1)"
+                            asp-route-searchedValue2 ="@(ViewBag.SearchedValue2)"
+                            style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
                     Kullanıcı @Html.Raw(ViewBag.SortColumn == "Username" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
-                        <th style="background-color: #3498db; color:white">
+                        <th style="background-color: #0d6efd; color:white">
                             <a asp-action="DashboardMain" 
                             asp-route-sortColumn="DateChanged" 
                             asp-route-sortOrder="@(ViewBag.SortColumn == "DateChanged" && ViewBag.SortOrder == "asc" ? "desc" : "asc")"
-                            asp-route-searchedColumn ="@(ViewBag.SearchedColumn)"
-                            asp-route-searchedValue ="@(ViewBag.Searchedvalue)">
+                            asp-route-searchedValue1 ="@(ViewBag.SearchedValue1)"
+                            asp-route-searchedValue2 ="@(ViewBag.SearchedValue2)"
+                            style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
                     Değişiklik Tarihi @Html.Raw(ViewBag.SortColumn == "DateChanged" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
                         </th>
-                        <th style="background-color: #3498db; color:white">
+                        <th style="background-color: #0d6efd; color:white">
                         </th>
                     </tr>
                 </thead>
@@ -186,8 +206,8 @@ else{
         <span class="close btn-outline-danger" id="modalClose">&times;</span>
         <form method="get" action="@Url.Action("DashboardMain", "Dashboard")">
             <div class="mt-3" >
-                <div class="d-flex justify-content-center align-items-center">
-                    <label for="column">Aranacak Sütun:</label>
+                <div class="mb-3">
+                    <label for="column" class="form-label fw-bold text-start d-block">Aranacak Sütun:</label>
                     <select name="searchedColumn" id="searchedColumn">
                         <option value="Asset">Asset</option>
                         <option value="SeriNo">Seri No</option>
@@ -198,29 +218,34 @@ else{
                         <option value="MAC">MAC Adresi</option>
                         <option value="ProcModel">İşlemci Modeli</option>
                         <option value="Username">Kullanıcı</option> 
+                        <option value="DateChanged">Değişiklik Tarihi</option>
                     </select>
                 </div>
-                <div class="d-flex justify-content-center align-items-center">
-                    <label for="searchValue">Aranacak Değer:</label>
-                    <input type="text" id="searchedValue" name="searchedValue" class="form-control" />
+
+                <div class="mb-3">
+                    <label for="searchValue" class="form-label fw-bold text-start d-block">Aranacak Değer:</label>
+                    <div id="searchContainer">
+                    <input type="text" id="searchedValue1" name="searchedValue1" class="form-control" />
+                    </div>
                 </div>
             </div>
+
             <div class="container-fluid">
-	<div class="row">
-		<div class="col-md-4">
-			<button type="button" class="btn btn-md w-100 btn-outline-danger">
-				Aramayı Sıfırla
-			</button>
-		</div>
-		<div class="col-md-2">
-		</div>
-		<div class="col-md-6">
-			<button type="submit" class="btn btn-md w-100 btn-outline-primary">
-				Ara
-			</button>
-		</div>
-	</div>
-</div>
+	            <div class="row">
+		            <div class="col-md-4">
+                        <button type="button" class="btn btn-md w-100 btn-outline-danger" onclick="location.href='/Dashboard/DashboardMain'">
+                            Aramayı Sıfırla
+                        </button>
+		            </div>
+		            <div class="col-md-2">
+		            </div>
+		            <div class="col-md-6">
+                        <button type="submit" class="btn btn-md w-100 btn-outline-primary">
+                            Ara
+                        </button>
+		            </div>
+	            </div>
+            </div>
         </form>
     </div>
 </div>
@@ -233,6 +258,34 @@ else{
     document.getElementById("modalClose").addEventListener("click", function() {
         document.getElementById("aramaModal").style.display = "none";
     });
+    
+    document.addEventListener("DOMContentLoaded", function () {
+    const searchedColumn = document.getElementById("searchedColumn");
+    const searchContainer = document.getElementById("searchContainer");
+
+    searchedColumn.addEventListener("change", function () {
+        if (searchedColumn.value === "RAM" || searchedColumn.value === "DiskGB") {
+            searchContainer.innerHTML = `
+            <div class="d-flex align-items-center gap-2">
+                <input type="text" id="searchedValue1" name="searchedValue1" class="form-control" placeholder="Minimum Değer"/>
+                <input type="text" id="searchedValue2" name="searchedValue2" class="form-control" placeholder="Maksimum Değer"/>
+            </div>
+            `;
+        }
+        else if(searchedColumn.value === "DateChanged"){
+            searchContainer.innerHTML = `
+                <div class="d-flex align-items-center gap-2">
+                    <input type="date" id="searchedValue1" name="searchedValue1" class="form-control" />
+                    <input type="date" id="searchedValue2" name="searchedValue2" class="form-control" />
+                </div>
+            `;
+        } else {
+            searchContainer.innerHTML = `
+                <input type="text" id="searchedValue1" name="searchedValue1" class="form-control" />
+            `;
+        }
+    });
+});
 </script>
 
 <style>
