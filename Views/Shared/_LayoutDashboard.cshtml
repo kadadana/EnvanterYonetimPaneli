@@ -12,14 +12,11 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary w-100">
-
         <div class="container-fluid d-flex align-items-center justify-content-between">
             <div>
                 <a class="navbar-brand" href="/Dashboard/DashboardMain">Envanter Yönetim Paneli</a>
-
             </div>
-            <a class="nav-link text-white" href="@Url.Action("Logout", "Login")">Çıkış Yap</a>
-
+            @RenderSection("Navbar", false)
         </div>
     </nav>
 
@@ -36,6 +33,7 @@
         </div>
     }
     @RenderBody()
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

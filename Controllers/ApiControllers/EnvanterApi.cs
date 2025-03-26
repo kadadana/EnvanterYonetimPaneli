@@ -1,12 +1,12 @@
 using EnvanterApiProjesi.Models;
 using Microsoft.AspNetCore.Mvc;
+
 namespace EnvanterApiProjesi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
 public class EnvanterApi : ControllerBase
 {
-
     private readonly string? _connectionString;
 
     private EnvanterRepo _envanterRepo;
@@ -17,13 +17,13 @@ public class EnvanterApi : ControllerBase
         _envanterRepo = new EnvanterRepo(configuration);
     }
 
-[HttpPost("AddEnvanter")]
-    public IActionResult AddEnvanter([FromBody] EnvanterModel model){
-        if(model == null)
-        return BadRequest("Gecersiz Veri!");
+    [HttpPost("AddEnvanter")]
+    public IActionResult AddEnvanter([FromBody] EnvanterModel model)
+    {
+        if (model == null)
+            return BadRequest("Gecersiz Veri!");
 
         _envanterRepo.AddToSql(model);
         return Ok("Envanter basariyla eklendi.");
     }
-
 }

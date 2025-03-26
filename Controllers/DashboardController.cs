@@ -17,7 +17,7 @@ public class DashboardController : Controller
         _envanterRepo = new EnvanterRepo(configuration);
     }
     [HttpGet]
-    public IActionResult DashboardMain(int page = 1, string sortColumn = "Asset", string sortOrder = "desc", string? searchedColumn = null, string? searchedValue1 = null, string? searchedValue2 = null)
+    public IActionResult DashboardMain(int page = 1, string sortColumn = "Id", string sortOrder = "asc", string? searchedColumn = null, string? searchedValue1 = null, string? searchedValue2 = null)
     {
         if (HttpContext.Session.GetString("IsLoggedIn") == "true")
         {
@@ -84,30 +84,70 @@ public class DashboardController : Controller
         }
         else
         {
-            TempData["Info"] = _envanterRepo.AssetSNMatcher(envanterModel);
+
+            TempData["Info"] = _envanterRepo.AddToSql(envanterModel);
             return RedirectToAction("DashboardAssetSNMatcher", "Dashboard");
 
         }
     }
 
-    [HttpGet("Details/{seriNo}/{page?}")]
-    public IActionResult Details(string seriNo, int page)
+    [HttpGet("Details/{id}/{page?}")]
+    public IActionResult Details(string id, int page)
     {
         if (HttpContext.Session.GetString("IsLoggedIn") == "true")
         {
-            List<EnvanterModel>? comps = _envanterRepo.GetSortedByDate(seriNo);
+            List<EnvanterModel>? comps = _envanterRepo.GetSortedByDate(id);
             int pageSize = 10;
             page = page >= 1 ? page : 1;
             IPagedList<EnvanterModel>? pagedList = comps?.ToPagedList(page, pageSize);
             return View(pagedList);
+        }
+        else
+        {
+            TempData["Alert"] = "Giriş Yapmalısınız!";
+            return RedirectToAction("LoginIndex", "Login");
+        }
+    }
+    public IActionResult Edit(string? id = null)
+    {
 
+        if (HttpContext.Session.GetString("IsLoggedIn") == "true")
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                List<EnvanterModel>? compList = _envanterRepo.GetRowById(id, "EnvanterTablosu");
+                EnvanterModel? comp = _envanterRepo.GetModelFromList(compList);
+                return View(comp);
 
+            }
+            else
+            {
+                TempData["Alert"] = "Id belirtilmeli.";
+                return RedirectToAction("DashboardMain", "Dashboard");
+            }
 
         }
         else
         {
             TempData["Alert"] = "Giriş Yapmalısınız!";
             return RedirectToAction("LoginIndex", "Login");
+        }
+    }
+
+    [HttpPost]
+    public IActionResult Edit(EnvanterModel envanterModel)
+    {
+        if (string.IsNullOrEmpty(envanterModel.SeriNo) || string.IsNullOrEmpty(envanterModel.Asset))
+        {
+            TempData["Alert"] = "Seri numarası veya asset boş olamaz!";
+            return Edit(envanterModel.Id);
+        }
+        else
+        {
+            envanterModel.DateChanged = DateTime.Now.ToString();
+            TempData["Info"] = _envanterRepo.AddToSql(envanterModel);
+            return Edit(envanterModel.Id);
+
         }
     }
 
