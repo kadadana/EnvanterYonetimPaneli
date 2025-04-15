@@ -12,7 +12,7 @@
             <div class ="col-md-6">
                 <div class="mb-3 text-start">
                     <label class="mb-1" for="Id" class="form-label" style="font-weight: bold;">Id</label>
-                    <input type="text" asp-for="Id" class="form-control">
+                    <input type="text" asp-for="Id" class="form-control" readonly>
                 </div>
                 <div class="mb-3 text-start">
                     <label class="mb-1" for="Asset" class="form-label" style="font-weight: bold;">Asset</label>
@@ -55,6 +55,10 @@
                 <div class="mb-3 text-start">
                     <label class="mb-1" for="AssignedUser" class="form-label" style="font-weight: bold;">Zimmetli Kişi</label>
                     <input type="text" asp-for="AssignedUser" class="form-control">
+                </div>
+                <div class="mb-3 text-start">
+                    <label class="mb-1" for="LastIpAddress" class="form-label" style="font-weight: bold;">Son Ip Adresi</label>
+                    <input type="text" asp-for="LastIpAddress" class="form-control" readonly>
                 </div>
                 
             </div>

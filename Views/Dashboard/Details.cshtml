@@ -1,183 +1,107 @@
 @{
 Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
 }
-
-
 @model X.PagedList.IPagedList<EnvanterApiProjesi.Models.EnvanterModel>
 @using X.PagedList.Mvc.Core
 
-    @if(Model != null){
-    @section Navbar{
-        <div class="ms-auto">
-                    <div class="dropdown" style="color:#0D6EFD">
-                        <a class="btn btn-secondary dropdown-toggle" style="background-color:white; color: #0D6EFD;"
-                            href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                            Menü
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-                            <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Edit" asp-route-id="@Model[0].Id">Düzenle</a></li>
-                            <li><a class="dropdown-item" href="@Url.Action("Logout", "Login")" style="color: red">Çıkış Yap</a></li>
-                        </ul>
-                    </div>
+@using X.PagedList.Mvc.Core
+@{
+    var labels = LabelHelper.Labels;
+}
+@if(Model != null)
+{
+@section Navbar{
+    <div class="ms-auto">
+                <div class="dropdown" style="color:#0D6EFD">
+                    <a class="btn btn-secondary dropdown-toggle" style="background-color:white; color: #0D6EFD;"
+                        href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        Menü
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+                        <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Edit" asp-route-id="@Model[0].Id">Düzenle</a></li>
+                        <li><a class="dropdown-item" href="@Url.Action("Logout", "Login")" style="color: red">Çıkış Yap</a></li>
+                    </ul>
                 </div>
+            </div>
+}
+
+
+
+<div class="container-fluid mt-2">
+
+
+<div class="row">
+    <div class="col-md-12">
+        <h3>
+            "@Model[0].Id" Kimlik Numaralı Bilgisayar
+        </h3>
+    </div>
+</div>
+    @{
+        var model = Model[0];
+        var type = model.GetType();
+
+        var leftLabels = labels.Take(labels.Count /2);
+        var rightLabels = labels.Skip(labels.Count /2);
     }
-
-    <div class="container-fluid mt-2">
-
-    
-	<div class="row">
-		<div class="col-md-12">
-			<h3>
-				"@Model[0].Id" Kimlik Numaralı Bilgisayar
-			</h3>
-		</div>
-	</div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="row info-row">
-                <div class="col-6 info-label" style="font-weight: bold;">Id</div>
-                <div class="col-6">@Model[0].Id</div>
-            </div>
-            <div class="row info-row">
-                <div class="col-6 info-label" style="font-weight: bold;">Asset</div>
-                <div class="col-6">@Model[0].Asset</div>
-            </div>
-            <div class="row info-row">
-                <div class="col-6 info-label" style="font-weight: bold;">Seri No</div>
-                <div class="col-6">@Model[0].SeriNo</div>
-            </div>
-            <div class="row info-row">
-                <div class="col-6 info-label" style="font-weight: bold;">Bilgisayar Modeli</div>
-                <div class="col-6">@Model[0].CompModel</div>
-            </div>
-            <div class="row info-row">
-                <div class="col-6 info-label" style="font-weight: bold;">Bilgisayar Adı</div>
-                <div class="col-6">@Model[0].CompName</div>
-            </div>
-            <div class="row info-row">
-                <div class="col-6 info-label" style="font-weight: bold;">RAM</div>
-                <div class="col-6">@Model[0].RAM GB</div>
-            </div>
-            <div class="row info-row">
-                <div class="col-6 info-label" style="font-weight: bold;">Disk Boyutu</div>
-                <div class="col-6">@Model[0].DiskGB GB</div>
+    <div class ="row">
+        <div class ="col-md-6">
+            @foreach (var item in leftLabels)
+            {
+                var prop = type.GetProperty(item.Key);
+                var value = prop != null ? prop.GetValue(model, null)?.ToString() : "";
+                var displayValue = (item.Key == "RAM" || item.Key == "DiskGB") ? value + " GB" : value;
+                <div class ="row info-row">
+                    <div class ="col-6 info-label" style ="font-weight: bold;">@item.Value</div>
+                    <div class ="col-6">@displayValue</div>
                 </div>
+            }
         </div>
-        <div class="col-md-6">
-            <div class="row info-row">
-                <div class="col-6 info-label" style="font-weight: bold;">MAC Adresi</div>
-                <div class="col-6">@Model[0].MAC</div>
-            </div>
-            <div class="row info-row">
-                <div class="col-6 info-label" style="font-weight: bold;">İşlemci Modeli</div>
-                <div class="col-6">@Model[0].ProcModel</div>
-            </div>
-            <div class="row info-row">
-                <div class="col-6 info-label" style="font-weight: bold;">Kullanıcı</div>
-                <div class="col-6">@Model[0].Username</div>
-            </div>
-            <div class="row info-row">
-                <div class="col-6 info-label" style="font-weight: bold;">Zimmetli Kişi</div>
-                <div class="col-6">@Model[0].AssignedUser</div>
-            </div>
-            <div class="row info-row">
-                <div class="col-6 info-label" style="font-weight: bold;">Değişiklik Tarihi</div>
-                <div class="col-6">@Model[0].DateChanged</div>
-            </div>
+        <div class ="col-md-6">
+            @foreach (var item in rightLabels)
+            {
+                var prop = type.GetProperty(item.Key);
+                var value = prop != null ? prop.GetValue(model, null)?.ToString() : "";
+                var displayValue = (item.Key == "RAM" || item.Key == "DiskGB") ? value + " GB" : value;
+                <div class ="row info-row">
+                    <div class ="col-6 info-label" style ="font-weight: bold;">@item.Value</div>
+                    <div class ="col-6">@displayValue</div>
+                </div>
+            }
         </div>
     </div>
 
-    <div class="row">
+    <div class ="row">
         <div class="col-md-12">
-            <div style="overflow-x: auto; white-space: nowrap; max-width: 100%;">
+            <div style ="overflow-x: auto; white-space: nowrap; max-width: 100%">
                 <table class="table table-bordered" style="border: 1px solid #3498db;">
                     <thead>
                         <tr>
-                            <th style="background-color: #0d6efd; color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                Id
+                            @foreach (var item in labels)
+                            {
+                                <th style="background-color: #0d6efd; color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
+                                @item.Value
                             </th>
-                            <th style="background-color: #0d6efd; color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                Asset
-                            </th>
-                            <th style="background-color: #0d6efd; color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                Seri No
-                            </th>
-                            <th style="background-color: #0d6efd; color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                Bilgisayar Modeli
-                            </th>
-                            <th style="background-color: #0d6efd; color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                Bilgisayar Adı
-                            </th>
-                            <th style="background-color: #0d6efd; color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                RAM (GB)
-                            </th>
-                            <th style="background-color: #0d6efd; color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                Disk Boyutu (GB)
-                            </th>
-                            <th style="background-color: #0d6efd; color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                MAC Adresi
-                            </th>
-                            <th style="background-color: #0d6efd; color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                İşlemci Modeli
-                            </th>
-                            <th style="background-color: #0d6efd; color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                Kullanıcı
-                            </th>
-                            <th style="background-color: #0d6efd; color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                Zimmetli Kişi
-                            </th>
-                            <th style="background-color: #0d6efd; color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                Değişiklik Tarihi
-                            </th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var comp in Model)
                         {
-                        <tr>
-                            <td>
-                                @comp.Id
-                            </td>
-                            <td>
-                                @comp.Asset
-                            </td>
-                            <td>
-                                @comp.SeriNo
-                            </td>
-                            <td>
-                                @comp.CompModel
-                            </td>
-                            <td>
-                                @comp.CompName
-                            </td>
-                            <td>
-                                @comp.RAM
-                            </td>
-                            <td>
-                                @comp.DiskGB
-                            </td>
-                            <td>
-                                @comp.MAC
-                            </td>
-                            <td>
-                                @comp.ProcModel
-                            </td>
-                            <td>
-                                @comp.Username
-                            </td>
-                            <td>
-                                @comp.AssignedUser
-                            </td>
-                            <td>
-                                @comp.DateChanged
-                            </td>
-                        </tr>
+                            var _type = comp.GetType();
+                            <tr>
+                                @foreach (var item in labels)
+                                {
+                                    var prop = _type.GetProperty(item.Key);
+                                    <td>
+                                    @prop.GetValue(comp)
+                                    </td>
+                                }
+                            </tr>
                         }
                     </tbody>
                 </table>
             </div>
-            <!-- Sayfalama Kontrolleri -->
             <div>
                 @Html.PagedListPager(Model, page => Url.Action("Details", new { page }),
                 new PagedListRenderOptions
@@ -192,17 +116,17 @@ Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
                 LiElementClasses = new[] { "page-item" },
                 PageClasses = new[] { "page-link" }
                 })
-
             </div>
         </div>
     </div>
 </div>
-    }
-    else{
+}
+else
+{
     TempData["alert"] = "Bu bilgisayara ait detay kaydı bulunamadı.";
 
     <div class="text-center">
         <a class="btn btn-primary" asp-action="DashboardMain">Ana menüye dön</a>
     </div>
 
-    }
+}

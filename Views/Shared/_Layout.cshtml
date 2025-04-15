@@ -27,6 +27,7 @@
         <div class="alert alert-danger" role="alert">
             @TempData["Alert"]
         </div>
+        
     }
     @if (@TempData["Info"] != null)
     {
@@ -34,7 +35,7 @@
             @TempData["Info"]
         </div>
     }
-
+    
     @RenderBody()
 </body>
 

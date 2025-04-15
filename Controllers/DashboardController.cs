@@ -145,7 +145,7 @@ public class DashboardController : Controller
         else
         {
             envanterModel.DateChanged = DateTime.Now.ToString();
-            TempData["Info"] = _envanterRepo.AddToSql(envanterModel);
+            TempData["Info"] = _envanterRepo.EditSql(envanterModel);
             return Edit(envanterModel.Id);
 
         }

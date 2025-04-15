@@ -14,5 +14,15 @@ namespace EnvanterApiProjesi.Models
         public string? Username { get; set; }
         public string? DateChanged { get; set; }
         public string? AssignedUser { get; set; }
+        public string? LastIpAddress { get; set; }
+        public List<DriveInfoModel>? Drives { get; set; }
+
+    }
+
+    public class DriveInfoModel
+    {
+        public string? Name { get; set; }
+        public string? TotalSizeGB { get; set; }
+        public string? TotalFreeSpace { get; set; }
     }
 }

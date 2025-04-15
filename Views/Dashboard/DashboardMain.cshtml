@@ -18,6 +18,9 @@ Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
 }
 @model X.PagedList.IPagedList<EnvanterApiProjesi.Models.EnvanterModel>
 @using X.PagedList.Mvc.Core
+@{
+    var labels = LabelHelper.Labels;
+}
 
     @if (ViewBag.ShowModal == "true")
     {
@@ -28,7 +31,6 @@ Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
     </style>
     }
     @if(Model != null){
-
     <div class="container-fluid mt-2">
         <div class="row">
             <div class="col-md-12">
@@ -36,170 +38,38 @@ Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
                     <table class="table table-bordered" style="border: 1px solid #0D6EFD;" >
                         <thead>
                             <tr>
+                            
+                            @foreach (var item in labels)
+                            {
+                                <th style="background-color: #0d6efd; color:white">
+                                    <a asp-action="DashboardMain"
+                                        asp-route-sortColumn="@item.Key"
+                                        asp-route-sortOrder="@(ViewBag.SortColumn == @item.Key && ViewBag.SortOrder=="asc" ? "desc" : "asc" )"
+                                        asp-route-searchedColumn="@(ViewBag.SearchedColumn)"
+                                        asp-route-searchedValue1="@(ViewBag.SearchedValue1)"
+                                        asp-route-searchedValue2="@(ViewBag.SearchedValue2)"
+                                        style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
+                                        @item.Value @Html.Raw(ViewBag.SortColumn == @item.Key ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
+                                </th>
+                            }
                             <th style="background-color: #0d6efd; color:white">
-                                    <a asp-action="DashboardMain"
-                                        asp-route-sortColumn="Id"
-                                        asp-route-sortOrder="@(ViewBag.SortColumn == "Id" && ViewBag.SortOrder=="asc" ? "desc" : "asc" )"
-                                        asp-route-searchedColumn="@(ViewBag.SearchedColumn)"
-                                        asp-route-searchedValue1="@(ViewBag.SearchedValue1)"
-                                        asp-route-searchedValue2="@(ViewBag.SearchedValue2)"
-                                        style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                        Id @Html.Raw(ViewBag.SortColumn == "Id" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
-                                </th>
-                                <th style="background-color: #0d6efd; color:white">
-                                    <a asp-action="DashboardMain"
-                                        asp-route-sortColumn="Asset"
-                                        asp-route-sortOrder="@(ViewBag.SortColumn == "Asset" && ViewBag.SortOrder=="asc" ? "desc" : "asc" )"
-                                        asp-route-searchedColumn="@(ViewBag.SearchedColumn)"
-                                        asp-route-searchedValue1="@(ViewBag.SearchedValue1)"
-                                        asp-route-searchedValue2="@(ViewBag.SearchedValue2)"
-                                        style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                        Asset @Html.Raw(ViewBag.SortColumn == "Asset" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
-                                </th>
-                                <th style="background-color: #0d6efd; color:white">
-                                    <a asp-action="DashboardMain"
-                                        asp-route-sortColumn="SeriNo"
-                                        asp-route-sortOrder="@(ViewBag.SortColumn == "SeriNo" && ViewBag.SortOrder=="asc"
-                                        ? "desc" : "asc" )"
-                                        asp-route-searchedColumn="@(ViewBag.SearchedColumn)"
-                                        asp-route-searchedValue1="@(ViewBag.SearchedValue1)"
-                                        asp-route-searchedValue2="@(ViewBag.SearchedValue2)"
-                                        style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                        Seri No @Html.Raw(ViewBag.SortColumn == "SeriNo" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
-                                </th>
-                                <th style="background-color: #0d6efd; color:white">
-                                    <a asp-action="DashboardMain"
-                                        asp-route-sortColumn="CompModel"
-                                        asp-route-sortOrder="@(ViewBag.SortColumn == "CompModel" && ViewBag.SortOrder=="asc" ? "desc" : "asc" )"
-                                        asp-route-searchedColumn="@(ViewBag.SearchedColumn)"
-                                        asp-route-searchedValue1="@(ViewBag.SearchedValue1)"
-                                        asp-route-searchedValue2="@(ViewBag.SearchedValue2)"
-                                        style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                        Bilgisayar Modeli @Html.Raw(ViewBag.SortColumn == "CompModel" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
-                                </th>
-                                <th style="background-color: #0d6efd; color:white">
-                                    <a asp-action="DashboardMain"
-                                        asp-route-sortColumn="CompName"
-                                        asp-route-sortOrder="@(ViewBag.SortColumn == "CompName" && ViewBag.SortOrder=="asc" ? "desc" : "asc" )"
-                                        asp-route-searchedColumn="@(ViewBag.SearchedColumn)"
-                                        asp-route-searchedValue1="@(ViewBag.SearchedValue1)"
-                                        asp-route-searchedValue2="@(ViewBag.SearchedValue2)"
-                                        style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                        Bilgisayar Adı @Html.Raw(ViewBag.SortColumn == "CompName" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
-                                </th>
-                                <th style="background-color: #0d6efd; color:white">
-                                    <a asp-action="DashboardMain"
-                                        asp-route-sortColumn="RAM"
-                                        asp-route-sortOrder="@(ViewBag.SortColumn == "RAM" && ViewBag.SortOrder=="asc" ? "desc" : "asc" )"
-                                        asp-route-searchedColumn="@(ViewBag.SearchedColumn)"
-                                        asp-route-searchedValue1="@(ViewBag.SearchedValue1)"
-                                        asp-route-searchedValue2="@(ViewBag.SearchedValue2)"
-                                        style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                        RAM Miktarı(GB) @Html.Raw(ViewBag.SortColumn == "RAM" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
-                                </th>
-                                <th style="background-color: #0d6efd; color:white">
-                                    <a asp-action="DashboardMain"
-                                        asp-route-sortColumn="DiskGB"
-                                        asp-route-sortOrder="@(ViewBag.SortColumn == "DiskGB" && ViewBag.SortOrder=="asc" ? "desc" : "asc" )"
-                                        asp-route-searchedColumn="@(ViewBag.SearchedColumn)"
-                                        asp-route-searchedValue1="@(ViewBag.SearchedValue1)"
-                                        asp-route-searchedValue2="@(ViewBag.SearchedValue2)"
-                                        style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                        Disk Miktarı(GB) @Html.Raw(ViewBag.SortColumn == "DiskGB" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
-                                </th>
-                                <th style="background-color: #0d6efd; color:white">
-                                    <a asp-action="DashboardMain"
-                                        asp-route-sortColumn="MAC"
-                                        asp-route-sortOrder="@(ViewBag.SortColumn == "MAC" && ViewBag.SortOrder=="asc" ? "desc" : "asc" )"
-                                        asp-route-searchedColumn="@(ViewBag.SearchedColumn)"
-                                        asp-route-searchedValue1="@(ViewBag.SearchedValue1)"
-                                        asp-route-searchedValue2="@(ViewBag.SearchedValue2)"
-                                        style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                        MAC Adresi @Html.Raw(ViewBag.SortColumn == "MAC" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
-                                </th>
-                                <th style="background-color: #0d6efd; color:white">
-                                    <a asp-action="DashboardMain"
-                                        asp-route-sortColumn="ProcModel"
-                                        asp-route-sortOrder="@(ViewBag.SortColumn == "ProcModel" && ViewBag.SortOrder=="asc" ? "desc" : "asc" )"
-                                        asp-route-searchedColumn="@(ViewBag.SearchedColumn)"
-                                        asp-route-searchedValue1="@(ViewBag.SearchedValue1)"
-                                        asp-route-searchedValue2="@(ViewBag.SearchedValue2)"
-                                        style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                        İşlemci Modeli @Html.Raw(ViewBag.SortColumn == "ProcModel" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
-                                </th>
-                                <th style="background-color: #0d6efd; color:white">
-                                    <a asp-action="DashboardMain"
-                                        asp-route-sortColumn="Username"
-                                        asp-route-sortOrder="@(ViewBag.SortColumn == "Username" && ViewBag.SortOrder=="asc"? "desc" : "asc" )"
-                                        asp-route-searchedColumn="@(ViewBag.SearchedColumn)"
-                                        asp-route-searchedValue1="@(ViewBag.SearchedValue1)"
-                                        asp-route-searchedValue2="@(ViewBag.SearchedValue2)"
-                                        style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                        Kullanıcı @Html.Raw(ViewBag.SortColumn == "Username" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
-                                </th>
-                                <th style="background-color: #0d6efd; color:white">
-                                    <a asp-action="DashboardMain"
-                                    asp-route-sortColumn="AssignedUser"
-                                        asp-route-sortOrder="@(ViewBag.SortColumn == "AssignedUser" && ViewBag.SortOrder=="asc" ? "desc" : "asc" )"
-                                        asp-route-searchedColumn="@(ViewBag.SearchedColumn)"
-                                        asp-route-searchedValue1="@(ViewBag.SearchedValue1)"
-                                        asp-route-searchedValue2="@(ViewBag.SearchedValue2)"
-                                        style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                        Zimmetli Kişi @Html.Raw(ViewBag.SortColumn == "AssignedUser" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
-                                </th>
-                                <th style="background-color: #0d6efd; color:white">
-                                    <a asp-action="DashboardMain"
-                                        asp-route-sortColumn="DateChanged"
-                                        asp-route-sortOrder="@(ViewBag.SortColumn == "DateChanged" && ViewBag.SortOrder=="asc" ? "desc" : "asc" )"
-                                        asp-route-searchedValue1="@(ViewBag.SearchedValue1)"
-                                        asp-route-searchedValue2="@(ViewBag.SearchedValue2)"
-                                        style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
-                                        Değişiklik Tarihi @Html.Raw(ViewBag.SortColumn == "DateChanged" ? (ViewBag.SortOrder == "asc" ? "↑" : "↓") : "")</a>
-                                </th>
-                                <th style="background-color: #0d6efd; color:white">
+                                    <a style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
+                                    </a>
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var comp in Model)
                             {
+                                var _type = comp.GetType();
                             <tr>
-                                <td>
-                                    @comp.Id
+                                @foreach (var item in labels)
+                                {
+                                    var prop = _type.GetProperty(item.Key);
+                                    <td>
+                                    @prop.GetValue(comp)
                                 </td>
-                                <td>
-                                    @comp.Asset
-                                </td>
-                                <td>
-                                    @comp.SeriNo
-                                </td>
-                                <td>
-                                    @comp.CompModel
-                                </td>
-                                <td>
-                                    @comp.CompName
-                                </td>
-                                <td>
-                                    @comp.RAM
-                                </td>
-                                <td>
-                                    @comp.DiskGB
-                                </td>
-                                <td>
-                                    @comp.MAC
-                                </td>
-                                <td>
-                                    @comp.ProcModel
-                                </td>
-                                <td>
-                                    @comp.Username
-                                </td>
-                                <td>
-                                    @comp.AssignedUser
-                                </td>
-                                <td>
-                                    @comp.DateChanged
-                                </td>
+                                }
                                 <td>
                                     <a asp-controller="Dashboard" asp-action="Details" asp-route-id="@comp.Id")"
                                         asp-route-page="1" class="btn btn-primary">Detay</a>
