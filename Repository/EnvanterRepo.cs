@@ -1,8 +1,6 @@
-using System.Data.Common;
 using EnvanterApiProjesi.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Microsoft.IdentityModel.Tokens;
+
 namespace EnvanterApiProjesi;
 public class EnvanterRepo
 {
@@ -13,16 +11,90 @@ public class EnvanterRepo
         _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
 
+    public void EnvanterTableCreator()
+    {
+
+        using (SqlConnection conn = new SqlConnection(_connectionString))
+        {
+            conn.Open();
+
+            string creator = "IF NOT EXISTS(SELECT * FROM sys.tables WHERE name = 'ENVANTER_TABLE') " +
+                                    "BEGIN " +
+                                    $"CREATE TABLE \"ENVANTER_TABLE\" " +
+                                    "(ID NVARCHAR(Max), " +
+                                    "ASSET NVARCHAR(Max), " +
+                                    "SERI_NO NVARCHAR(Max), " +
+                                    "COMP_MODEL NVARCHAR(Max), " +
+                                    "COMP_NAME NVARCHAR(Max), " +
+                                    "RAM NVARCHAR(Max), " +
+                                    "DISK_GB NVARCHAR(Max), " +
+                                    "MAC NVARCHAR(Max), " +
+                                    "PROC_MODEL NVARCHAR(Max), " +
+                                    "USERNAME NVARCHAR(Max), " +
+                                    "DATE_CHANGED NVARCHAR(Max), " +
+                                    "ASSIGNED_USER NVARCHAR(MAX), " +
+                                    "LAST_IP_ADDRESS NVARCHAR(Max));" +
+                                    "END;";
+            using (SqlCommand creatorCmd = new SqlCommand(creator, conn))
+            {
+                creatorCmd.ExecuteNonQuery();
+            }
+        }
+
+    }
+    public void SingularTableCreator(SqlConnection conn, EnvanterModel envanterModel)
+    {
+        string creator = $"IF NOT EXISTS(SELECT * FROM sys.tables WHERE name = '{envanterModel.Id}') " +
+                                    "BEGIN " +
+                                    $"CREATE TABLE \"{envanterModel.Id}\" " +
+                                    "(ID NVARCHAR(Max), " +
+                                    "ASSET NVARCHAR(Max), " +
+                                    "SERI_NO NVARCHAR(Max), " +
+                                    "COMP_MODEL NVARCHAR(Max), " +
+                                    "COMP_NAME NVARCHAR(Max), " +
+                                    "RAM NVARCHAR(Max), " +
+                                    "DISK_GB NVARCHAR(Max), " +
+                                    "MAC NVARCHAR(Max), " +
+                                    "PROC_MODEL NVARCHAR(Max), " +
+                                    "USERNAME NVARCHAR(Max), " +
+                                    "DATE_CHANGED NVARCHAR(Max), " +
+                                    "ASSIGNED_USER NVARCHAR(MAX), " +
+                                    "LAST_IP_ADDRESS NVARCHAR(Max));" +
+                                    "END;";
+        using (SqlCommand creatorCmd = new SqlCommand(creator, conn))
+        {
+            creatorCmd.ExecuteNonQuery();
+        }
+    }
+
+    public void DiskTableCreator(SqlConnection conn, string driveTableName)
+    {
+        string creator = $"IF NOT EXISTS(SELECT * FROM sys.tables WHERE name = '{driveTableName}') " +
+                                        "BEGIN " +
+                                        $"CREATE TABLE \"{driveTableName}\" " +
+                                        "(ID NVARCHAR(Max), " +
+                                        "NAME NVARCHAR(Max), " +
+                                        "TOTAL_SIZE_GB NVARCHAR(Max), " +
+                                        "TOTAL_FREE_SPACE_GB NVARCHAR(Max), " +
+                                        "DATE_CHANGED NVARCHAR(Max));" +
+                                        "END;";
+        using (SqlCommand creatorCmd = new SqlCommand(creator, conn))
+        {
+            creatorCmd.ExecuteNonQuery();
+        }
+
+    }
+
     public string AssetSNMatcher(EnvanterModel envanterModel)
     {
         using (SqlConnection conn = new SqlConnection(_connectionString))
         {
-
+            conn.Open();
             int count = 0;
-            string finder = "SELECT COUNT(*) FROM EnvanterTablosu WHERE SeriNo = @seriNo";
+            string finder = "SELECT COUNT(*) FROM ENVANTER_TABLE WHERE SERI_NO = @seriNo";
             using (SqlCommand finderCmd = new SqlCommand(finder, conn))
             {
-                conn.Open();
+
                 finderCmd.Parameters.AddWithValue("@seriNo", envanterModel.SeriNo);
                 count = (int)finderCmd.ExecuteScalar();
 
@@ -52,6 +124,8 @@ public class EnvanterRepo
     public string AddToSql(EnvanterModel envanterModel)
     {
 
+        EnvanterTableCreator();
+
         envanterModel.SeriNo = string.IsNullOrEmpty(envanterModel.SeriNo) ? "Bilinmiyor" : envanterModel.SeriNo;
         envanterModel.CompModel = string.IsNullOrEmpty(envanterModel.CompModel) ? "Bilinmiyor" : envanterModel.CompModel;
         envanterModel.CompName = string.IsNullOrEmpty(envanterModel.CompName) ? "Bilinmiyor" : envanterModel.CompName;
@@ -62,63 +136,48 @@ public class EnvanterRepo
         envanterModel.Username = string.IsNullOrEmpty(envanterModel.Username) ? "Bilinmiyor" : envanterModel.Username;
         envanterModel.DateChanged = string.IsNullOrEmpty(envanterModel.DateChanged) ? "Bilinmiyor" : envanterModel.DateChanged;
         envanterModel.LastIpAddress = string.IsNullOrEmpty(envanterModel.LastIpAddress) ? "Bilinmiyor" : envanterModel.LastIpAddress;
-        envanterModel.Asset = string.IsNullOrEmpty(envanterModel.Asset) ? string.IsNullOrEmpty(GetCellBySeriNo("EnvanterTablosu", "Asset", envanterModel.SeriNo)) ? "Bilinmiyor" : GetCellBySeriNo("EnvanterTablosu", "Asset", envanterModel.SeriNo) : envanterModel.Asset;
+        envanterModel.Asset = string.IsNullOrEmpty(envanterModel.Asset) ? string.IsNullOrEmpty(GetCellBySeriNo("ENVANTER_TABLE", "Asset", envanterModel.SeriNo)) ? "Bilinmiyor" : GetCellBySeriNo("ENVANTER_TABLE", "Asset", envanterModel.SeriNo) : envanterModel.Asset;
         envanterModel.Id = IdDeterminer(envanterModel.Asset, envanterModel.SeriNo);
-        envanterModel.AssignedUser = string.IsNullOrEmpty(envanterModel.AssignedUser) ? string.IsNullOrEmpty(GetCellById("EnvanterTablosu", "AssignedUser", envanterModel.Id)) ? "Bilinmiyor" : GetCellById("EnvanterTablosu", "AssignedUser", envanterModel.Id) : envanterModel.AssignedUser;
-        
+        envanterModel.AssignedUser = string.IsNullOrEmpty(envanterModel.AssignedUser) ? string.IsNullOrEmpty(GetCellById("ENVANTER_TABLE", "AssignedUser", envanterModel.Id)) ? "Bilinmiyor" : GetCellById("ENVANTER_TABLE", "AssignedUser", envanterModel.Id) : envanterModel.AssignedUser;
+
+
+        string driveTableName = $"DISK_{envanterModel.Id}";
+
         using (SqlConnection conn = new SqlConnection(_connectionString))
         {
+            conn.Open();
+            SingularTableCreator(conn, envanterModel);
+            DiskTableCreator(conn, driveTableName);
+            DiskAdder(envanterModel, driveTableName, conn);
             int count;
-            string counter = "SELECT COUNT(*) FROM EnvanterTablosu WHERE Id = @id";
+            string counter = "SELECT COUNT(*) FROM ENVANTER_TABLE WHERE ID = @id";
             using (SqlCommand counterCmd = new SqlCommand(counter, conn))
             {
-                conn.Open();
                 counterCmd.Parameters.AddWithValue("@id", envanterModel.Id);
 
                 count = (int)counterCmd.ExecuteScalar();
             }
-            string creator = $"IF NOT EXISTS(SELECT * FROM sys.tables WHERE name = '{envanterModel.Id}') " +
-                                    "BEGIN " +
-                                    $"CREATE TABLE \"{envanterModel.Id}\" " +
-                                    "(Asset NVARCHAR(Max), " +
-                                    "SeriNo NVARCHAR(Max), " +
-                                    "CompModel NVARCHAR(Max), " +
-                                    "CompName NVARCHAR(Max), " +
-                                    "RAM NVARCHAR(Max), " +
-                                    "DiskGB NVARCHAR(Max), " +
-                                    "MAC NVARCHAR(Max), " +
-                                    "ProcModel NVARCHAR(Max), " +
-                                    "Username NVARCHAR(Max), " +
-                                    "DateChanged NVARCHAR(Max), " +
-                                    "AssignedUser NVARCHAR(MAX), " +
-                                    "Id NVARCHAR(Max)," +
-                                    "LastIpAddress NVARCHAR(Max));" +
-                                    "END;";
 
-            using (SqlCommand creatorCmd = new SqlCommand(creator, conn))
-            {
-                creatorCmd.ExecuteNonQuery();
-            }
             try
             {
                 if (count > 0)
                 {
-                    string updater = "UPDATE EnvanterTablosu " +
+                    string updater = "UPDATE ENVANTER_TABLE " +
                     "SET " +
-                    "Id = @id," +
-                    "SeriNo = @seriNo, " +
-                    "Asset= @asset, " +
-                    "CompModel = @compModel, " +
-                    "CompName = @compName, " +
+                    "ID = @id," +
+                    "SERI_NO = @seriNo, " +
+                    "ASSET= @asset, " +
+                    "COMP_MODEL = @compModel, " +
+                    "COMP_NAME = @compName, " +
                     "RAM = @RAM, " +
-                    "DiskGB = @diskGB, " +
+                    "DISK_GB = @diskGB, " +
                     "MAC = @MAC, " +
-                    "ProcModel = @procModel, " +
-                    "Username = @username, " +
-                    "DateChanged = @dateChanged, " +
-                    "AssignedUser = @assignedUser, " +
-                    "LastIpAddress = @lastIpAddress " +
-                    "WHERE Id = @id";
+                    "PROC_MODEL = @procModel, " +
+                    "USERNAME = @username, " +
+                    "DATE_CHANGED = @dateChanged, " +
+                    "ASSIGNED_USER = @assignedUser, " +
+                    "LAST_IP_ADDRESS = @lastIpAddress " +
+                    "WHERE ID = @id";
 
                     using (SqlCommand updaterCmd = new SqlCommand(updater, conn))
                     {
@@ -139,8 +198,8 @@ public class EnvanterRepo
                         updaterCmd.ExecuteNonQuery();
                     }
 
-                    string inserter2 = $"INSERT INTO [{envanterModel.Id}]" +
-                    "(Id, Asset, SeriNo, CompModel, CompName, RAM, DiskGB, MAC, ProcModel, Username, DateChanged, AssignedUser, LastIpAddress)" +
+                    string inserter2 = $"INSERT INTO [{envanterModel.Id}] " +
+                    "(ID, ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, USERNAME, DATE_CHANGED, ASSIGNED_USER, LAST_IP_ADDRESS)" +
                     "VALUES (@id, @asset, @seriNo, @compModel, @compName, @RAM, @diskGB, @MAC, @procModel, @username, @dateChanged, @assignedUser, @lastIpAddress)";
 
                     using (SqlCommand inserter2Cmd = new SqlCommand(inserter2, conn))
@@ -156,16 +215,16 @@ public class EnvanterRepo
                         inserter2Cmd.Parameters.AddWithValue("@procModel", envanterModel.ProcModel);
                         inserter2Cmd.Parameters.AddWithValue("@username", envanterModel.Username);
                         inserter2Cmd.Parameters.AddWithValue("@dateChanged", envanterModel.DateChanged);
-                        inserter2Cmd.Parameters.AddWithValue("@assignedUser", envanterModel.AssignedUser);
                         inserter2Cmd.Parameters.AddWithValue("@lastIpAddress", envanterModel.LastIpAddress);
+                        inserter2Cmd.Parameters.AddWithValue("@assignedUser", envanterModel.AssignedUser);
                         inserter2Cmd.ExecuteNonQuery();
                     }
 
                 }
                 else
                 {
-                    string inserter1 = "INSERT INTO EnvanterTablosu" +
-                    "(Id, Asset, SeriNo, CompModel, CompName, RAM, DiskGB, MAC, ProcModel, Username, DateChanged, AssignedUser, LastIpAddress)" +
+                    string inserter1 = "INSERT INTO ENVANTER_TABLE " +
+                    "(ID, ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, USERNAME, DATE_CHANGED, ASSIGNED_USER, LAST_IP_ADDRESS)" +
                     "VALUES (@id, @asset, @seriNo, @compModel, @compName, @RAM, @diskGB, @MAC, @procModel, @username, @dateChanged, @assignedUser, @lastIpAddress)";
 
                     using (SqlCommand inserter1Cmd = new SqlCommand(inserter1, conn))
@@ -186,8 +245,8 @@ public class EnvanterRepo
                         inserter1Cmd.ExecuteNonQuery();
                     }
 
-                    string inserter2 = $"INSERT INTO [{envanterModel.Id}]" +
-                    "(Id, Asset, SeriNo, CompModel, CompName, RAM, DiskGB, MAC, ProcModel, Username, DateChanged, AssignedUser, LastIpAddress)" +
+                    string inserter2 = $"INSERT INTO [{envanterModel.Id}] " +
+                    "(ID, ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, USERNAME, DATE_CHANGED, ASSIGNED_USER, LAST_IP_ADDRESS)" +
                     "VALUES (@id, @asset, @seriNo, @compModel, @compName, @RAM, @diskGB, @MAC, @procModel, @username, @dateChanged, @assignedUser, @lastIpAddress)";
 
                     using (SqlCommand inserter2Cmd = new SqlCommand(inserter2, conn))
@@ -225,11 +284,11 @@ public class EnvanterRepo
     public List<EnvanterModel>? GetRowById(string id, string tableName)
     {
         List<EnvanterModel>? envanterList;
-        string query = $"SELECT Asset, SeriNo, CompModel, CompName, RAM, DiskGB, MAC, ProcModel, Username, DateChanged, AssignedUser, Id, LastIpAddress FROM [{tableName}] WHERE Id = '{id}'";
+        string query = $"SELECT ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, USERNAME, DATE_CHANGED, ASSIGNED_USER, ID, LAST_IP_ADDRESS FROM [{tableName}] WHERE ID = '{id}'";
         envanterList = ListFillerByTable(query);
         return envanterList;
     }
-    public string GetCellById(string tableName, string column, string id)
+    public string? GetCellById(string tableName, string column, string id)
     {
         string cell;
         try
@@ -237,7 +296,7 @@ public class EnvanterRepo
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                string finder = $"SELECT [{column}] FROM [{tableName}] WHERE Id = '{id}'";
+                string finder = $"SELECT [{column}] FROM [{tableName}] WHERE ID = '{id}'";
 
                 using (SqlCommand finderCmd = new SqlCommand(finder, conn))
                 {
@@ -249,7 +308,7 @@ public class EnvanterRepo
         }
         catch
         {
-            return "HATA";
+            return null;
         }
     }
     public string GetCellBySeriNo(string tableName, string column, string seriNo)
@@ -260,7 +319,7 @@ public class EnvanterRepo
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                string finder = $"SELECT [{column}] FROM [{tableName}] WHERE SeriNo = '{seriNo}'";
+                string finder = $"SELECT [{column}] FROM [{tableName}] WHERE SERI_NO = '{seriNo}'";
 
                 using (SqlCommand finderCmd = new SqlCommand(finder, conn))
                 {
@@ -278,7 +337,7 @@ public class EnvanterRepo
     public List<EnvanterModel>? GetSortedByDate(string tableName)
     {
         List<EnvanterModel>? envanterList;
-        string sorter = $"SELECT * FROM [{tableName}] ORDER BY TRY_CONVERT(DATETIME, DateChanged, 104) DESC";
+        string sorter = $"SELECT * FROM [{tableName}] ORDER BY TRY_CONVERT(DATETIME, DATE_CHANGED, 104) DESC";
 
         envanterList = ListFillerByTable(sorter);
         return envanterList;
@@ -290,7 +349,7 @@ public class EnvanterRepo
         switch (columnName)
         {
             case "DateChanged":
-                string query = $"SELECT * FROM [{tableName}] ORDER BY TRY_CONVERT(DATETIME, DateChanged, 104) {method}";
+                string query = $"SELECT * FROM [{tableName}] ORDER BY TRY_CONVERT(DATETIME, DATE_CHANGED, 104) {method}";
                 envanterList = ListFillerByTable(query);
                 break;
             case "RAM":
@@ -299,8 +358,8 @@ public class EnvanterRepo
                 envanterList = ListFillerByTable(query);
                 break;
             case "DiskGB":
-                query = method == "asc" ? $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(DiskGB, ',', '.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(DiskGB, ',', '.') AS FLOAT) ELSE CAST(1.0E+38 AS FLOAT) END ASC; "
-                : $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(DiskGB, ',', '.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(DiskGB, ',', '.') AS FLOAT) ELSE CAST(-1.0E+38 AS FLOAT) END DESC;";
+                query = method == "asc" ? $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(DISK_GB, ',', '.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(DISK_GB, ',', '.') AS FLOAT) ELSE CAST(1.0E+38 AS FLOAT) END ASC; "
+                : $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(DISK_GB, ',', '.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(DISK_GB, ',', '.') AS FLOAT) ELSE CAST(-1.0E+38 AS FLOAT) END DESC;";
                 envanterList = ListFillerByTable(query);
                 break;
             default:
@@ -325,18 +384,19 @@ public class EnvanterRepo
                     {
                         envanterList?.Add(new EnvanterModel
                         {
-                            Asset = reader.IsDBNull(0) ? "Bilinmiyor" : reader.GetString(0),
-                            SeriNo = reader.IsDBNull(1) ? "Bilinmiyor" : reader.GetString(1),
-                            CompModel = reader.IsDBNull(2) ? "Bilinmiyor" : reader.GetString(2),
-                            CompName = reader.IsDBNull(3) ? "Bilinmiyor" : reader.GetString(3),
-                            RAM = reader.IsDBNull(4) ? "Bilinmiyor" : reader.GetString(4),
-                            DiskGB = reader.IsDBNull(5) ? "Bilinmiyor" : reader.GetString(5),
-                            MAC = reader.IsDBNull(6) ? "Bilinmiyor" : reader.GetString(6),
-                            ProcModel = reader.IsDBNull(7) ? "Bilinmiyor" : reader.GetString(7),
-                            Username = reader.IsDBNull(8) ? "Bilinmiyor" : reader.GetString(8),
-                            DateChanged = reader.IsDBNull(9) ? "Bilinmiyor" : reader.GetString(9),
-                            AssignedUser = reader.IsDBNull(10) ? "Bilinmiyor" : reader.GetString(10),
-                            Id = reader.IsDBNull(11) ? "Bilinmiyor" : reader.GetString(11),
+
+                            Id = reader.IsDBNull(0) ? "Bilinmiyor" : reader.GetString(0),
+                            Asset = reader.IsDBNull(1) ? "Bilinmiyor" : reader.GetString(1),
+                            SeriNo = reader.IsDBNull(2) ? "Bilinmiyor" : reader.GetString(2),
+                            CompModel = reader.IsDBNull(3) ? "Bilinmiyor" : reader.GetString(3),
+                            CompName = reader.IsDBNull(4) ? "Bilinmiyor" : reader.GetString(4),
+                            RAM = reader.IsDBNull(5) ? "Bilinmiyor" : reader.GetString(5),
+                            DiskGB = reader.IsDBNull(6) ? "Bilinmiyor" : reader.GetString(6),
+                            MAC = reader.IsDBNull(7) ? "Bilinmiyor" : reader.GetString(7),
+                            ProcModel = reader.IsDBNull(8) ? "Bilinmiyor" : reader.GetString(8),
+                            Username = reader.IsDBNull(9) ? "Bilinmiyor" : reader.GetString(9),
+                            DateChanged = reader.IsDBNull(10) ? "Bilinmiyor" : reader.GetString(10),
+                            AssignedUser = reader.IsDBNull(11) ? "Bilinmiyor" : reader.GetString(11),
                             LastIpAddress = reader.IsDBNull(12) ? "Bilinmiyor" : reader.GetString(12)
 
                         });
@@ -355,13 +415,13 @@ public class EnvanterRepo
     {
         List<EnvanterModel>? envanterList;
         string query;
-        if (searchedColumn == "RAM" || searchedColumn == "DiskGB")
+        if (searchedColumn == "RAM" || searchedColumn == "DISK_GB")
         {
             query = $"SELECT * FROM [{tableName}] WHERE TRY_CAST(REPLACE({searchedColumn}, ',','.') AS FLOAT) >= {searchedValue1} and TRY_CAST(REPLACE({searchedColumn},',','.') AS FLOAT) <= {searchedValue2}";
             envanterList = ListFillerByTable(query);
             return envanterList;
         }
-        else if (searchedColumn == "DateChanged")
+        else if (searchedColumn == "DATE_CHANGED")
         {
             query = $"SELECT * FROM [{tableName}] WHERE TRY_CONVERT(datetime, DateChanged, 104) BETWEEN '{searchedValue1}' AND '{searchedValue2}'";
             envanterList = ListFillerByTable(query);
@@ -396,6 +456,7 @@ public class EnvanterRepo
         envanterModel.LastIpAddress = envanterList?[0].LastIpAddress;
 
 
+
         return envanterModel;
 
     }
@@ -404,9 +465,9 @@ public class EnvanterRepo
     {
         int result;
         string id = "1";
-        string counter = $"SELECT COUNT(*) FROM EnvanterTablosu WHERE Asset = @asset AND SeriNo = @seriNo";
-        string getId = "SELECT Id FROM EnvanterTablosu WHERE Asset = @asset AND SeriNo = @seriNo";
-        string getMaxId = "SELECT MAX(Id) FROM EnvanterTablosu";
+        string counter = $"SELECT COUNT(*) FROM ENVANTER_TABLE WHERE ASSET = @asset AND SERI_NO = @seriNo";
+        string getId = "SELECT Id FROM ENVANTER_TABLE WHERE ASSET = @asset AND SERI_NO = @seriNo";
+        string getMaxId = "SELECT MAX(Id) FROM ENVANTER_TABLE";
         using (SqlConnection conn = new SqlConnection(_connectionString))
         {
             conn.Open();
@@ -438,67 +499,153 @@ public class EnvanterRepo
         return id;
     }
 
-    public string EditSql(EnvanterModel envanterModel){
-        using(SqlConnection conn = new SqlConnection(_connectionString)){
+    public string EditSql(EnvanterModel envanterModel)
+    {
+        using (SqlConnection conn = new SqlConnection(_connectionString))
+        {
             conn.Open();
-            string updater = $"UPDATE EnvanterTablosu " +
+            string updater = $"UPDATE ENVANTER_TABLE " +
                     "SET " +
-                    "Id = @id," +
-                    "SeriNo = @seriNo, " +
-                    "Asset= @asset, " +
-                    "CompModel = @compModel, " +
-                    "CompName = @compName, " +
+                    "ID = @id," +
+                    "SERI_NO = @seriNo, " +
+                    "ASSET = @asset, " +
+                    "COMP_MODEL = @compModel, " +
+                    "COMP_NAME = @compName, " +
                     "RAM = @RAM, " +
-                    "DiskGB = @diskGB, " +
+                    "DISK_GB = @diskGB, " +
                     "MAC = @MAC, " +
-                    "ProcModel = @procModel, " +
-                    "Username = @username, " +
-                    "DateChanged = @dateChanged, " +
-                    "AssignedUser = @assignedUser, " +
-                    "LastIpAddress = @lastIpAddress " +
-                    "WHERE Id = @id";
-                    
-                    using (SqlCommand updaterCmd = new SqlCommand(updater, conn))
-                    {
-                        updaterCmd.Parameters.AddWithValue("@asset", envanterModel.Asset);
-                        updaterCmd.Parameters.AddWithValue("@seriNo", envanterModel.SeriNo);
-                        updaterCmd.Parameters.AddWithValue("@compModel", envanterModel.CompModel);
-                        updaterCmd.Parameters.AddWithValue("@compName", envanterModel.CompName);
-                        updaterCmd.Parameters.AddWithValue("@RAM", envanterModel.RAM);
-                        updaterCmd.Parameters.AddWithValue("@diskGB", envanterModel.DiskGB);
-                        updaterCmd.Parameters.AddWithValue("@MAC", envanterModel.MAC);
-                        updaterCmd.Parameters.AddWithValue("@procModel", envanterModel.ProcModel);
-                        updaterCmd.Parameters.AddWithValue("@username", envanterModel.Username);
-                        updaterCmd.Parameters.AddWithValue("@assignedUser", envanterModel.AssignedUser);
-                        updaterCmd.Parameters.AddWithValue("@dateChanged", envanterModel.DateChanged);
-                        updaterCmd.Parameters.AddWithValue("@lastIpAddress", envanterModel.LastIpAddress);
-                        updaterCmd.Parameters.AddWithValue("@id", envanterModel.Id);
+                    "PROC_MODEL = @procModel, " +
+                    "USERNAME = @username, " +
+                    "DATE_CHANGED = @dateChanged, " +
+                    "ASSIGNED_USER = @assignedUser, " +
+                    "LAST_IP_ADDRESS = @lastIpAddress " +
+                    "WHERE ID = @id";
 
-                        updaterCmd.ExecuteNonQuery();
-                    }
-                    string inserter2 = $"INSERT INTO [{envanterModel.Id}]" +
-                    "(Id, Asset, SeriNo, CompModel, CompName, RAM, DiskGB, MAC, ProcModel, Username, DateChanged, AssignedUser, LastIpAddress)" +
-                    "VALUES (@id, @asset, @seriNo, @compModel, @compName, @RAM, @diskGB, @MAC, @procModel, @username, @dateChanged, @assignedUser, @lastIpAddress)";
+            using (SqlCommand updaterCmd = new SqlCommand(updater, conn))
+            {
+                updaterCmd.Parameters.AddWithValue("@asset", envanterModel.Asset);
+                updaterCmd.Parameters.AddWithValue("@seriNo", envanterModel.SeriNo);
+                updaterCmd.Parameters.AddWithValue("@compModel", envanterModel.CompModel);
+                updaterCmd.Parameters.AddWithValue("@compName", envanterModel.CompName);
+                updaterCmd.Parameters.AddWithValue("@RAM", envanterModel.RAM);
+                updaterCmd.Parameters.AddWithValue("@diskGB", envanterModel.DiskGB);
+                updaterCmd.Parameters.AddWithValue("@MAC", envanterModel.MAC);
+                updaterCmd.Parameters.AddWithValue("@procModel", envanterModel.ProcModel);
+                updaterCmd.Parameters.AddWithValue("@username", envanterModel.Username);
+                updaterCmd.Parameters.AddWithValue("@assignedUser", envanterModel.AssignedUser);
+                updaterCmd.Parameters.AddWithValue("@dateChanged", envanterModel.DateChanged);
+                updaterCmd.Parameters.AddWithValue("@lastIpAddress", envanterModel.LastIpAddress);
+                updaterCmd.Parameters.AddWithValue("@id", envanterModel.Id);
 
-                    using (SqlCommand inserter2Cmd = new SqlCommand(inserter2, conn))
-                    {
-                        inserter2Cmd.Parameters.AddWithValue("@id", envanterModel.Id);
-                        inserter2Cmd.Parameters.AddWithValue("@asset", envanterModel.Asset);
-                        inserter2Cmd.Parameters.AddWithValue("@seriNo", envanterModel.SeriNo);
-                        inserter2Cmd.Parameters.AddWithValue("@compModel", envanterModel.CompModel);
-                        inserter2Cmd.Parameters.AddWithValue("@compName", envanterModel.CompName);
-                        inserter2Cmd.Parameters.AddWithValue("@RAM", envanterModel.RAM);
-                        inserter2Cmd.Parameters.AddWithValue("@diskGB", envanterModel.DiskGB);
-                        inserter2Cmd.Parameters.AddWithValue("@MAC", envanterModel.MAC);
-                        inserter2Cmd.Parameters.AddWithValue("@procModel", envanterModel.ProcModel);
-                        inserter2Cmd.Parameters.AddWithValue("@username", envanterModel.Username);
-                        inserter2Cmd.Parameters.AddWithValue("@dateChanged", envanterModel.DateChanged);
-                        inserter2Cmd.Parameters.AddWithValue("@assignedUser", envanterModel.AssignedUser);
-                        inserter2Cmd.Parameters.AddWithValue("@lastIpAddress", envanterModel.LastIpAddress);
-                        inserter2Cmd.ExecuteNonQuery();
-                    }
-                    return "Envanter basariyla duzenlendi.";
+                updaterCmd.ExecuteNonQuery();
+            }
+            string inserter2 = $"INSERT INTO [{envanterModel.Id}]" +
+            "(ID, ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, USERNAME, DATE_CHANGED, ASSIGNED_USER, LAST_IP_ADDRESS)" +
+            "VALUES (@id, @asset, @seriNo, @compModel, @compName, @RAM, @diskGB, @MAC, @procModel, @username, @dateChanged, @assignedUser, @lastIpAddress)";
+
+            using (SqlCommand inserter2Cmd = new SqlCommand(inserter2, conn))
+            {
+                inserter2Cmd.Parameters.AddWithValue("@id", envanterModel.Id);
+                inserter2Cmd.Parameters.AddWithValue("@asset", envanterModel.Asset);
+                inserter2Cmd.Parameters.AddWithValue("@seriNo", envanterModel.SeriNo);
+                inserter2Cmd.Parameters.AddWithValue("@compModel", envanterModel.CompModel);
+                inserter2Cmd.Parameters.AddWithValue("@compName", envanterModel.CompName);
+                inserter2Cmd.Parameters.AddWithValue("@RAM", envanterModel.RAM);
+                inserter2Cmd.Parameters.AddWithValue("@diskGB", envanterModel.DiskGB);
+                inserter2Cmd.Parameters.AddWithValue("@MAC", envanterModel.MAC);
+                inserter2Cmd.Parameters.AddWithValue("@procModel", envanterModel.ProcModel);
+                inserter2Cmd.Parameters.AddWithValue("@username", envanterModel.Username);
+                inserter2Cmd.Parameters.AddWithValue("@dateChanged", envanterModel.DateChanged);
+                inserter2Cmd.Parameters.AddWithValue("@assignedUser", envanterModel.AssignedUser);
+                inserter2Cmd.Parameters.AddWithValue("@lastIpAddress", envanterModel.LastIpAddress);
+                inserter2Cmd.ExecuteNonQuery();
+            }
+            return "Envanter basariyla duzenlendi.";
         }
+    }
+
+    public void DiskAdder(EnvanterModel envanterModel, string driveTableName, SqlConnection conn)
+    {
+        if (envanterModel.Drives != null)
+        {
+            foreach (var disk in envanterModel.Drives)
+            {
+                disk.Name = string.IsNullOrEmpty(disk.Name) ? "Bilinmiyor" : disk.Name;
+                disk.TotalSizeGB = string.IsNullOrEmpty(disk.TotalSizeGB) ? "Bilinmiyor" : disk.TotalSizeGB;
+                disk.TotalFreeSpaceGB = string.IsNullOrEmpty(disk.TotalFreeSpaceGB) ? "Bilinmiyor" : disk.TotalFreeSpaceGB;
+
+
+                int count;
+                string counter = $"SELECT COUNT(*) FROM [{driveTableName}] WHERE ID = @id AND NAME = @name";
+                using (SqlCommand counterCmd = new SqlCommand(counter, conn))
+                {
+                    counterCmd.Parameters.AddWithValue("@id", envanterModel.Id);
+                    counterCmd.Parameters.AddWithValue("@name", disk.Name);
+
+                    count = (int)counterCmd.ExecuteScalar();
+                }
+
+                if (count > 0)
+                {
+                    string updater = $"UPDATE [{driveTableName}] SET ID = @id, NAME = @name, TOTAL_SIZE_GB = @totalSizeGB, TOTAL_FREE_SPACE_GB = @totalFreeSpace, DATE_CHANGED = @dateChanged WHERE ID = @id AND NAME = @name";
+                    using (SqlCommand inserter3Cmd = new SqlCommand(updater, conn))
+                    {
+                        inserter3Cmd.Parameters.AddWithValue("@id", envanterModel.Id);
+                        inserter3Cmd.Parameters.AddWithValue("@name", disk.Name);
+                        inserter3Cmd.Parameters.AddWithValue("@totalSizeGB", disk.TotalSizeGB);
+                        inserter3Cmd.Parameters.AddWithValue("@totalFreeSpace", disk.TotalFreeSpaceGB);
+                        inserter3Cmd.Parameters.AddWithValue("@dateChanged", envanterModel.DateChanged);
+
+                        inserter3Cmd.ExecuteNonQuery();
+                    }
+                }
+                else
+                {
+                    string inserter = $"INSERT INTO [{driveTableName}] (ID, NAME, TOTAL_SIZE_GB, TOTAL_FREE_SPACE_GB, DATE_CHANGED) VALUES (@id, @name, @totalSizeGB, @totalFreeSpace, @dateChangedz)";
+                    using (SqlCommand inserter3Cmd = new SqlCommand(inserter, conn))
+                    {
+                        inserter3Cmd.Parameters.AddWithValue("@id", envanterModel.Id);
+                        inserter3Cmd.Parameters.AddWithValue("@name", disk.Name);
+                        inserter3Cmd.Parameters.AddWithValue("@totalSizeGB", disk.TotalSizeGB);
+                        inserter3Cmd.Parameters.AddWithValue("@totalFreeSpace", disk.TotalFreeSpaceGB);
+                        inserter3Cmd.Parameters.AddWithValue("@dateChanged", envanterModel.DateChanged);
+
+
+                        inserter3Cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+    }
+    public List<DriveInfoModel>? GetDiskListById(string id)
+    {
+
+
+        string query = $"SELECT * FROM [DISK_{id}]";
+        List<DriveInfoModel>? diskList = new List<DriveInfoModel>();
+
+        using (SqlConnection conn = new SqlConnection(_connectionString))
+        {
+            conn.Open();
+
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    diskList?.Add(new DriveInfoModel
+                    {
+                        Name = reader.IsDBNull(1) ? "Bilinmiyor" : reader.GetString(1),
+                        TotalSizeGB = reader.IsDBNull(2) ? "Bilinmiyor" : reader.GetString(2),
+                        TotalFreeSpaceGB = reader.IsDBNull(3) ? "Bilinmiyor" : reader.GetString(3)
+                    });
+                }
+            }
+        }
+        return diskList;
+
+
     }
 
 }

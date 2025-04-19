@@ -23,6 +23,6 @@ namespace EnvanterApiProjesi.Models
     {
         public string? Name { get; set; }
         public string? TotalSizeGB { get; set; }
-        public string? TotalFreeSpace { get; set; }
+        public string? TotalFreeSpaceGB { get; set; }
     }
 }

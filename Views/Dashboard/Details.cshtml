@@ -1,8 +1,7 @@
 @{
 Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
 }
-@model X.PagedList.IPagedList<EnvanterApiProjesi.Models.EnvanterModel>
-@using X.PagedList.Mvc.Core
+@model EnvanterApiProjesi.Models.EnvanterViewModel
 
 @using X.PagedList.Mvc.Core
 @{
@@ -18,60 +17,110 @@ Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
                         Menü
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-                        <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Edit" asp-route-id="@Model[0].Id">Düzenle</a></li>
+                        <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Edit" asp-route-id="@Model.SelectedComputer.Id">Düzenle</a></li>
                         <li><a class="dropdown-item" href="@Url.Action("Logout", "Login")" style="color: red">Çıkış Yap</a></li>
                     </ul>
                 </div>
             </div>
 }
 
-
-
 <div class="container-fluid mt-2">
-
-
-<div class="row">
-    <div class="col-md-12">
-        <h3>
-            "@Model[0].Id" Kimlik Numaralı Bilgisayar
-        </h3>
-    </div>
-</div>
-    @{
-        var model = Model[0];
+    @if(Model?.SelectedComputer != null)
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <h3>
+                    "@Model.SelectedComputer.Id" Kimlik Numaralı Bilgisayar
+                </h3>
+            </div>
+        </div>
+    
+        var model = Model.SelectedComputer;
         var type = model.GetType();
 
         var leftLabels = labels.Take(labels.Count /2);
         var rightLabels = labels.Skip(labels.Count /2);
-    }
-    <div class ="row">
-        <div class ="col-md-6">
-            @foreach (var item in leftLabels)
-            {
-                var prop = type.GetProperty(item.Key);
-                var value = prop != null ? prop.GetValue(model, null)?.ToString() : "";
-                var displayValue = (item.Key == "RAM" || item.Key == "DiskGB") ? value + " GB" : value;
-                <div class ="row info-row">
-                    <div class ="col-6 info-label" style ="font-weight: bold;">@item.Value</div>
-                    <div class ="col-6">@displayValue</div>
-                </div>
-            }
+    
+        <div class ="row">
+            <div class ="col-md-6">
+                @foreach (var item in leftLabels)
+                {
+                    var prop = type.GetProperty(item.Key);
+                    var value = prop != null ? prop.GetValue(model, null)?.ToString() : "";
+                    var displayValue = (item.Key == "RAM" || item.Key == "DiskGB") ? value + " GB" : value;
+                    <div class ="row info-row">
+                        <div class ="col-6 info-label" style ="font-weight: bold;">@item.Value</div>
+                        <div class ="col-6">@displayValue</div>
+                    </div>
+                }
+            </div>
+            <div class ="col-md-6">
+                @foreach (var item in rightLabels)
+                {
+                    var prop = type.GetProperty(item.Key);
+                    var value = prop != null ? prop.GetValue(model, null)?.ToString() : "";
+                    var displayValue = (item.Key == "RAM" || item.Key == "DiskGB") ? value + " GB" : value;
+                    <div class ="row info-row">
+                        <div class ="col-6 info-label" style ="font-weight: bold;">@item.Value</div>
+                        <div class ="col-6">@displayValue</div>
+                    </div>
+                }
+            </div>
         </div>
-        <div class ="col-md-6">
-            @foreach (var item in rightLabels)
-            {
-                var prop = type.GetProperty(item.Key);
-                var value = prop != null ? prop.GetValue(model, null)?.ToString() : "";
-                var displayValue = (item.Key == "RAM" || item.Key == "DiskGB") ? value + " GB" : value;
-                <div class ="row info-row">
-                    <div class ="col-6 info-label" style ="font-weight: bold;">@item.Value</div>
-                    <div class ="col-6">@displayValue</div>
-                </div>
-            }
-        </div>
-    </div>
 
-    <div class ="row">
+        @if(Model.SelectedDisks != null)
+        {
+            <h3>Disk Durumu</h3>
+            @foreach (var disk in Model.SelectedDisks)
+            {
+                int used = (int)(double.Parse(disk.TotalSizeGB.Split(',')[0]) - double.Parse(disk.TotalFreeSpaceGB.Split(',')[0]));
+                int percentage = (int)((used * 100.0) / double.Parse(disk.TotalSizeGB.Split(',')[0]));
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-12">
+                        <table class="table table-sm table-bordered mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10%;">Disk Adı</th>
+                                    <th style="width: 25%;">Toplam Alan</th>
+                                    <th style="width: 25%;">Boş Alan</th>
+                                    <th style="width: 40%;">Doluluk</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>@disk.Name</td>
+                                    <td>@disk.TotalSizeGB GB</td>
+                                    <td>@disk.TotalFreeSpaceGB GB</td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-info" style="width: @percentage%">
+                                                @percentage%
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        }
+
+
+        else{
+            <p>Diskler aktarilirken hatayla karsilasildi.</p>
+        }
+    }
+    else{
+        <p>Bilgisayar bilgisi alinirken hatayla karsilasildi</p>
+    }
+
+    @if(Model?.EnvanterList != null)
+    {
+        <h3>Envanter</h3>
+
+        <div class ="row">
         <div class="col-md-12">
             <div style ="overflow-x: auto; white-space: nowrap; max-width: 100%">
                 <table class="table table-bordered" style="border: 1px solid #3498db;">
@@ -86,7 +135,7 @@ Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var comp in Model)
+                        @foreach (var comp in Model.EnvanterList)
                         {
                             var _type = comp.GetType();
                             <tr>
@@ -103,7 +152,7 @@ Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
                 </table>
             </div>
             <div>
-                @Html.PagedListPager(Model, page => Url.Action("Details", new { page }),
+                @Html.PagedListPager(Model.EnvanterList, page => Url.Action("Details", new { id = Model.SelectedComputer.Id, page }),
                 new PagedListRenderOptions
                 {
                 DisplayLinkToFirstPage = PagedListDisplayMode.Always,
@@ -119,6 +168,11 @@ Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
             </div>
         </div>
     </div>
+    }
+    else{
+        <p>Gecmis kaydi alinirken hatayla karsilasildi</p>
+    }
+    
 </div>
 }
 else

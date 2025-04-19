@@ -17,18 +17,18 @@ public class DashboardController : Controller
         _envanterRepo = new EnvanterRepo(configuration);
     }
     [HttpGet]
-    public IActionResult DashboardMain(int page = 1, string sortColumn = "Id", string sortOrder = "asc", string? searchedColumn = null, string? searchedValue1 = null, string? searchedValue2 = null)
+    public IActionResult DashboardMain(int page = 1, string sortColumn = "ID", string sortOrder = "asc", string? searchedColumn = null, string? searchedValue1 = null, string? searchedValue2 = null)
     {
         if (HttpContext.Session.GetString("IsLoggedIn") == "true")
         {
-            List<EnvanterModel>? comps = _envanterRepo.GetOrderedList("EnvanterTablosu", sortColumn, sortOrder);
+            List<EnvanterModel>? comps = _envanterRepo.GetOrderedList("ENVANTER_TABLE", sortColumn, sortOrder);
             if (!string.IsNullOrEmpty(searchedColumn) && !string.IsNullOrEmpty(searchedValue1))
             {
-                comps = _envanterRepo.GetSearchedTable("EnvanterTablosu", searchedColumn, searchedValue1, searchedValue2);
+                comps = _envanterRepo.GetSearchedTable("ENVANTER_TABLE", searchedColumn, searchedValue1, searchedValue2);
             }
             else if (!string.IsNullOrEmpty(searchedColumn) && !string.IsNullOrEmpty(searchedValue1) && !string.IsNullOrEmpty(searchedValue2))
             {
-                comps = _envanterRepo.GetSearchedTable("EnvanterTablosu", searchedColumn, searchedValue1, searchedValue2);
+                comps = _envanterRepo.GetSearchedTable("ENVANTER_TABLE", searchedColumn, searchedValue1, searchedValue2);
             }
             else if (ViewBag.SearchedTable != null)
             {
@@ -36,7 +36,7 @@ public class DashboardController : Controller
             }
             else
             {
-                comps = _envanterRepo.GetOrderedList("EnvanterTablosu", sortColumn, sortOrder);
+                comps = _envanterRepo.GetOrderedList("ENVANTER_TABLE", sortColumn, sortOrder);
             }
 
             int pageSize = 10;
@@ -100,7 +100,18 @@ public class DashboardController : Controller
             int pageSize = 10;
             page = page >= 1 ? page : 1;
             IPagedList<EnvanterModel>? pagedList = comps?.ToPagedList(page, pageSize);
-            return View(pagedList);
+
+            var selectedComp = _envanterRepo.GetModelFromList(comps);
+            var selectedDisks = selectedComp != null ? _envanterRepo.GetDiskListById("1") : null;
+
+            var viewModel = new EnvanterViewModel
+            {
+                SelectedComputer = selectedComp,
+                SelectedDisks = selectedDisks,
+                EnvanterList = pagedList
+            };
+
+            return View(viewModel);
         }
         else
         {
@@ -115,7 +126,7 @@ public class DashboardController : Controller
         {
             if (!string.IsNullOrEmpty(id))
             {
-                List<EnvanterModel>? compList = _envanterRepo.GetRowById(id, "EnvanterTablosu");
+                List<EnvanterModel>? compList = _envanterRepo.GetRowById(id, "ENVANTER_TABLE");
                 EnvanterModel? comp = _envanterRepo.GetModelFromList(compList);
                 return View(comp);
 
