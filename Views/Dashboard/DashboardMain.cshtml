@@ -1,5 +1,5 @@
 @{
-Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section Navbar{
     <div class="ms-auto">
@@ -11,7 +11,14 @@ Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                         <li><a class="dropdown-item" id="openModalBtn" style="cursor: pointer; user-select: none">Ara</a></li>
                         <li><a class="dropdown-item" href="@Url.Action("DashboardAssetSNMatcher", "Dashboard" )">Asset Ataması Yap</a></li>
-                        <li><a class="dropdown-item" href="@Url.Action("Logout", "Login")" style="color: red">Çıkış Yap</a></li>
+                        <li><a class="dropdown-item logout-item" href="@Url.Action("Logout", "Login")">Çıkış Yap</a></li>
+                        <li><a class="dropdown-item d-flex align-items-center justify-content-between" style="cursor: default;">
+                                <span>Koyu Mod</span>
+                                <div class="form-check form-switch m-0">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                </div>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -20,6 +27,7 @@ Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
 @using X.PagedList.Mvc.Core
 @{
     var labels = LabelHelper.Labels;
+    var SqlLabels = LabelHelper.SqlLabels;
 }
 
     @if (ViewBag.ShowModal == "true")
@@ -39,7 +47,7 @@ Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
                         <thead>
                             <tr>
                             
-                            @foreach (var item in labels)
+                            @foreach (var item in SqlLabels)
                             {
                                 <th style="background-color: #0d6efd; color:white">
                                     <a asp-action="DashboardMain"
@@ -112,16 +120,17 @@ Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
                     <div class="mb-3">
                         <label for="column" class="form-label fw-bold text-start d-block">Aranacak Sütun:</label>
                         <select name="searchedColumn" id="searchedColumn">
-                            <option value="Asset">Asset</option>
-                            <option value="SeriNo">Seri No</option>
-                            <option value="CompModel">Bilgisayar Modeli</option>
-                            <option value="CompName">Bilgisayar Adı</option>
+                            <option value="ASSET">Asset</option>
+                            <option value="SERI_NO">Seri No</option>
+                            <option value="COMP_MODEL">Bilgisayar Modeli</option>
+                            <option value="COMP_NAME">Bilgisayar Adı</option>
                             <option value="RAM">RAM</option>
-                            <option value="DiskGB">Disk Boyutu</option>
+                            <option value="DISK_GB">Disk Boyutu</option>
                             <option value="MAC">MAC Adresi</option>
-                            <option value="ProcModel">İşlemci Modeli</option>
-                            <option value="Username">Kullanıcı</option>
-                            <option value="DateChanged">Değişiklik Tarihi</option>
+                            <option value="PROC_MODEL">İşlemci Modeli</option>
+                            <option value="USERNAME">Kullanıcı</option>
+                            <option value="ASSIGNED_USER">Zimmetli Kişi</option>
+                            <option value="DATE_CHANGED">Değişiklik Tarihi</option>
                         </select>
                     </div>
 

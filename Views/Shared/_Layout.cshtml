@@ -7,36 +7,161 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
     @RenderSection("Styles", false)
     <title>Envanter Yönetim Paneli</title>
+    <style>
+        body.dark-mode {
+            background-color: #121212 !important;
+            color: #ffffff !important;
+        }
 
+        body.dark-mode .table {
+            background-color: #1e1e1e !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .table th {
+            background-color: #2a2a2a !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .table td {
+            background-color: #1e1e1e !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .dropdown-menu {
+            background-color: #1f1f1f !important;
+        }
+
+        body.dark-mode .dropdown-item {
+            color: white !important;
+        }
+
+        body.dark-mode .modal-content {
+            background-color: #1e1e1e !important;
+            color: white !important;
+        }
+
+        body.dark-mode input,
+        body.dark-mode select,
+        body.dark-mode textarea {
+            background-color: #2a2a2a !important;
+            color: white !important;
+            border: 1px solid #444;
+        }
+
+        body.dark-mode .pagination .page-link {
+            background-color: #2a2a2a;
+            color: white;
+            border-color: #444;
+        }
+
+        body.dark-mode .btn-primary {
+            background-color: #0d6efd;
+            color: white;
+        }
+
+        body.dark-mode .btn-outline-danger,
+        body.dark-mode .btn-outline-primary {
+            color: white;
+            border-color: white;
+        }
+
+        body.dark-mode .dropdown-item:hover,
+        body.dark-mode .dropdown-item:focus {
+            background-color: #343a40 !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .text-danger-custom {
+            color: #dc3545 !important;
+        }
+
+        .logout-item {
+            color: red !important;
+        }
+
+        body.dark-mode .logout-item {
+            color: #ff4d4d !important;
+        }
+
+        body.dark-mode .logout-item:hover,
+        body.dark-mode .logout-item:focus {
+            color: #ff4d4d !important;
+            background-color: #343a40 !important;
+        }
+
+        .navbar {
+            background-color: #0d6efd;
+            color: white;
+        }
+
+        body.dark-mode .navbar {
+            background-color: #003366 !important;
+            color: white;
+        }
+
+        body.dark-mode .navbar a {
+            color: white;
+        }
+
+        body.dark-mode table {
+            border-color: #6c757d;
+        }
+
+        body:not(.dark-mode) table {
+            border-color: #0d6efd;
+        }
+    </style>
 </head>
 
-<body>
+<body id="body">
     <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
-
-        <div class="container-fluid d-flex align-items-center justify-content-between">
-            <div>
-                <a class="navbar-brand mx-auto">Envanter Yönetim Paneli</a>
-
-            </div>
-
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-controller="Dashboard" asp-action="DashboardMain">Envanter Yönetim Paneli</a>
+            @RenderSection("Navbar", false)
         </div>
     </nav>
 
-    @if (@TempData["Alert"] != null)
+    @if (TempData["Alert"] != null)
     {
         <div class="alert alert-danger" role="alert">
             @TempData["Alert"]
         </div>
-        
     }
-    @if (@TempData["Info"] != null)
+    @if (TempData["Info"] != null)
     {
-        <div class=" alert alert-info" role="alert">
+        <div class="alert alert-info" role="alert">
             @TempData["Info"]
         </div>
     }
-    
+
     @RenderBody()
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const body = document.getElementById("body");
+            const toggle = document.getElementById("flexSwitchCheckDefault");
+
+            const darkMode = localStorage.getItem("darkMode");
+            if (darkMode === "enabled") {
+                body.classList.add("dark-mode");
+                if (toggle) toggle.checked = true;
+            }
+
+            if (toggle) {
+                toggle.addEventListener("change", function () {
+                    if (this.checked) {
+                        body.classList.add("dark-mode");
+                        localStorage.setItem("darkMode", "enabled");
+                    } else {
+                        body.classList.remove("dark-mode");
+                        localStorage.setItem("darkMode", "disabled");
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

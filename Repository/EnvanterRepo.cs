@@ -284,7 +284,7 @@ public class EnvanterRepo
     public List<EnvanterModel>? GetRowById(string id, string tableName)
     {
         List<EnvanterModel>? envanterList;
-        string query = $"SELECT ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, USERNAME, DATE_CHANGED, ASSIGNED_USER, ID, LAST_IP_ADDRESS FROM [{tableName}] WHERE ID = '{id}'";
+        string query = $"SELECT ID, ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, USERNAME, DATE_CHANGED, ASSIGNED_USER, LAST_IP_ADDRESS FROM [{tableName}] WHERE ID = '{id}'";
         envanterList = ListFillerByTable(query);
         return envanterList;
     }
@@ -601,7 +601,7 @@ public class EnvanterRepo
                 }
                 else
                 {
-                    string inserter = $"INSERT INTO [{driveTableName}] (ID, NAME, TOTAL_SIZE_GB, TOTAL_FREE_SPACE_GB, DATE_CHANGED) VALUES (@id, @name, @totalSizeGB, @totalFreeSpace, @dateChangedz)";
+                    string inserter = $"INSERT INTO [{driveTableName}] (ID, NAME, TOTAL_SIZE_GB, TOTAL_FREE_SPACE_GB, DATE_CHANGED) VALUES (@id, @name, @totalSizeGB, @totalFreeSpace, @dateChanged)";
                     using (SqlCommand inserter3Cmd = new SqlCommand(inserter, conn))
                     {
                         inserter3Cmd.Parameters.AddWithValue("@id", envanterModel.Id);
@@ -647,5 +647,6 @@ public class EnvanterRepo
 
 
     }
+    
 
 }

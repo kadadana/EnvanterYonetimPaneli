@@ -16,12 +16,13 @@ public class EnvanterApi : ControllerBase
         _connectionString = configuration.GetConnectionString("DefaultConnection");
         _envanterRepo = new EnvanterRepo(configuration);
     }
+    
 
     [HttpPost("AddEnvanter")]
     public IActionResult AddEnvanter([FromBody] EnvanterModel model)
     {
         if (model == null)
-            return BadRequest("Gecersiz Veri!");
+            return BadRequest("Gecersiz veri!");
 
         return Ok(_envanterRepo.AddToSql(model));
     }
