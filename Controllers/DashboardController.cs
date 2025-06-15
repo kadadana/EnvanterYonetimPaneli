@@ -1,11 +1,11 @@
-using EnvanterApiProjesi.Models;
+using EnvanterYonetimPaneli.Models;
 using Microsoft.AspNetCore.Mvc;
 using X.PagedList;
 using X.PagedList.Extensions;
 using System.Text;
 
 
-namespace EnvanterApiProjesi.Controllers;
+namespace EnvanterYonetimPaneli.Controllers;
 
 public class DashboardController : Controller
 {

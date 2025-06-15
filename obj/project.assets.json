@@ -9025,11 +9025,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\kadirpc\\VS Code\\EnvanterApiProjesi\\EnvanterApiProjesi.csproj",
-      "projectName": "EnvanterApiProjesi",
-      "projectPath": "C:\\Users\\kadirpc\\VS Code\\EnvanterApiProjesi\\EnvanterApiProjesi.csproj",
+      "projectUniqueName": "C:\\Users\\kadirpc\\VS Code\\EnvanterYonetimPaneli\\EnvanterYonetimPaneli.csproj",
+      "projectName": "EnvanterYonetimPaneli",
+      "projectPath": "C:\\Users\\kadirpc\\VS Code\\EnvanterYonetimPaneli\\EnvanterYonetimPaneli.csproj",
       "packagesPath": "C:\\Users\\kadirpc\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\kadirpc\\VS Code\\EnvanterApiProjesi\\obj\\",
+      "outputPath": "C:\\Users\\kadirpc\\VS Code\\EnvanterYonetimPaneli\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

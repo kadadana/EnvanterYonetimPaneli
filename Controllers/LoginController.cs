@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using EnvanterApiProjesi.Models;
+using EnvanterYonetimPaneli.Models;
 
-namespace EnvanterApiProjesi.Controllers;
+namespace EnvanterYonetimPaneli.Controllers;
 
 public class LoginController : Controller
 {

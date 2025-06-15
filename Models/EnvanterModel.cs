@@ -1,4 +1,4 @@
-namespace EnvanterApiProjesi.Models
+namespace EnvanterYonetimPaneli.Models
 {
     public class EnvanterModel
     {

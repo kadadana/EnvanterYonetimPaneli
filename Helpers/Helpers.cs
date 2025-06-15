@@ -1,4 +1,4 @@
-namespace EnvanterApiProjesi.Helpers
+namespace EnvanterYonetimPaneli.Helpers
 {
 
     public static class LabelHelper

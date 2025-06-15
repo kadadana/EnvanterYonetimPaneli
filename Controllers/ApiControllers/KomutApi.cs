@@ -1,7 +1,7 @@
-using EnvanterApiProjesi.Models;
+using EnvanterYonetimPaneli.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EnvanterApiProjesi.Controllers;
+namespace EnvanterYonetimPaneli.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

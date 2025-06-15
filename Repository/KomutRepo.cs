@@ -1,7 +1,7 @@
-using EnvanterApiProjesi.Models;
+using EnvanterYonetimPaneli.Models;
 using Microsoft.Data.SqlClient;
 
-namespace EnvanterApiProjesi;
+namespace EnvanterYonetimPaneli;
 
 public class KomutRepo
 {

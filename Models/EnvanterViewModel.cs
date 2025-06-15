@@ -1,6 +1,6 @@
 using X.PagedList;
 
-namespace EnvanterApiProjesi.Models;
+namespace EnvanterYonetimPaneli.Models;
 public class EnvanterViewModel
 {
     public EnvanterModel? SelectedComputer { get; set; }
