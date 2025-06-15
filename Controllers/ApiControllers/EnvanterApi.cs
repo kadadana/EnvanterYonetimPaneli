@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EnvanterApiProjesi.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 public class EnvanterApi : ControllerBase
 {
     private readonly string? _connectionString;

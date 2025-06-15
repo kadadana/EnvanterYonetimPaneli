@@ -10,9 +10,8 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                 <li><a class="dropdown-item" id="openModalBtn" style="cursor: pointer; user-select: none">Ara</a></li>
-                <li><a class="dropdown-item" href="@Url.Action("DashboardAssetSNMatcher", "Dashboard" )">Asset Ataması Yap</a></li>
-                <li><a class="dropdown-item" href="@Url.Action("Commands", "Dashboard" )">Komut Gönder</a></li>
-                <li><a class="dropdown-item" href="@Url.Action("CommandList", "Dashboard" )">Komut Tablosu</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("DashboardAssetSNMatcher", "Dashboard" )">Asset Ataması
+                        Yap</a></li>
                 <li><a class="dropdown-item logout-item" href="@Url.Action("Logout", "Login")">Çıkış Yap</a></li>
                 <li><a class="dropdown-item d-flex align-items-center justify-content-between" style="cursor: default;">
                         <span>Koyu Mod</span>
@@ -25,11 +24,11 @@
         </div>
     </div>
 }
-@model X.PagedList.IPagedList<EnvanterApiProjesi.Models.EnvanterModel>
+@model X.PagedList.IPagedList<KomutModel>
 @using X.PagedList.Mvc.Core
 @{
-    var labels = LabelHelper.Labels;
-    var SqlLabels = LabelHelper.SqlLabels;
+    var labels = LabelHelper.KomutLabels;
+    var SqlLabels = LabelHelper.KomutSqlLabels;
 }
 
 @if (ViewBag.ShowModal == "true")
@@ -42,6 +41,7 @@
 }
 @if (Model != null)
 {
+
     <div class="container-fluid mt-2">
         <div class="row">
             <div class="col-md-12">
@@ -53,7 +53,7 @@
                                 @foreach (var item in SqlLabels)
                                 {
                             <th style="background-color: #0d6efd; color:white">
-                                <a asp-action="DashboardMain" asp-route-sortColumn="@item.Key"
+                                <a asp-action="CommandList" asp-route-sortColumn="@item.Key"
                                     asp-route-sortOrder="@(ViewBag.SortColumn == @item.Key && ViewBag.SortOrder=="asc" ? "desc" : "asc" )"
                                     asp-route-searchedColumn="@(ViewBag.SearchedColumn)"
                                     asp-route-searchedValue1="@(ViewBag.SearchedValue1)"
@@ -78,26 +78,31 @@
                                     @foreach (var item in labels)
                                     {
                                         var prop = _type.GetProperty(item.Key);
-                                        <td>
-                                            @prop.GetValue(comp)
-                                        </td>
+                                        var value = prop.GetValue(comp)?.ToString() ?? "";
+
+                                        @if (item.Key == "Response" || item.Key == "Command")
+                                        {
+                                            var maxLength = item.Key == "Response" ? 50 : 20;
+                                            var displayText = value.Length > maxLength ? value.Substring(0, maxLength) + "..." : value;
+
+                                            <td class="clickable-cell" style="cursor:pointer; color:#0d6efd;"
+                                                title="Tam metni görmek için tıklayın" data-fulltext="@value">@displayText</td>
+                                        }
+                                        else
+                                        {
+                                            <td>@value</td>
+                                        }
                                     }
-                                    <td>
-                                        <a asp-controller="Dashboard" asp-action="Details" asp-route-id="@comp.Id" )"
-                                            asp-route-page="1" class="btn btn-primary">Detay</a>
-                                    </td>
-                                    <td>
-                                        <a asp-controller="Dashboard" asp-action="Commands" asp-route-id="@comp.CompName" )"
-                                            class="btn btn-primary">Komut</a>
-                                    </td>
                                 </tr>
                             }
+
+
                         </tbody>
                     </table>
                 </div>
                 <!-- Sayfalama Kontrolleri -->
                 <div>
-                    @Html.PagedListPager(Model, page => Url.Action("DashboardMain", new { page }),
+                    @Html.PagedListPager(Model, page => Url.Action("CommandList", new { page }),
                     new PagedListRenderOptions
                     {
                         DisplayLinkToFirstPage = PagedListDisplayMode.Always,
@@ -118,28 +123,25 @@
 }
 else
 {
-    TempData["alert"] = "Envanter kaydı bulunamadı.";
+    TempData["alert"] = "Komut kaydı bulunamadı.";
 }
 <!-- Arama Modal -->
 <div id="aramaModal" style="display: none;" class="modal">
     <div class="modal-content">
         <span class="close btn-outline-danger" id="modalClose">&times;</span>
-        <form method="get" action="@Url.Action("DashboardMain", "Dashboard")">
+        <form method="get" action="@Url.Action("CommandList", "Dashboard")">
             <div class="mt-3">
                 <div class="mb-3">
                     <label for="column" class="form-label fw-bold text-start d-block">Aranacak Sütun:</label>
                     <select name="searchedColumn" id="searchedColumn">
-                        <option value="ASSET">Asset</option>
-                        <option value="SERI_NO">Seri No</option>
-                        <option value="COMP_MODEL">Bilgisayar Modeli</option>
+                        <option value="ID">Id</option>
                         <option value="COMP_NAME">Bilgisayar Adı</option>
-                        <option value="RAM">RAM</option>
-                        <option value="DISK_GB">Disk Boyutu</option>
-                        <option value="MAC">MAC Adresi</option>
-                        <option value="PROC_MODEL">İşlemci Modeli</option>
-                        <option value="USERNAME">Kullanıcı</option>
-                        <option value="ASSIGNED_USER">Zimmetli Kişi</option>
-                        <option value="DATE_CHANGED">Değişiklik Tarihi</option>
+                        <option value="COMMAND">Komut</option>
+                        <option value="RESPONSE">Çıktı</option>
+                        <option value="USER">Gönderen</option>
+                        <option value="DATE_SENT">Gönderim Tarihi</option>
+                        <option value="DATE_APPLIED">Uygulanma Tarihi</option>
+                        <option value="IS_APPLIED">Tamamlanma Durumu</option>
                     </select>
                 </div>
 
@@ -155,7 +157,7 @@ else
                 <div class="row">
                     <div class="col-md-4">
                         <button type="button" class="btn btn-md w-100 btn-outline-danger"
-                            onclick="location.href='/Dashboard/DashboardMain'">
+                            onclick="location.href='/Dashboard/CommandList'">
                             Aramayı Sıfırla
                         </button>
                     </div>
@@ -169,6 +171,14 @@ else
                 </div>
             </div>
         </form>
+    </div>
+</div>
+<div id="responseModal" class="modal" tabindex="-1" style="display:none;">
+    <div class="modal-content" style="max-width:600px; position:relative;">
+        <span id="responseModalClose"
+            style="position:absolute; top:10px; right:15px; cursor:pointer; font-weight:bold; font-size:20px;">&times;</span>
+        <pre id="responseModalText"
+            style="white-space: pre-wrap; word-wrap: break-word; max-height: 400px; overflow-y: auto;"></pre>
     </div>
 </div>
 
@@ -194,7 +204,15 @@ else
             </div>
             `;
             }
-            else if (searchedColumn.value === "DateChanged") {
+            else if (searchedColumn.value === "DATE_SENT") {
+                searchContainer.innerHTML = `
+                <div class="d-flex align-items-center gap-2">
+                    <input type="date" id="searchedValue1" name="searchedValue1" class="form-control" />
+                    <input type="date" id="searchedValue2" name="searchedValue2" class="form-control" />
+                </div>
+            `;
+            }
+            else if (searchedColumn.value === "DATE_APPLIED") {
                 searchContainer.innerHTML = `
                 <div class="d-flex align-items-center gap-2">
                     <input type="date" id="searchedValue1" name="searchedValue1" class="form-control" />
@@ -208,11 +226,37 @@ else
             }
         });
     });
+    document.addEventListener("DOMContentLoaded", function () {
+        const clickableCells = document.querySelectorAll(".clickable-cell");
+        const modal = document.getElementById("responseModal");
+        const modalText = document.getElementById("responseModalText");
+        const modalClose = document.getElementById("responseModalClose");
+
+        clickableCells.forEach(cell => {
+            cell.addEventListener("click", function () {
+                const fullText = cell.getAttribute("data-fulltext");
+                modalText.textContent = fullText;
+                modal.style.display = "block";
+            });
+        });
+
+        modalClose.addEventListener("click", function () {
+            modal.style.display = "none";
+        });
+
+        window.addEventListener("click", function (event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+    });
+
 </script>
 
 <style>
     .modal {
         display: none;
+        /* default gizli */
         position: fixed;
         z-index: 1050;
         left: 0;
@@ -220,16 +264,18 @@ else
         width: 100%;
         height: 100%;
         overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
     }
 
     .modal-content {
         background-color: white;
         margin: 10% auto;
-        padding: 20px;
+        padding: 20px 30px 30px 30px;
         border-radius: 8px;
         width: 80%;
         max-width: 600px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        position: relative;
     }
 
     .modal-content .close {
@@ -268,4 +314,5 @@ else
         border-radius: 4px;
         border: 1px solid #ccc;
     }
+
 </style>

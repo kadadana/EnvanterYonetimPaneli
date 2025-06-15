@@ -35,5 +35,29 @@ namespace EnvanterApiProjesi.Helpers
             { "LAST_IP_ADDRESS", "Son Ip Adresi"},
             { "DATE_CHANGED", "Değişiklik Tarihi"}
         };
+        public static Dictionary<string, string> KomutLabels => new Dictionary<string, string>
+        {
+            { "Id", "Id"},
+            { "CompName", "Bilgisayar Adı"},
+            { "Command", "Komut"},
+            { "Response", "Çıktı"},
+            { "User", "Gönderen"},
+            { "DateSent", "Gönderim Tarihi"},
+            { "DateApplied", "Uygulanma Tarihi"},
+            { "IsApplied", "Tamamlanma Durumu"},
+        };
+        public static Dictionary<string, string> KomutSqlLabels => new Dictionary<string, string>
+        {
+            { "ID", "Id"},
+            { "COMP_NAME", "Bilgisayar Adı"},
+            { "COMMAND", "Komut"},
+            { "RESPONSE", "Çıktı"},
+            { "USER", "Gönderen"},
+            { "DATE_SENT", "Gönderim Tarihi"},
+            { "DATE_APPLIED", "Uygulanma Tarihi"},
+            { "IS_APPLIED", "Tamamlanma Durumu"},
+        };
+
     }
+
 }

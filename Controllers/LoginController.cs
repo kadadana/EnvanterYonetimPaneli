@@ -6,8 +6,6 @@ namespace EnvanterApiProjesi.Controllers;
 public class LoginController : Controller
 {
 
-
-
     public IActionResult LoginIndex()
     {
         if (!UserModel.DefaultUser.IsLoggedIn)

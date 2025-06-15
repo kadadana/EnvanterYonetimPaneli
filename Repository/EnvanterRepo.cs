@@ -19,22 +19,22 @@ public class EnvanterRepo
             conn.Open();
 
             string creator = "IF NOT EXISTS(SELECT * FROM sys.tables WHERE name = 'ENVANTER_TABLE') " +
-                                    "BEGIN " +
-                                    $"CREATE TABLE \"ENVANTER_TABLE\" " +
-                                    "(ID NVARCHAR(Max), " +
-                                    "ASSET NVARCHAR(Max), " +
-                                    "SERI_NO NVARCHAR(Max), " +
-                                    "COMP_MODEL NVARCHAR(Max), " +
-                                    "COMP_NAME NVARCHAR(Max), " +
-                                    "RAM NVARCHAR(Max), " +
-                                    "DISK_GB NVARCHAR(Max), " +
-                                    "MAC NVARCHAR(Max), " +
-                                    "PROC_MODEL NVARCHAR(Max), " +
-                                    "USERNAME NVARCHAR(Max), " +
-                                    "DATE_CHANGED NVARCHAR(Max), " +
-                                    "ASSIGNED_USER NVARCHAR(MAX), " +
-                                    "LAST_IP_ADDRESS NVARCHAR(Max));" +
-                                    "END;";
+                                "BEGIN " +
+                                "CREATE TABLE [ENVANTER_TABLE] " +
+                                "(ID NVARCHAR(Max), " +
+                                "ASSET NVARCHAR(Max), " +
+                                "SERI_NO NVARCHAR(Max), " +
+                                "COMP_MODEL NVARCHAR(Max), " +
+                                "COMP_NAME NVARCHAR(Max), " +
+                                "RAM NVARCHAR(Max), " +
+                                "DISK_GB NVARCHAR(Max), " +
+                                "MAC NVARCHAR(Max), " +
+                                "PROC_MODEL NVARCHAR(Max), " +
+                                "USERNAME NVARCHAR(Max), " +
+                                "DATE_CHANGED NVARCHAR(Max), " +
+                                "ASSIGNED_USER NVARCHAR(MAX), " +
+                                "LAST_IP_ADDRESS NVARCHAR(Max));" +
+                                "END;";
             using (SqlCommand creatorCmd = new SqlCommand(creator, conn))
             {
                 creatorCmd.ExecuteNonQuery();
@@ -138,7 +138,8 @@ public class EnvanterRepo
         envanterModel.LastIpAddress = string.IsNullOrEmpty(envanterModel.LastIpAddress) ? "Bilinmiyor" : envanterModel.LastIpAddress;
         envanterModel.Asset = string.IsNullOrEmpty(envanterModel.Asset) ? string.IsNullOrEmpty(GetCellBySeriNo("ENVANTER_TABLE", "Asset", envanterModel.SeriNo)) ? "Bilinmiyor" : GetCellBySeriNo("ENVANTER_TABLE", "Asset", envanterModel.SeriNo) : envanterModel.Asset;
         envanterModel.Id = IdDeterminer(envanterModel.Asset, envanterModel.SeriNo);
-        envanterModel.AssignedUser = string.IsNullOrEmpty(envanterModel.AssignedUser) ? string.IsNullOrEmpty(GetCellById("ENVANTER_TABLE", "AssignedUser", envanterModel.Id)) ? "Bilinmiyor" : GetCellById("ENVANTER_TABLE", "AssignedUser", envanterModel.Id) : envanterModel.AssignedUser;
+        envanterModel.AssignedUser = string.IsNullOrEmpty(envanterModel.AssignedUser) ? 
+            string.IsNullOrEmpty(GetCellById("ENVANTER_TABLE", "ASSIGNED_USER", envanterModel.Id)) ? "Bilinmiyor" : GetCellById("ENVANTER_TABLE", "ASSIGNED_USER", envanterModel.Id) : envanterModel.AssignedUser;
 
 
         string driveTableName = $"DISK_{envanterModel.Id}";
@@ -308,7 +309,7 @@ public class EnvanterRepo
         }
         catch
         {
-            return null;
+            return "HATA";
         }
     }
     public string GetCellBySeriNo(string tableName, string column, string seriNo)
@@ -507,7 +508,7 @@ public class EnvanterRepo
             string updater = $"UPDATE ENVANTER_TABLE " +
                     "SET " +
                     "ID = @id," +
-                    "SERI_NO = @seriNo, " +
+                    "SERI_NO = @seriNo, " + 
                     "ASSET = @asset, " +
                     "COMP_MODEL = @compModel, " +
                     "COMP_NAME = @compName, " +
