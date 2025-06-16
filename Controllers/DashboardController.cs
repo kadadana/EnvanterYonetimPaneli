@@ -80,7 +80,8 @@ public class DashboardController : Controller
         }
         else
         {
-
+            envanterModel.Log = "Asset atama islemi.";
+            envanterModel.DateChanged = DateTime.Now.ToString();
             TempData["Info"] = _envanterRepo.AddToSql(envanterModel);
             return RedirectToAction("DashboardAssetSNMatcher", "Dashboard");
 
@@ -152,6 +153,7 @@ public class DashboardController : Controller
         else
         {
             envanterModel.DateChanged = DateTime.Now.ToString();
+            envanterModel.Log = "Duzenleme islemi.";
             TempData["Info"] = _envanterRepo.EditSql(envanterModel);
             return Edit(envanterModel.Id);
 

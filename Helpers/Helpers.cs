@@ -17,7 +17,9 @@ namespace EnvanterYonetimPaneli.Helpers
             { "Username", "Kullanıcı"},
             { "AssignedUser", "Zimmetli Kişi"},
             { "LastIpAddress", "Son Ip Adresi"},
-            { "DateChanged", "Değişiklik Tarihi"}
+            { "DateChanged", "Değişiklik Tarihi"},
+            { "Log", "Log"}
+
         };
         public static Dictionary<string, string> SqlLabels => new Dictionary<string, string>
         {
@@ -33,7 +35,29 @@ namespace EnvanterYonetimPaneli.Helpers
             { "USERNAME", "Kullanıcı"},
             { "ASSIGNED_USER", "Zimmetli Kişi"},
             { "LAST_IP_ADDRESS", "Son Ip Adresi"},
-            { "DATE_CHANGED", "Değişiklik Tarihi"}
+            { "DATE_CHANGED", "Değişiklik Tarihi"},
+            { "LOG", "Log"}
+
+
+        };
+        public static Dictionary<string, string> LabelsToSqlLabels => new Dictionary<string, string>
+        {
+            { "Id", "ID"},
+            { "Asset", "ASSET"},
+            { "SeriNo", "SERI_NO"},
+            { "CompModel", "COMP_MODEL"},
+            { "CompName", "COMP_NAME"},
+            { "RAM", "RAM"},
+            { "DiskGB", "DISK_GB"},
+            { "MAC", "MAC"},
+            { "ProcModel", "PROC_MODEL"},
+            { "Username", "USERNAME"},
+            { "AssignedUser", "ASSIGNED_USER"},
+            { "LastIpAddress", "LAST_IP_ADDRESS"},
+            { "DateChanged", "DATE_CHANGED"},
+            { "Log", "LOG"}
+
+
         };
         public static Dictionary<string, string> KomutLabels => new Dictionary<string, string>
         {

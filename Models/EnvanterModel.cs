@@ -15,14 +15,10 @@ namespace EnvanterYonetimPaneli.Models
         public string? DateChanged { get; set; }
         public string? AssignedUser { get; set; }
         public string? LastIpAddress { get; set; }
+        public string? Log { get; set; }
         public List<DriveInfoModel>? Drives { get; set; }
 
     }
 
-    public class DriveInfoModel
-    {
-        public string? Name { get; set; }
-        public string? TotalSizeGB { get; set; }
-        public string? TotalFreeSpaceGB { get; set; }
-    }
+    
 }
