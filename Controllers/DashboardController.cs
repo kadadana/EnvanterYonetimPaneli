@@ -200,7 +200,7 @@ public class DashboardController : Controller
         {
             if (!string.IsNullOrEmpty(command) && !string.IsNullOrEmpty(compName))
             {
-                var model = new KomutModel { CompName = compName, Command = command, DateSent = DateTime.Now.ToString() };
+                var model = new KomutModel { Id = _komutRepo.IdDeterminer(), CompName = compName, Command = command, DateSent = DateTime.Now.ToString() };
                 string jsonString = model.ToJson();
                 System.Console.WriteLine(jsonString);
                 await SendCommand(jsonString);
@@ -249,7 +249,7 @@ public class DashboardController : Controller
     }
 
     [HttpGet]
-    public IActionResult CommandList(int page = 1, string sortColumn = "ID", string sortOrder = "asc", string? searchedColumn = null, string? searchedValue1 = null, string? searchedValue2 = null)
+    public IActionResult CommandList(int page = 1, string sortColumn = "Id", string sortOrder = "asc", string? searchedColumn = null, string? searchedValue1 = null, string? searchedValue2 = null)
     {
         if (HttpContext.Session.GetString("IsLoggedIn") != "true")
         {

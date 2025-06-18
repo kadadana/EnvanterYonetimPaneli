@@ -10,6 +10,8 @@ public class KomutRepo
     public KomutRepo(IConfiguration configuration)
     {
         _connectionString = configuration.GetConnectionString("DefaultConnection");
+        KomutTableCreator();
+
     }
 
     public void KomutTableCreator()
@@ -21,7 +23,7 @@ public class KomutRepo
             string creator = "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'KOMUT_TABLE') " +
                                 "BEGIN " +
                                 "CREATE TABLE [KOMUT_TABLE] " +
-                                "(ID NVARCHAR(max), " +
+                                "(ID NVARCHAR(100) UNIQUE, " +
                                 "COMP_NAME NVARCHAR(max), " +
                                 "COMMAND NVARCHAR(max), " +
                                 "RESPONSE NVARCHAR(max), " +
@@ -151,14 +153,14 @@ public class KomutRepo
                     {
                         komutModel = new KomutModel
                         {
-                            Id = reader.IsDBNull(0) ? "Bilinmiyor" : reader.GetString(0),
-                            CompName = reader.IsDBNull(1) ? "Bilinmiyor" : reader.GetString(1),
-                            Command = reader.IsDBNull(2) ? "Bilinmiyor" : reader.GetString(2),
-                            Response = reader.IsDBNull(3) ? "Bilinmiyor" : reader.GetString(3),
-                            User = reader.IsDBNull(4) ? "Bilinmiyor" : reader.GetString(4),
-                            DateSent = reader.IsDBNull(5) ? "Bilinmiyor" : reader.GetString(5),
-                            DateApplied = reader.IsDBNull(6) ? "Bilinmiyor" : reader.GetString(6),
-                            IsApplied = reader.IsDBNull(7) ? "Bilinmiyor" : reader.GetString(7)
+                            Id = reader.IsDBNull(0) ? null : reader.GetString(0),
+                            CompName = reader.IsDBNull(1) ? null: reader.GetString(1),
+                            Command = reader.IsDBNull(2) ? null : reader.GetString(2),
+                            Response = reader.IsDBNull(3) ? null : reader.GetString(3),
+                            User = reader.IsDBNull(4) ? null : reader.GetString(4),
+                            DateSent = reader.IsDBNull(5) ? null : reader.GetString(5),
+                            DateApplied = reader.IsDBNull(6) ? null : reader.GetString(6),
+                            IsApplied = reader.IsDBNull(7) ? null : reader.GetString(7)
 
                         };
                         return komutModel;
@@ -170,10 +172,10 @@ public class KomutRepo
         return komutModel;
 
     }
-    private string IdDeterminer()
+    public string IdDeterminer()
     {
         int maxId;
-        string getMaxId = "SELECT MAX(Id) FROM KOMUT_TABLE";
+        string getMaxId = "SELECT MAX(CAST(Id AS INT)) FROM KOMUT_TABLE";
         using (SqlConnection conn = new SqlConnection(_connectionString))
         {
             conn.Open();
@@ -182,6 +184,8 @@ public class KomutRepo
                 object maxIdResult = getMaxIdCmd.ExecuteScalar();
 
                 maxId = (maxIdResult != DBNull.Value && maxIdResult != null) ? Convert.ToInt32(maxIdResult) + 1 : 1;
+                System.Console.WriteLine(maxId);
+                System.Console.WriteLine(maxIdResult);
                 return maxId.ToString();
             }
         }

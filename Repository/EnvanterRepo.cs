@@ -538,7 +538,7 @@ public class EnvanterRepo
         string id = "1";
         string counter = $"SELECT COUNT(*) FROM ENVANTER_TABLE WHERE SERI_NO = @seriNo";
         string getId = "SELECT Id FROM ENVANTER_TABLE WHERE SERI_NO = @seriNo";
-        string getMaxId = "SELECT MAX(Id) FROM ENVANTER_TABLE";
+        string getMaxId = "SELECT MAX(CAST(Id AS INT)) FROM ENVANTER_TABLE";
         using (SqlConnection conn = new SqlConnection(_connectionString))
         {
             conn.Open();

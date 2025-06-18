@@ -34,7 +34,10 @@ public class KomutApi : ControllerBase
             return BadRequest("Gecersiz bilgisayar adi!");
 
         KomutModel komutModel = _komutRepo.GetUnappliedCommandsByCompName(compName);
-        return Ok(komutModel);
+        if (komutModel.Id == null)
+            return Ok("Sirada bekleyen komut yok.");
+        else
+            return Ok(komutModel);
     }
 
     [HttpPost("UpdateCommand")]
