@@ -9,9 +9,7 @@
                 Menü
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-                <li><a class="dropdown-item" id="openModalBtn" style="cursor: pointer; user-select: none">Ara</a></li>
-                <li><a class="dropdown-item" href="@Url.Action("DashboardAssetSNMatcher", "Dashboard" )">Asset Ataması
-                        Yap</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("Commands", "Dashboard" )">Komut Gönder</a></li>
                 <li><a class="dropdown-item logout-item" href="@Url.Action("Logout", "Login")">Çıkış Yap</a></li>
                 <li><a class="dropdown-item d-flex align-items-center justify-content-between" style="cursor: default;">
                         <span>Koyu Mod</span>
@@ -183,13 +181,6 @@ else
 </div>
 
 <script>
-    document.getElementById("openModalBtn").addEventListener("click", function () {
-        document.getElementById("aramaModal").style.display = "block";
-    });
-
-    document.getElementById("modalClose").addEventListener("click", function () {
-        document.getElementById("aramaModal").style.display = "none";
-    });
 
     document.addEventListener("DOMContentLoaded", function () {
         const searchedColumn = document.getElementById("searchedColumn");
@@ -293,8 +284,8 @@ else
 
     }
 
-    .modal-content.close:hover,
-    .modal-content.close:focus {
+    .modal-content .close:hover,
+    .modal-content .close:focus {
         color: #0d6efd;
         text-decoration: none;
         border-color: #0d6efd;

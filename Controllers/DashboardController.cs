@@ -31,11 +31,11 @@ public class DashboardController : Controller
 
         if (!string.IsNullOrEmpty(searchedColumn) && !string.IsNullOrEmpty(searchedValue1))
         {
-            comps = _envanterRepo.GetSearchedTable("ENVANTER_TABLE", searchedColumn, searchedValue1, searchedValue2);
+            comps = _envanterRepo.GetSearchedTable(searchedColumn, searchedValue1, searchedValue2);
         }
         else
         {
-            comps = _envanterRepo.GetOrderedList("ENVANTER_TABLE", sortColumn, sortOrder);
+            comps = _envanterRepo.GetOrderedList(sortColumn, sortOrder);
         }
 
         comps ??= new List<EnvanterModel>();
@@ -249,7 +249,7 @@ public class DashboardController : Controller
     }
 
     [HttpGet]
-    public IActionResult CommandList(int page = 1, string sortColumn = "Id", string sortOrder = "asc", string? searchedColumn = null, string? searchedValue1 = null, string? searchedValue2 = null)
+    public IActionResult CommandList(int page = 1, string sortColumn = "Id", string sortOrder = "desc", string? searchedColumn = null, string? searchedValue1 = null, string? searchedValue2 = null)
     {
         if (HttpContext.Session.GetString("IsLoggedIn") != "true")
         {

@@ -408,12 +408,14 @@ public class EnvanterRepo
     {
         List<EnvanterModel>? envanterList;
         string sorter = $"SELECT * FROM [{tableName}] ORDER BY TRY_CONVERT(DATETIME, DATE_CHANGED, 104) DESC";
+        
 
         envanterList = ListFillerByTable(sorter);
         return envanterList;
     }
-    public List<EnvanterModel>? GetOrderedList(string tableName, string columnName, string method)
+    public List<EnvanterModel>? GetOrderedList(string columnName, string method)
     {
+        string tableName = "ENVANTER_TABLE";
         List<EnvanterModel>? envanterList;
 
         switch (columnName)
@@ -483,8 +485,9 @@ public class EnvanterRepo
         return envanterList;
     }
 
-    public List<EnvanterModel>? GetSearchedTable(string tableName, string searchedColumn, string searchedValue1, string? searchedValue2)
+    public List<EnvanterModel>? GetSearchedTable(string searchedColumn, string searchedValue1, string? searchedValue2)
     {
+        string tableName = "ENVANTER_TABLE";
         List<EnvanterModel>? envanterList;
         string query;
         if (searchedColumn == "RAM" || searchedColumn == "DISK_GB")

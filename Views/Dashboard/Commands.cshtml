@@ -4,10 +4,23 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section Navbar {
-    <div class="d-flex align-items-center" style="margin-left: auto;">
-        <span class="me-2 text-white">Koyu Mod</span>
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+    <div class="ms-auto">
+        <div class="dropdown" style="color:#0D6EFD">
+            <a class="btn btn-secondary dropdown-toggle" style="background-color:white; color: #0D6EFD;" href="#"
+                role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                Menü
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+                <li><a class="dropdown-item" href="@Url.Action("CommandList", "Dashboard" )">Komut Tablosu</a></li>
+                <li><a class="dropdown-item logout-item" href="@Url.Action("Logout", "Login")">Çıkış Yap</a></li>
+                <li><a class="dropdown-item d-flex align-items-center justify-content-between" style="cursor: default;">
+                        <span>Koyu Mod</span>
+                        <div class="form-check form-switch m-0">
+                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                        </div>
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 }
