@@ -24,6 +24,7 @@ public class EnvanterApi : ControllerBase
         if (model == null)
             return BadRequest("Gecersiz veri!");
 
+        System.Console.WriteLine("Bilgisayardan veri geldi.");
         model.Log = "Bilgisayardan gelen veri.";
         return Ok(_envanterRepo.AddToSql(model));
     }

@@ -18,7 +18,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                     <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Edit"
-                            asp-route-id="@Model.SelectedComputer.Id">Düzenle</a></li>
+                            asp-route-id="@Model.SelectedComputer?.Id">Düzenle</a></li>
                     <li><a class="dropdown-item logout-item" href="@Url.Action("Logout", "Login")">Çıkış Yap</a></li>
                     <li><a class="dropdown-item d-flex align-items-center justify-content-between" style="cursor: default;">
                             <span>Koyu Mod</span>

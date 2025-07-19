@@ -3,74 +3,54 @@
 }
 
 @model EnvanterModel
-
+@{
+    var labels = LabelHelper.Labels;
+}
 <div class="container-fluid mt-2">
     <div class="row">
-        <form method="post" asp-controller="Dashboard" asp-action="Edit">
-            <h2 class="text-center">Düzenle</h2>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3 text-start">
-                        <label class="mb-1" for="Id" class="form-label" style="font-weight: bold;">Id</label>
-                        <input type="text" asp-for="Id" class="form-control" readonly>
-                    </div>
-                    <div class="mb-3 text-start">
-                        <label class="mb-1" for="Asset" class="form-label" style="font-weight: bold;">Asset</label>
-                        <input type="text" asp-for="Asset" class="form-control">
-                    </div>
-                    <div class="mb-3 text-start">
-                        <label class="mb-1" for="SeriNo" class="form-label" style="font-weight: bold;">Seri No</label>
-                        <input type="text" asp-for="SeriNo" class="form-control" readonly>
-                    </div>
-                    <div class="mb-3 text-start">
-                        <label class="mb-1" for="CompModel" class="form-label" style="font-weight: bold;">Bilgisayar
-                            Modeli</label>
-                        <input type="text" asp-for="CompModel" class="form-control" readonly>
-                    </div>
-                    <div class="mb-3 text-start">
-                        <label class="mb-1" for="CompName" class="form-label" style="font-weight: bold;">Bilgisayar
-                            Adı</label>
-                        <input type="text" asp-for="CompName" class="form-control">
-                    </div>
-                    <div class="mb-3 text-start">
-                        <label class="mb-1" for="RAM" class="form-label" style="font-weight: bold;">RAM</label>
-                        <input type="text" asp-for="RAM" class="form-control" readonly>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3 text-start">
-                        <label class="mb-1" for="DiskGB" class="form-label" style="font-weight: bold;">Disk
-                            Boyutu</label>
-                        <input type="text" asp-for="DiskGB" class="form-control" readonly>
-                    </div>
-                    <div class="mb-3 text-start">
-                        <label class="mb-1" for="MAC" class="form-label" style="font-weight: bold;">MAC Adresi</label>
-                        <input type="text" asp-for="MAC" class="form-control" readonly>
-                    </div>
-                    <div class="mb-3 text-start">
-                        <label class="mb-1" for="ProcModel" class="form-label" style="font-weight: bold;">İşlemci
-                            Modeli</label>
-                        <input type="text" asp-for="ProcModel" class="form-control" readonly>
-                    </div>
-                    <div class="mb-3 text-start">
-                        <label class="mb-1" for="Username" class="form-label"
-                            style="font-weight: bold;">Kullanıcı</label>
-                        <input type="text" asp-for="Username" class="form-control" readonly>
-                    </div>
-                    <div class="mb-3 text-start">
-                        <label class="mb-1" for="AssignedUser" class="form-label" style="font-weight: bold;">Zimmetli
-                            Kişi</label>
-                        <input type="text" asp-for="AssignedUser" class="form-control">
-                    </div>
-                    <div class="mb-3 text-start">
-                        <label class="mb-1" for="LastIpAddress" class="form-label" style="font-weight: bold;">Son Ip
-                            Adresi</label>
-                        <input type="text" asp-for="LastIpAddress" class="form-control" readonly>
-                    </div>
-                </div>
-            </div>
+        <h2 class="text-center">Düzenle</h2>
 
-            <button type="submit" class="btn btn-primary w-100">Kaydet</button>
-        </form>
+        @if (Model != null)
+        {
+            var model = Model;
+            var type = model.GetType();
+            var leftLabels = labels.Take(labels.Count / 2);
+            var rightLabels = labels.Skip(labels.Count / 2);
+
+            <form method="post" asp-controller="Dashboard" asp-action="Edit">
+                <div class="row">
+                    <div class="col-md-6">
+                        @foreach (var item in leftLabels)
+                        {
+                            bool isEditable = item.Key == "Asset" || item.Key == "AssignedUser";
+                            var propertyValue = Model.GetType().GetProperty(item.Key)?.GetValue(Model, null)?.ToString() ?? "";
+
+                            <div class="mb-3 text-start">
+                                <label class="mb-1 form-label" for="@item.Key" style="font-weight: bold;">@item.Value</label>
+                                <input type="text" name="@item.Key" class="form-control" value="@propertyValue" @(isEditable ?
+                                "" : "readonly=\"readonly\"") />
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        @foreach (var item in rightLabels)
+                        {
+                            bool isEditable = item.Key == "Asset" || item.Key == "AssignedUser";
+                            var propertyValue = Model.GetType().GetProperty(item.Key)?.GetValue(Model, null)?.ToString() ?? "";
+
+                            <div class="mb-3 text-start">
+                                <label class="mb-1 form-label" for="@item.Key" style="font-weight: bold;">@item.Value</label>
+                                <input type="text" name="@item.Key" class="form-control" value="@propertyValue" @(isEditable ?
+                                "" : "readonly=\"readonly\"") />
+                            </div>
+                        }
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Kaydet</button>
+
+            </form>
+
+        }
+
     </div>
 </div>

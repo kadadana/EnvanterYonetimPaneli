@@ -11,6 +11,9 @@ namespace EnvanterYonetimPaneli.Models
         public string? DiskGB { get; set; }
         public string? MAC { get; set; }
         public string? ProcModel { get; set; }
+        public string? OsName { get; set; }
+        public string? OsVer { get; set; }
+
         public string? Username { get; set; }
         public string? DateChanged { get; set; }
         public string? AssignedUser { get; set; }
@@ -20,5 +23,5 @@ namespace EnvanterYonetimPaneli.Models
 
     }
 
-    
+
 }

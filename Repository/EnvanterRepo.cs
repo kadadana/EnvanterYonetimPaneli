@@ -32,6 +32,8 @@ public class EnvanterRepo
                                 "DISK_GB NVARCHAR(Max), " +
                                 "MAC NVARCHAR(Max), " +
                                 "PROC_MODEL NVARCHAR(Max), " +
+                                "OS_NAME NVARCHAR(Max), " +
+                                "OS_VER NVARCHAR(Max), " +
                                 "USERNAME NVARCHAR(Max), " +
                                 "DATE_CHANGED NVARCHAR(Max), " +
                                 "ASSIGNED_USER NVARCHAR(MAX), " +
@@ -59,6 +61,8 @@ public class EnvanterRepo
                                     "DISK_GB NVARCHAR(Max), " +
                                     "MAC NVARCHAR(Max), " +
                                     "PROC_MODEL NVARCHAR(Max), " +
+                                    "OS_NAME NVARCHAR(Max), " +
+                                    "OS_VER NVARCHAR(Max), " +
                                     "USERNAME NVARCHAR(Max), " +
                                     "DATE_CHANGED NVARCHAR(Max), " +
                                     "ASSIGNED_USER NVARCHAR(MAX), " +
@@ -236,6 +240,8 @@ public class EnvanterRepo
                     "DISK_GB = @diskGB, " +
                     "MAC = @MAC, " +
                     "PROC_MODEL = @procModel, " +
+                    "OS_NAME = @osName, " +
+                    "OS_VER =@osVer, " +
                     "USERNAME = @username, " +
                     "DATE_CHANGED = @dateChanged, " +
                     "ASSIGNED_USER = @assignedUser, " +
@@ -253,6 +259,8 @@ public class EnvanterRepo
                         updaterCmd.Parameters.AddWithValue("@diskGB", envanterModel.DiskGB);
                         updaterCmd.Parameters.AddWithValue("@MAC", envanterModel.MAC);
                         updaterCmd.Parameters.AddWithValue("@procModel", envanterModel.ProcModel);
+                        updaterCmd.Parameters.AddWithValue("@osName", envanterModel.OsName);
+                        updaterCmd.Parameters.AddWithValue("@osVer", envanterModel.OsVer);
                         updaterCmd.Parameters.AddWithValue("@username", envanterModel.Username);
                         updaterCmd.Parameters.AddWithValue("@assignedUser", envanterModel.AssignedUser);
                         updaterCmd.Parameters.AddWithValue("@dateChanged", envanterModel.DateChanged);
@@ -264,8 +272,8 @@ public class EnvanterRepo
                     }
 
                     string inserter2 = $"INSERT INTO [{envanterModel.Id}] " +
-                    "(ID, ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, USERNAME, DATE_CHANGED, ASSIGNED_USER, LAST_IP_ADDRESS, LOG)" +
-                    "VALUES (@id, @asset, @seriNo, @compModel, @compName, @RAM, @diskGB, @MAC, @procModel, @username, @dateChanged, @assignedUser, @lastIpAddress, @log)";
+                    "(ID, ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, OS_NAME, OS_VER, USERNAME, DATE_CHANGED, ASSIGNED_USER, LAST_IP_ADDRESS, LOG)" +
+                    "VALUES (@id, @asset, @seriNo, @compModel, @compName, @RAM, @diskGB, @MAC, @procModel, @osName, @osVer, @username, @dateChanged, @assignedUser, @lastIpAddress, @log)";
 
                     using (SqlCommand inserter2Cmd = new SqlCommand(inserter2, conn))
                     {
@@ -278,6 +286,8 @@ public class EnvanterRepo
                         inserter2Cmd.Parameters.AddWithValue("@diskGB", envanterModel.DiskGB);
                         inserter2Cmd.Parameters.AddWithValue("@MAC", envanterModel.MAC);
                         inserter2Cmd.Parameters.AddWithValue("@procModel", envanterModel.ProcModel);
+                        inserter2Cmd.Parameters.AddWithValue("@osName", envanterModel.OsName);
+                        inserter2Cmd.Parameters.AddWithValue("@osVer", envanterModel.OsVer);
                         inserter2Cmd.Parameters.AddWithValue("@username", envanterModel.Username);
                         inserter2Cmd.Parameters.AddWithValue("@dateChanged", envanterModel.DateChanged);
                         inserter2Cmd.Parameters.AddWithValue("@lastIpAddress", envanterModel.LastIpAddress);
@@ -291,8 +301,8 @@ public class EnvanterRepo
                 else
                 {
                     string inserter1 = "INSERT INTO ENVANTER_TABLE " +
-                    "(ID, ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, USERNAME, DATE_CHANGED, ASSIGNED_USER, LAST_IP_ADDRESS, LOG)" +
-                    "VALUES (@id, @asset, @seriNo, @compModel, @compName, @RAM, @diskGB, @MAC, @procModel, @username, @dateChanged, @assignedUser, @lastIpAddress, @log)";
+                    "(ID, ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, OS_NAME, OS_VER, USERNAME, DATE_CHANGED, ASSIGNED_USER, LAST_IP_ADDRESS, LOG)" +
+                    "VALUES (@id, @asset, @seriNo, @compModel, @compName, @RAM, @diskGB, @MAC, @procModel, @osName, @osVer, @username, @dateChanged, @assignedUser, @lastIpAddress, @log)";
 
                     using (SqlCommand inserter1Cmd = new SqlCommand(inserter1, conn))
                     {
@@ -305,6 +315,8 @@ public class EnvanterRepo
                         inserter1Cmd.Parameters.AddWithValue("@diskGB", envanterModel.DiskGB);
                         inserter1Cmd.Parameters.AddWithValue("@MAC", envanterModel.MAC);
                         inserter1Cmd.Parameters.AddWithValue("@procModel", envanterModel.ProcModel);
+                        inserter1Cmd.Parameters.AddWithValue("@osName", envanterModel.OsName);
+                        inserter1Cmd.Parameters.AddWithValue("@osVer", envanterModel.OsVer);
                         inserter1Cmd.Parameters.AddWithValue("@username", envanterModel.Username);
                         inserter1Cmd.Parameters.AddWithValue("@dateChanged", envanterModel.DateChanged);
                         inserter1Cmd.Parameters.AddWithValue("@lastIpAddress", envanterModel.LastIpAddress);
@@ -315,8 +327,8 @@ public class EnvanterRepo
                     }
 
                     string inserter2 = $"INSERT INTO [{envanterModel.Id}] " +
-                    "(ID, ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, USERNAME, DATE_CHANGED, ASSIGNED_USER, LAST_IP_ADDRESS, LOG)" +
-                    "VALUES (@id, @asset, @seriNo, @compModel, @compName, @RAM, @diskGB, @MAC, @procModel, @username, @dateChanged, @assignedUser, @lastIpAddress, @log)";
+                    "(ID, ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, OS_NAME, OS_VER USERNAME, DATE_CHANGED, ASSIGNED_USER, LAST_IP_ADDRESS, LOG)" +
+                    "VALUES (@id, @asset, @seriNo, @compModel, @compName, @RAM, @diskGB, @MAC, @procModel, @osName, @osVer @username, @dateChanged, @assignedUser, @lastIpAddress, @log)";
 
                     using (SqlCommand inserter2Cmd = new SqlCommand(inserter2, conn))
                     {
@@ -329,6 +341,8 @@ public class EnvanterRepo
                         inserter2Cmd.Parameters.AddWithValue("@diskGB", envanterModel.DiskGB);
                         inserter2Cmd.Parameters.AddWithValue("@MAC", envanterModel.MAC);
                         inserter2Cmd.Parameters.AddWithValue("@procModel", envanterModel.ProcModel);
+                        inserter2Cmd.Parameters.AddWithValue("@osName", envanterModel.OsName);
+                        inserter2Cmd.Parameters.AddWithValue("@osVer", envanterModel.OsVer);
                         inserter2Cmd.Parameters.AddWithValue("@username", envanterModel.Username);
                         inserter2Cmd.Parameters.AddWithValue("@dateChanged", envanterModel.DateChanged);
                         inserter2Cmd.Parameters.AddWithValue("@lastIpAddress", envanterModel.LastIpAddress);
@@ -354,7 +368,7 @@ public class EnvanterRepo
     public List<EnvanterModel>? GetRowById(string id, string tableName)
     {
         List<EnvanterModel>? envanterList;
-        string query = $"SELECT ID, ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, USERNAME, DATE_CHANGED, ASSIGNED_USER, LAST_IP_ADDRESS, LOG FROM [{tableName}] WHERE ID = '{id}'";
+        string query = $"SELECT ID, ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, OS_NAME, OS_VER, USERNAME, DATE_CHANGED, ASSIGNED_USER, LAST_IP_ADDRESS, LOG FROM [{tableName}] WHERE ID = '{id}'";
         envanterList = ListFillerByTable(query);
         return envanterList;
     }
@@ -408,7 +422,7 @@ public class EnvanterRepo
     {
         List<EnvanterModel>? envanterList;
         string sorter = $"SELECT * FROM [{tableName}] ORDER BY TRY_CONVERT(DATETIME, DATE_CHANGED, 104) DESC";
-        
+
 
         envanterList = ListFillerByTable(sorter);
         return envanterList;
@@ -466,11 +480,13 @@ public class EnvanterRepo
                             DiskGB = reader.IsDBNull(6) ? "Bilinmiyor" : reader.GetString(6),
                             MAC = reader.IsDBNull(7) ? "Bilinmiyor" : reader.GetString(7),
                             ProcModel = reader.IsDBNull(8) ? "Bilinmiyor" : reader.GetString(8),
-                            Username = reader.IsDBNull(9) ? "Bilinmiyor" : reader.GetString(9),
-                            DateChanged = reader.IsDBNull(10) ? "Bilinmiyor" : reader.GetString(10),
-                            AssignedUser = reader.IsDBNull(11) ? "Bilinmiyor" : reader.GetString(11),
-                            LastIpAddress = reader.IsDBNull(12) ? "Bilinmiyor" : reader.GetString(12),
-                            Log = reader.IsDBNull(13) ? "Bilinmiyor" : reader.GetString(13)
+                            OsName = reader.IsDBNull(9) ? "Bilinmiyor" : reader.GetString(9),
+                            OsVer = reader.IsDBNull(10) ? "Bilinmiyor" : reader.GetString(10),
+                            Username = reader.IsDBNull(11) ? "Bilinmiyor" : reader.GetString(11),
+                            DateChanged = reader.IsDBNull(12) ? "Bilinmiyor" : reader.GetString(12),
+                            AssignedUser = reader.IsDBNull(13) ? "Bilinmiyor" : reader.GetString(13),
+                            LastIpAddress = reader.IsDBNull(14) ? "Bilinmiyor" : reader.GetString(14),
+                            Log = reader.IsDBNull(15) ? "Bilinmiyor" : reader.GetString(15)
 
 
                         });
@@ -513,9 +529,10 @@ public class EnvanterRepo
 
     public EnvanterModel? GetModelFromList(List<EnvanterModel>? envanterList)
     {
-
+        
         EnvanterModel? envanterModel = new EnvanterModel();
 
+        
         envanterModel.Id = envanterList?[0].Id;
         envanterModel.Asset = envanterList?[0].Asset;
         envanterModel.SeriNo = envanterList?[0].SeriNo;
@@ -525,6 +542,8 @@ public class EnvanterRepo
         envanterModel.DiskGB = envanterList?[0].DiskGB;
         envanterModel.MAC = envanterList?[0].MAC;
         envanterModel.ProcModel = envanterList?[0].ProcModel;
+        envanterModel.OsName = envanterList?[0].OsName;
+        envanterModel.OsVer = envanterList?[0].OsVer;
         envanterModel.Username = envanterList?[0].Username;
         envanterModel.DateChanged = envanterList?[0].DateChanged;
         envanterModel.AssignedUser = envanterList?[0].AssignedUser;
@@ -587,6 +606,8 @@ public class EnvanterRepo
                     "DISK_GB = @diskGB, " +
                     "MAC = @MAC, " +
                     "PROC_MODEL = @procModel, " +
+                    "OS_NAME = @osName, " +
+                    "OS_VER = @osVer, " +
                     "USERNAME = @username, " +
                     "DATE_CHANGED = @dateChanged, " +
                     "ASSIGNED_USER = @assignedUser, " +
@@ -604,6 +625,8 @@ public class EnvanterRepo
                 updaterCmd.Parameters.AddWithValue("@diskGB", envanterModel.DiskGB);
                 updaterCmd.Parameters.AddWithValue("@MAC", envanterModel.MAC);
                 updaterCmd.Parameters.AddWithValue("@procModel", envanterModel.ProcModel);
+                updaterCmd.Parameters.AddWithValue("@osName", envanterModel.OsName);
+                updaterCmd.Parameters.AddWithValue("@osVer", envanterModel.OsVer);
                 updaterCmd.Parameters.AddWithValue("@username", envanterModel.Username);
                 updaterCmd.Parameters.AddWithValue("@assignedUser", envanterModel.AssignedUser);
                 updaterCmd.Parameters.AddWithValue("@dateChanged", envanterModel.DateChanged);
@@ -614,8 +637,8 @@ public class EnvanterRepo
                 updaterCmd.ExecuteNonQuery();
             }
             string inserter2 = $"INSERT INTO [{envanterModel.Id}]" +
-            "(ID, ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, USERNAME, DATE_CHANGED, ASSIGNED_USER, LAST_IP_ADDRESS, LOG)" +
-            "VALUES (@id, @asset, @seriNo, @compModel, @compName, @RAM, @diskGB, @MAC, @procModel, @username, @dateChanged, @assignedUser, @lastIpAddress, @log)";
+            "(ID, ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, OS_NAME, OS_VER, USERNAME, DATE_CHANGED, ASSIGNED_USER, LAST_IP_ADDRESS, LOG)" +
+            "VALUES (@id, @asset, @seriNo, @compModel, @compName, @RAM, @diskGB, @MAC, @procModel, @osName, @osVer, @username, @dateChanged, @assignedUser, @lastIpAddress, @log)";
 
             using (SqlCommand inserter2Cmd = new SqlCommand(inserter2, conn))
             {
@@ -628,6 +651,8 @@ public class EnvanterRepo
                 inserter2Cmd.Parameters.AddWithValue("@diskGB", envanterModel.DiskGB);
                 inserter2Cmd.Parameters.AddWithValue("@MAC", envanterModel.MAC);
                 inserter2Cmd.Parameters.AddWithValue("@procModel", envanterModel.ProcModel);
+                inserter2Cmd.Parameters.AddWithValue("@osName", envanterModel.OsName);
+                inserter2Cmd.Parameters.AddWithValue("@osVer", envanterModel.OsVer);
                 inserter2Cmd.Parameters.AddWithValue("@username", envanterModel.Username);
                 inserter2Cmd.Parameters.AddWithValue("@dateChanged", envanterModel.DateChanged);
                 inserter2Cmd.Parameters.AddWithValue("@assignedUser", envanterModel.AssignedUser);
