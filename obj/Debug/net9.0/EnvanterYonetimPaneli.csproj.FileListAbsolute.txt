@@ -152,3 +152,9 @@ C:\Users\kadirpc\VS Code\EnvanterYonetimPaneli\obj\Debug\net9.0\refint\EnvanterY
 C:\Users\kadirpc\VS Code\EnvanterYonetimPaneli\obj\Debug\net9.0\EnvanterYonetimPaneli.pdb
 C:\Users\kadirpc\VS Code\EnvanterYonetimPaneli\obj\Debug\net9.0\EnvanterYonetimPaneli.genruntimeconfig.cache
 C:\Users\kadirpc\VS Code\EnvanterYonetimPaneli\obj\Debug\net9.0\ref\EnvanterYonetimPaneli.dll
+C:\Users\kadirpc\VS Code\EnvanterYonetimPaneli\bin\Debug\net9.0\publish\web.config
+C:\Users\kadirpc\VS Code\EnvanterYonetimPaneli\bin\Debug\net9.0\publish\appsettings.Development.json
+C:\Users\kadirpc\VS Code\EnvanterYonetimPaneli\bin\Debug\net9.0\publish\appsettings.json
+C:\Users\kadirpc\VS Code\EnvanterYonetimPaneli\bin\Debug\net9.0\publish\EnvanterYonetimPaneli.deps.json
+C:\Users\kadirpc\VS Code\EnvanterYonetimPaneli\bin\Debug\net9.0\publish\EnvanterYonetimPaneli.runtimeconfig.json
+C:\Users\kadirpc\VS Code\EnvanterYonetimPaneli\bin\Debug\net9.0\publish\EnvanterYonetimPaneli.staticwebassets.endpoints.json
