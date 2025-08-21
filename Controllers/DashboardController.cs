@@ -196,7 +196,7 @@ public class DashboardController : Controller
     [HttpPost]
     public async Task<IActionResult> Command(string command, string compName)
     {
-        if (UserModel.DefaultUser.IsLoggedIn)
+        if (UserModel.User.IsLoggedIn)
         {
             if (!string.IsNullOrEmpty(command) && !string.IsNullOrEmpty(compName))
             {

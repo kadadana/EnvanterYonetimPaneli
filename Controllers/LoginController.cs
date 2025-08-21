@@ -1,14 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
 using EnvanterYonetimPaneli.Models;
 
+
 namespace EnvanterYonetimPaneli.Controllers;
 
 public class LoginController : Controller
 {
 
+    private readonly IConfiguration _configuration;
+    AuthController _authController;
+
+    public LoginController(IConfiguration configuration)
+    {
+        _configuration = configuration;
+        _authController = new AuthController(_configuration);
+    }
+
     public IActionResult LoginIndex()
     {
-        if (!UserModel.DefaultUser.IsLoggedIn)
+        if (!UserModel.User.IsLoggedIn)
         {
             return View();
         }
@@ -19,11 +29,24 @@ public class LoginController : Controller
     }
 
     [HttpPost]
-    public IActionResult LoginIndex(UserModel userInput)
+    public async Task<IActionResult> LoginIndex(UserModel userInput)
     {
-        if (!UserModel.DefaultUser.IsLoggedIn)
+        if (!UserModel.User.IsLoggedIn)
         {
+            await _authController.ValidateUser(userInput.Username, userInput.Password);
 
+            if (UserModel.User.IsLoggedIn)
+            {
+                HttpContext.Session.SetString("IsLoggedIn", "true");
+                TempData["Info"] = "Giriş yaptınız!";
+                return RedirectToAction("DashboardMain", "Dashboard");
+            }
+            else
+            {
+                TempData["Alert"] = "Hatalı kullanıcı adı veya şifre!";
+                return View("LoginIndex");
+            }
+            /*
             if (userInput.Username == UserModel.DefaultUser.Username && userInput.Password == UserModel.DefaultUser.Password)
             {
                 UserModel.DefaultUser.IsLoggedIn = true;
@@ -37,6 +60,7 @@ public class LoginController : Controller
                 TempData["Alert"] = "Hatalı kullanıcı adı veya şifre!";
                 return View("LoginIndex");
             }
+            */
         }
         else
         {
@@ -46,13 +70,13 @@ public class LoginController : Controller
     }
     public IActionResult Logout()
     {
-        UserModel.DefaultUser.IsLoggedIn = false;
+        UserModel.User.IsLoggedIn = false;
         HttpContext.Session.Remove("IsLoggedIn");
         TempData["Info"] = "Çıkış yaptınız!";
         return RedirectToAction("LoginIndex", "Login");
     }
 
 
-
-
 }
+
+

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\kadirpc\\VS Code\\EnvanterYonetimPaneli\\EnvanterYonetimPaneli.csproj": {}
+    "C:\\Users\\kadirpc\\VS Code\\dotnet\\EnvanterYonetimPaneli\\EnvanterYonetimPaneli.csproj": {}
   },
   "projects": {
-    "C:\\Users\\kadirpc\\VS Code\\EnvanterYonetimPaneli\\EnvanterYonetimPaneli.csproj": {
+    "C:\\Users\\kadirpc\\VS Code\\dotnet\\EnvanterYonetimPaneli\\EnvanterYonetimPaneli.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\kadirpc\\VS Code\\EnvanterYonetimPaneli\\EnvanterYonetimPaneli.csproj",
+        "projectUniqueName": "C:\\Users\\kadirpc\\VS Code\\dotnet\\EnvanterYonetimPaneli\\EnvanterYonetimPaneli.csproj",
         "projectName": "EnvanterYonetimPaneli",
-        "projectPath": "C:\\Users\\kadirpc\\VS Code\\EnvanterYonetimPaneli\\EnvanterYonetimPaneli.csproj",
+        "projectPath": "C:\\Users\\kadirpc\\VS Code\\dotnet\\EnvanterYonetimPaneli\\EnvanterYonetimPaneli.csproj",
         "packagesPath": "C:\\Users\\kadirpc\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\kadirpc\\VS Code\\EnvanterYonetimPaneli\\obj\\",
+        "outputPath": "C:\\Users\\kadirpc\\VS Code\\dotnet\\EnvanterYonetimPaneli\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -70,6 +70,18 @@
               "target": "Package",
               "version": "[9.0.3, )"
             },
+            "Novell.Directory.Ldap.NETStandard": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            },
+            "System.DirectoryServices": {
+              "target": "Package",
+              "version": "[9.0.8, )"
+            },
+            "System.DirectoryServices.AccountManagement": {
+              "target": "Package",
+              "version": "[9.0.8, )"
+            },
             "X.PagedList.Mvc.Core": {
               "target": "Package",
               "version": "[10.5.7, )"
@@ -94,7 +106,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
