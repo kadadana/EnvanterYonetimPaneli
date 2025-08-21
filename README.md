@@ -17,6 +17,6 @@ Nasil calisir?:<br />
 -Her satirda bulunan bilgisayar icin satir sonlarinda Detay isimli bir tus bulunur ve bu tus ile secilen bilgisayarin gecmiste gonderdigi verilere ulasilabilir.<br />
 -Her satirda bulunan bilgisayar icin satir sonlarinda Komut isimli bir tus bulunur ve bu tus ile secilen bilgisayara Uzaktan Komut Servisi araciligiyla komut gönderimi yapilabilir.<br />
 -EYP ana sayfasinda bulunan bir buton ile Seri No ile Asset Eslestime ekranina erisilir. Bu kisimda kurulus kendisine ait olan envanter tutma birimi olan asset numaralarini bilgisayarlarla eslestirebilir ve bu da envanter yonetiminde kolaylik saglar.<br />
--EYP ana sayfasinda bulunan Komut Tablosu tusu ile komut tablosuna erisilir ve burada bilgisayarlara gonderilmis komutlar ve o komutlarin uygulanma durumu, ciktilari vs. gibi bilgilere erisilir.
--Ldap destegi ile sirketler kendi domain kullanicilarini yetkilendirip programa erismelerini saglayabilir.
+-EYP ana sayfasinda bulunan Komut Tablosu tusu ile komut tablosuna erisilir ve burada bilgisayarlara gonderilmis komutlar ve o komutlarin uygulanma durumu, ciktilari vs. gibi bilgilere erisilir.<br />
+-Ldap destegi ile sirketler kendi domain kullanicilarini yetkilendirip programa erismelerini saglayabilir.<br />
 -Devam edecek...
