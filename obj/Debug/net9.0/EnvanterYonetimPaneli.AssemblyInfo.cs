@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EnvanterYonetimPaneli")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+32a14dfa010e988f8ae1410f99e051d2f974fd17")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+83299c953fbd899f169e4738c1fc4ba7537df1fc")]
 [assembly: System.Reflection.AssemblyProductAttribute("EnvanterYonetimPaneli")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EnvanterYonetimPaneli")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

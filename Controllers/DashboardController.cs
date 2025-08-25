@@ -201,6 +201,7 @@ public class DashboardController : Controller
             if (!string.IsNullOrEmpty(command) && !string.IsNullOrEmpty(compName))
             {
                 var model = new KomutModel { Id = _komutRepo.IdDeterminer(), CompName = compName, Command = command, DateSent = DateTime.Now.ToString() };
+                model.User = UserModel.User.Username;
                 string jsonString = model.ToJson();
                 System.Console.WriteLine(jsonString);
                 await SendCommand(jsonString);
@@ -221,6 +222,7 @@ public class DashboardController : Controller
     }
     private async Task SendCommand(string model)
     {
+
         var content = new StringContent(model, Encoding.UTF8, "application/json");
 
         string _serverUrl = "http://localhost:5105/api/KomutApi/SendCommand";
