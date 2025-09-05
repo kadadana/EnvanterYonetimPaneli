@@ -153,9 +153,9 @@ public class DashboardController : Controller
         else
         {
             envanterModel.DateChanged = DateTime.Now.ToString();
-            envanterModel.Log = "Duzenleme islemi.";
+            envanterModel.Log = UserModel.User.Username + " tarafindan yapilan duzenleme islemi.";
             TempData["Info"] = _envanterRepo.EditSql(envanterModel);
-            return Edit(envanterModel.Id);
+            return RedirectToAction("Details", new { id = envanterModel.Id, page = 1 });
 
         }
     }
@@ -225,7 +225,7 @@ public class DashboardController : Controller
 
         var content = new StringContent(model, Encoding.UTF8, "application/json");
 
-        string _serverUrl = "http://localhost:5105/api/KomutApi/SendCommand";
+        string _serverUrl = "http://localhost:5105/api/KomutApi";
 
         HttpClient _httpClient = new HttpClient();
 

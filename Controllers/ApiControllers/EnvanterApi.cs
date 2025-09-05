@@ -18,7 +18,7 @@ public class EnvanterApi : ControllerBase
     }
     
 
-    [HttpPost("AddEnvanter")]
+    [HttpPost]
     public IActionResult AddEnvanter([FromBody] EnvanterModel model)
     {
         if (model == null)

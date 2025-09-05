@@ -372,7 +372,7 @@ public class EnvanterRepo
         envanterList = ListFillerByTable(query);
         return envanterList;
     }
-    public string? GetCellById(string tableName, string column, string id)
+    public string? GetCellById(string tableName, string column, string? id)
     {
         string cell;
         try
@@ -395,7 +395,7 @@ public class EnvanterRepo
             return "HATA";
         }
     }
-    public string GetCellBySeriNo(string tableName, string column, string seriNo)
+    public string GetCellBySeriNo(string tableName, string column, string? seriNo)
     {
         string cell;
         try
@@ -554,7 +554,7 @@ public class EnvanterRepo
 
     }
 
-    public string IdDeterminer(string seriNo)
+    public string IdDeterminer(string? seriNo)
     {
         int result;
         string id = "1";

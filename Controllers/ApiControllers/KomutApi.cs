@@ -18,7 +18,7 @@ public class KomutApi : ControllerBase
     }
 
 
-    [HttpPost("SendCommand")]
+    [HttpPost]
     public IActionResult SendCommand([FromBody] KomutModel model)
     {
         if (model == null)
@@ -27,7 +27,7 @@ public class KomutApi : ControllerBase
         return Ok(_komutRepo.AddToSql(model, false));
     }
 
-    [HttpGet("GetCommand")]
+    [HttpGet]
     public IActionResult GetCommand([FromQuery] string compName)
     {
         if (string.IsNullOrWhiteSpace(compName))
@@ -40,7 +40,7 @@ public class KomutApi : ControllerBase
             return Ok(komutModel);
     }
 
-    [HttpPost("UpdateCommand")]
+    [HttpPut]
     public IActionResult UpdateCommand([FromBody] KomutModel model)
     {
         if (model == null)
