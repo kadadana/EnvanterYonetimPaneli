@@ -7,6 +7,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddSession();
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddHttpClient();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -60,11 +61,20 @@ app.UseAuthorization();
 app.MapStaticAssets();
 
 app.MapControllerRoute(
-    name: "default",
+    name: "login",
     pattern: "{controller=Login}/{action=LoginIndex}/{id?}")
     .WithStaticAssets();
 
 app.MapControllerRoute(
-    name: "default",
+    name: "dashboard",
     pattern: "{controller=Dashboard}/{action=DashboardMain}/{id?}");
+    
+app.MapControllerRoute(
+    name: "assetsn",
+    pattern: "{controller=AssetSN}/{action=AssetSNMatcher}/{id?}");
+
+app.MapControllerRoute(
+    name: "commands",
+    pattern: "{controller=Commands}/{action=CommandPage}/{compName?}");
+    
 app.Run();

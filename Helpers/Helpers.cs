@@ -56,7 +56,7 @@ namespace EnvanterYonetimPaneli.Helpers
             { "MAC", "MAC"},
             { "ProcModel", "PROC_MODEL"},
             { "OsName", "OS_NAME"},
-            { "OsVer", "OS_VERSION"},
+            { "OsVer", "OS_VER"},
             { "Username", "USERNAME"},
             { "AssignedUser", "ASSIGNED_USER"},
             { "LastIpAddress", "LAST_IP_ADDRESS"},

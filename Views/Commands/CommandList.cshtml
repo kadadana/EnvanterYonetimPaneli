@@ -9,7 +9,7 @@
                 Menü
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-                <li><a class="dropdown-item" href="@Url.Action("Commands", "Dashboard" )">Komut Gönder</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("Command", "Commands" )">Komut Gönder</a></li>
                 <li><a class="dropdown-item logout-item" href="@Url.Action("Logout", "Login")">Çıkış Yap</a></li>
                 <li><a class="dropdown-item d-flex align-items-center justify-content-between" style="cursor: default;">
                         <span>Koyu Mod</span>
@@ -76,6 +76,9 @@
                                     @foreach (var item in labels)
                                     {
                                         var prop = _type.GetProperty(item.Key);
+                                        @if(prop == null){
+                                            <td>Bilinmiyor</td>
+                                        }else{
                                         var value = prop.GetValue(comp)?.ToString() ?? "";
 
                                         @if (item.Key == "Response" || item.Key == "Command")
@@ -89,6 +92,7 @@
                                         else
                                         {
                                             <td>@value</td>
+                                        }
                                         }
                                     }
                                 </tr>

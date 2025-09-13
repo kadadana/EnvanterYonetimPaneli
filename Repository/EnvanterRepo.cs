@@ -369,7 +369,7 @@ public class EnvanterRepo
     {
         List<EnvanterModel>? envanterList;
         string query = $"SELECT ID, ASSET, SERI_NO, COMP_MODEL, COMP_NAME, RAM, DISK_GB, MAC, PROC_MODEL, OS_NAME, OS_VER, USERNAME, DATE_CHANGED, ASSIGNED_USER, LAST_IP_ADDRESS, LOG FROM [{tableName}] WHERE ID = '{id}'";
-        envanterList = ListFillerByTable(query);
+        envanterList = ListFillerFromTable(query);
         return envanterList;
     }
     public string? GetCellById(string tableName, string column, string? id)
@@ -424,7 +424,7 @@ public class EnvanterRepo
         string sorter = $"SELECT * FROM [{tableName}] ORDER BY TRY_CONVERT(DATETIME, DATE_CHANGED, 104) DESC";
 
 
-        envanterList = ListFillerByTable(sorter);
+        envanterList = ListFillerFromTable(sorter);
         return envanterList;
     }
     public List<EnvanterModel>? GetOrderedList(string columnName, string method)
@@ -436,26 +436,26 @@ public class EnvanterRepo
         {
             case "DateChanged":
                 string query = $"SELECT * FROM [{tableName}] ORDER BY TRY_CONVERT(DATETIME, DATE_CHANGED, 104) {method}";
-                envanterList = ListFillerByTable(query);
+                envanterList = ListFillerFromTable(query);
                 break;
             case "RAM":
                 query = method == "asc" ? $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(RAM, ',','.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(RAM, ',','.') AS FLOAT) ELSE CAST(1.0E+38 AS FLOAT) END ASC; "
                 : $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(RAM, ',','.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(RAM, ',','.') AS FLOAT) ELSE CAST(-1.0E+38 AS FLOAT) END DESC;";
-                envanterList = ListFillerByTable(query);
+                envanterList = ListFillerFromTable(query);
                 break;
             case "DiskGB":
                 query = method == "asc" ? $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(DISK_GB, ',', '.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(DISK_GB, ',', '.') AS FLOAT) ELSE CAST(1.0E+38 AS FLOAT) END ASC; "
                 : $"SELECT * FROM [{tableName}] ORDER BY CASE WHEN TRY_CAST(REPLACE(DISK_GB, ',', '.') AS FLOAT) IS NOT NULL THEN TRY_CAST(REPLACE(DISK_GB, ',', '.') AS FLOAT) ELSE CAST(-1.0E+38 AS FLOAT) END DESC;";
-                envanterList = ListFillerByTable(query);
+                envanterList = ListFillerFromTable(query);
                 break;
             default:
                 query = $"SELECT * FROM [{tableName}] ORDER BY {columnName} {method}";
-                envanterList = ListFillerByTable(query);
+                envanterList = ListFillerFromTable(query);
                 break;
         }
         return envanterList;
     }
-    public List<EnvanterModel>? ListFillerByTable(string command)
+    public List<EnvanterModel>? ListFillerFromTable(string command)
     {
         List<EnvanterModel>? envanterList = new List<EnvanterModel>();
         try
@@ -509,19 +509,19 @@ public class EnvanterRepo
         if (searchedColumn == "RAM" || searchedColumn == "DISK_GB")
         {
             query = $"SELECT * FROM [{tableName}] WHERE TRY_CAST(REPLACE({searchedColumn}, ',','.') AS FLOAT) >= {searchedValue1} and TRY_CAST(REPLACE({searchedColumn},',','.') AS FLOAT) <= {searchedValue2}";
-            envanterList = ListFillerByTable(query);
+            envanterList = ListFillerFromTable(query);
             return envanterList;
         }
         else if (searchedColumn == "DATE_CHANGED")
         {
             query = $"SELECT * FROM [{tableName}] WHERE TRY_CONVERT(datetime, DateChanged, 104) BETWEEN '{searchedValue1}' AND '{searchedValue2}'";
-            envanterList = ListFillerByTable(query);
+            envanterList = ListFillerFromTable(query);
             return envanterList;
         }
         else
         {
             query = $"SELECT * FROM [{tableName}] WHERE {searchedColumn} LIKE '%{searchedValue1}%'";
-            envanterList = ListFillerByTable(query);
+            envanterList = ListFillerFromTable(query);
             return envanterList;
         }
 
@@ -529,10 +529,10 @@ public class EnvanterRepo
 
     public EnvanterModel? GetModelFromList(List<EnvanterModel>? envanterList)
     {
-        
+
         EnvanterModel? envanterModel = new EnvanterModel();
 
-        
+
         envanterModel.Id = envanterList?[0].Id;
         envanterModel.Asset = envanterList?[0].Asset;
         envanterModel.SeriNo = envanterList?[0].SeriNo;
@@ -724,6 +724,43 @@ public class EnvanterRepo
 
         string query = $"SELECT * FROM [DISK_{id}]";
         List<DriveInfoModel>? diskList = new List<DriveInfoModel>();
+        try
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        diskList?.Add(new DriveInfoModel
+                        {
+                            Name = reader.IsDBNull(1) ? "Bilinmiyor" : reader.GetString(1),
+                            TotalSizeGB = reader.IsDBNull(2) ? "Bilinmiyor" : reader.GetString(2),
+                            TotalFreeSpaceGB = reader.IsDBNull(3) ? "Bilinmiyor" : reader.GetString(3)
+                        });
+                    }
+                }
+            }
+            return diskList;
+        }
+        catch (Exception)
+        {
+            return null;
+
+        }
+
+
+
+    }
+
+    public EnvanterModel GetEnvanterModelById(string id)
+    {
+        EnvanterModel envanterModel = new EnvanterModel();
+        string query = $"SELECT * FROM ENVANTER_TABLE WHERE ID = '{id}'";
 
         using (SqlConnection conn = new SqlConnection(_connectionString))
         {
@@ -735,18 +772,26 @@ public class EnvanterRepo
             {
                 while (reader.Read())
                 {
-                    diskList?.Add(new DriveInfoModel
-                    {
-                        Name = reader.IsDBNull(1) ? "Bilinmiyor" : reader.GetString(1),
-                        TotalSizeGB = reader.IsDBNull(2) ? "Bilinmiyor" : reader.GetString(2),
-                        TotalFreeSpaceGB = reader.IsDBNull(3) ? "Bilinmiyor" : reader.GetString(3)
-                    });
+                    envanterModel.Id = reader.IsDBNull(0) ? "Bilinmiyor" : reader.GetString(0);
+                    envanterModel.Asset = reader.IsDBNull(1) ? "Bilinmiyor" : reader.GetString(1);
+                    envanterModel.SeriNo = reader.IsDBNull(2) ? "Bilinmiyor" : reader.GetString(2);
+                    envanterModel.CompModel = reader.IsDBNull(3) ? "Bilinmiyor" : reader.GetString(3);
+                    envanterModel.CompName = reader.IsDBNull(4) ? "Bilinmiyor" : reader.GetString(4);
+                    envanterModel.RAM = reader.IsDBNull(5) ? "Bilinmiyor" : reader.GetString(5);
+                    envanterModel.DiskGB = reader.IsDBNull(6) ? "Bilinmiyor" : reader.GetString(6);
+                    envanterModel.MAC = reader.IsDBNull(7) ? "Bilinmiyor" : reader.GetString(7);
+                    envanterModel.ProcModel = reader.IsDBNull(8) ? "Bilinmiyor" : reader.GetString(8);
+                    envanterModel.OsName = reader.IsDBNull(9) ? "Bilinmiyor" : reader.GetString(9);
+                    envanterModel.OsVer = reader.IsDBNull(10) ? "Bilinmiyor" : reader.GetString(10);
+                    envanterModel.Username = reader.IsDBNull(11) ? "Bilinmiyor" : reader.GetString(11);
+                    envanterModel.DateChanged = reader.IsDBNull(12) ? "Bilinmiyor" : reader.GetString(12);
+                    envanterModel.AssignedUser = reader.IsDBNull(13) ? "Bilinmiyor" : reader.GetString(13);
+                    envanterModel.LastIpAddress = reader.IsDBNull(14) ? "Bilinmiyor" : reader.GetString(14);
+                    envanterModel.Log = reader.IsDBNull(15) ? "Bilinmiyor" : reader.GetString(15);
                 }
             }
         }
-        return diskList;
-
-
+        return envanterModel;
     }
 
 

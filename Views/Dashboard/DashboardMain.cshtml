@@ -10,9 +10,9 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                 <li><a class="dropdown-item" id="openModalBtn" style="cursor: pointer; user-select: none">Ara</a></li>
-                <li><a class="dropdown-item" href="@Url.Action("DashboardAssetSNMatcher", "Dashboard" )">Asset Ataması Yap</a></li>
-                <li><a class="dropdown-item" href="@Url.Action("Commands", "Dashboard" )">Komut Gönder</a></li>
-                <li><a class="dropdown-item" href="@Url.Action("CommandList", "Dashboard" )">Komut Tablosu</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("AssetSNMatcher", "AssetSN" )">Asset Ataması Yap</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("CommandPage", "Commands" )">Komut Gönder</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("CommandList", "Commands" )">Komut Tablosu</a></li>
                 <li><a class="dropdown-item logout-item" href="@Url.Action("Logout", "Login")">Çıkış Yap</a></li>
                 <li><a class="dropdown-item d-flex align-items-center justify-content-between" style="cursor: default;">
                         <span>Koyu Mod</span>
@@ -79,7 +79,13 @@
                                     {
                                         var prop = _type.GetProperty(item.Key);
                                         <td>
+                                            @if (prop != null){
                                             @prop.GetValue(comp)
+
+                                            }else{
+                                                <text>Bilinmiyor</text>
+                                            }
+                                            
                                         </td>
                                     }
                                     <td>
@@ -87,7 +93,7 @@
                                             asp-route-page="1" class="btn btn-primary">Detay</a>
                                     </td>
                                     <td>
-                                        <a asp-controller="Dashboard" asp-action="Commands" asp-route-id="@comp.CompName" )"
+                                        <a asp-controller="Commands" asp-action="CommandPage" asp-route-id="@comp.CompName" )"
                                             class="btn btn-primary">Komut</a>
                                     </td>
                                 </tr>
