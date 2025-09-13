@@ -28,7 +28,7 @@ public class CommandsController : Controller
                                                  string? searchedValue1 = null,
                                                  string? searchedValue2 = null)
     {
-        if (HttpContext.Session.GetString("IsLoggedIn") != "true")
+        if (!UserModel.User.IsLoggedIn)
         {
             TempData["Alert"] = "Giriş Yapmalısınız!";
             return RedirectToAction("LoginIndex", "Login");
@@ -77,61 +77,57 @@ public class CommandsController : Controller
 
     public IActionResult CommandPage(string? id = null)
     {
-        if (HttpContext.Session.GetString("IsLoggedIn") == "true")
-        {
-            var model = new KomutModel();
-            model.CompName = id;
-
-            return View(model);
-
-        }
-        else
+        if (!UserModel.User.IsLoggedIn)
         {
             TempData["Alert"] = "Giriş Yapmalısınız!";
             return RedirectToAction("LoginIndex", "Login");
         }
+        var model = new KomutModel();
+        model.CompName = id;
+
+        return View(model);
+
     }
     public async Task<IActionResult> SendCommand(string command, string compName)
     {
-        if (UserModel.User.IsLoggedIn)
-        {
-            if (!string.IsNullOrEmpty(command) && !string.IsNullOrEmpty(compName))
-            {
-                var model = new KomutModel
-                {
-                    Id = _komutRepo.IdDeterminer(),
-                    CompName = compName,
-                    Command = command,
-                    DateSent = DateTime.Now.ToString()
-                };
-                model.User = UserModel.User.Username;
-                var jsonString = System.Text.Json.JsonSerializer.Serialize(model);
-                var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
-
-                var response = await _http.PostAsync(url, content);
-                if (response.IsSuccessStatusCode)
-                {
-                    TempData["Success"] = "Komut başarıyla gönderildi.";
-                    return RedirectToAction("CommandList", "Commands");
-                }
-                else
-                {
-                    TempData["Alert"] = "Komut gönderilemedi!";
-                    return RedirectToAction("Command", "Commands");
-                }
-                
-            }
-            else
-            {
-                TempData["Alert"] = "Komut ya da Bilgisayar adı hatalı!";
-                return RedirectToAction("Command", "Commands");
-            }
-        }
-        else
+        if (!UserModel.User.IsLoggedIn)
         {
             TempData["Alert"] = "Giriş Yapmalısınız!";
             return RedirectToAction("LoginIndex", "Login");
         }
+
+        if (!string.IsNullOrEmpty(command) && !string.IsNullOrEmpty(compName))
+        {
+            var model = new KomutModel
+            {
+                Id = _komutRepo.IdDeterminer(),
+                CompName = compName,
+                Command = command,
+                DateSent = DateTime.Now.ToString()
+            };
+            model.User = UserModel.User.Username;
+            var jsonString = System.Text.Json.JsonSerializer.Serialize(model);
+            var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+            var response = await _http.PostAsync(url, content);
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["Success"] = "Komut başarıyla gönderildi.";
+                return RedirectToAction("CommandList", "Commands");
+            }
+            else
+            {
+                TempData["Alert"] = "Komut gönderilemedi!";
+                return RedirectToAction("Command", "Commands");
+            }
+
+        }
+        else
+        {
+            TempData["Alert"] = "Komut ya da Bilgisayar adı hatalı!";
+            return RedirectToAction("Command", "Commands");
+        }
+
     }
 
 }

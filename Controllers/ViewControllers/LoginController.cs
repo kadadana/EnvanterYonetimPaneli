@@ -46,21 +46,6 @@ public class LoginController : Controller
                 TempData["Alert"] = "Hatalı kullanıcı adı veya şifre!";
                 return View("LoginIndex");
             }
-            /*
-            if (userInput.Username == UserModel.DefaultUser.Username && userInput.Password == UserModel.DefaultUser.Password)
-            {
-                UserModel.DefaultUser.IsLoggedIn = true;
-                HttpContext.Session.SetString("IsLoggedIn", "true");
-                TempData["Info"] = "Giriş yaptınız!";
-                return RedirectToAction("DashboardMain", "Dashboard");
-            }
-            else
-            {
-
-                TempData["Alert"] = "Hatalı kullanıcı adı veya şifre!";
-                return View("LoginIndex");
-            }
-            */
         }
         else
         {

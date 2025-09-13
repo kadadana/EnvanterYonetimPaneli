@@ -24,18 +24,22 @@ public class AssetSNController : Controller
 
     public IActionResult AssetSNMatcher()
     {
-        if (UserModel.User.IsLoggedIn)
+        if (!UserModel.User.IsLoggedIn)
         {
-            return View();
-        }
-        else
-        {
+            TempData["Alert"] = "Giriş Yapmalısınız!";
             return RedirectToAction("LoginIndex", "Login");
         }
+        return View();
+
     }
 
     public async Task<IActionResult> MatchAssetSN(EnvanterModel envanterModel)
     {
+        if (!UserModel.User.IsLoggedIn)
+        {
+            TempData["Alert"] = "Giriş Yapmalısınız!";
+            return RedirectToAction("LoginIndex", "Login");
+        }
         if (string.IsNullOrEmpty(envanterModel.SeriNo) || string.IsNullOrEmpty(envanterModel.Asset))
         {
             TempData["Alert"] = "Seri numarası veya asset boş olamaz!";
@@ -43,7 +47,7 @@ public class AssetSNController : Controller
         }
         else
         {
-            envanterModel.Log = "Asset atama islemi.";
+            envanterModel.Log = UserModel.User + " tarafindan yapilan asset atama islemi.";
             envanterModel.DateChanged = DateTime.Now.ToString();
 
             var json = System.Text.Json.JsonSerializer.Serialize(envanterModel);
@@ -56,6 +60,8 @@ public class AssetSNController : Controller
             return RedirectToAction("AssetSNMatcher", "AssetSN");
 
         }
+
+
     }
 
 }

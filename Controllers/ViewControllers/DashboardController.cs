@@ -29,7 +29,7 @@ public class DashboardController : Controller
                                                    string? searchedValue1 = null,
                                                    string? searchedValue2 = null)
     {
-        if (HttpContext.Session.GetString("IsLoggedIn") != "true")
+        if (!UserModel.User.IsLoggedIn)
         {
             TempData["Alert"] = "Giriş Yapmalısınız!";
             return RedirectToAction("LoginIndex", "Login");
@@ -76,76 +76,79 @@ public class DashboardController : Controller
 
     public async Task<IActionResult> Details(string id, int page)
     {
-        if (HttpContext.Session.GetString("IsLoggedIn") == "true")
-        {
-            var newUrl = $"{url}/{id}";
-            var response = await _http.GetAsync(newUrl);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                TempData["Alert"] = "Veri çekme hatası!";
-                return RedirectToAction("DashboardMain", "Dashboard");
-            }
-            var json = await response.Content.ReadAsStringAsync();
-            var selectedComp = System.Text.Json.JsonSerializer.Deserialize<EnvanterModel>(json);
-
-            List<EnvanterModel>? comps = _envanterRepo.GetSortedByDate(id);
-            int pageSize = 10;
-            page = page >= 1 ? page : 1;
-            IPagedList<EnvanterModel>? pagedList = comps?.ToPagedList(page, pageSize);
-
-            if(selectedComp == null)
-            {
-                TempData["Alert"] = "Böyle bir kayıt bulunamadı!";
-                return RedirectToAction("DashboardMain", "Dashboard");
-            }
-            var selectedDisks = selectedComp.Id != null ? _envanterRepo.GetDiskListById(selectedComp.Id) : null;
-
-
-
-            EnvanterViewModel viewModel = new EnvanterViewModel
-            {
-                SelectedComputer = selectedComp,
-                SelectedDisks = selectedDisks,
-                EnvanterList = pagedList
-            };
-
-            return View(viewModel);
-        }
-        else
+        if (!UserModel.User.IsLoggedIn)
         {
             TempData["Alert"] = "Giriş Yapmalısınız!";
             return RedirectToAction("LoginIndex", "Login");
         }
+
+        var newUrl = $"{url}/{id}";
+        var response = await _http.GetAsync(newUrl);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            TempData["Alert"] = "Veri çekme hatası!";
+            return RedirectToAction("DashboardMain", "Dashboard");
+        }
+        var json = await response.Content.ReadAsStringAsync();
+        var selectedComp = System.Text.Json.JsonSerializer.Deserialize<EnvanterModel>(json);
+
+        List<EnvanterModel>? comps = _envanterRepo.GetSortedByDate(id);
+        int pageSize = 10;
+        page = page >= 1 ? page : 1;
+        IPagedList<EnvanterModel>? pagedList = comps?.ToPagedList(page, pageSize);
+
+        if (selectedComp == null)
+        {
+            TempData["Alert"] = "Böyle bir kayıt bulunamadı!";
+            return RedirectToAction("DashboardMain", "Dashboard");
+        }
+        var selectedDisks = selectedComp.Id != null ? _envanterRepo.GetDiskListById(selectedComp.Id) : null;
+
+
+
+        EnvanterViewModel viewModel = new EnvanterViewModel
+        {
+            SelectedComputer = selectedComp,
+            SelectedDisks = selectedDisks,
+            EnvanterList = pagedList
+        };
+
+        return View(viewModel);
+
     }
     public IActionResult EditPage(string? id = null)
     {
-
-        if (HttpContext.Session.GetString("IsLoggedIn") == "true")
-        {
-            if (!string.IsNullOrEmpty(id))
-            {
-                List<EnvanterModel>? compList = _envanterRepo.GetRowById(id, "ENVANTER_TABLE");
-                EnvanterModel? comp = _envanterRepo.GetModelFromList(compList);
-                return View(comp);
-
-            }
-            else
-            {
-                TempData["Alert"] = "Id belirtilmeli.";
-                return RedirectToAction("DashboardMain", "Dashboard");
-            }
-
-        }
-        else
+        if (!UserModel.User.IsLoggedIn)
         {
             TempData["Alert"] = "Giriş Yapmalısınız!";
             return RedirectToAction("LoginIndex", "Login");
         }
+
+        if (!string.IsNullOrEmpty(id))
+        {
+            List<EnvanterModel>? compList = _envanterRepo.GetRowById(id, "ENVANTER_TABLE");
+            EnvanterModel? comp = _envanterRepo.GetModelFromList(compList);
+            return View(comp);
+
+        }
+        else
+        {
+            TempData["Alert"] = "Id belirtilmeli.";
+            return RedirectToAction("DashboardMain", "Dashboard");
+        }
+
+
     }
 
     public async Task<IActionResult> Edit(EnvanterModel envanterModel)
     {
+        if (!UserModel.User.IsLoggedIn)
+        {
+            TempData["Alert"] = "Giriş Yapmalısınız!";
+            return RedirectToAction("LoginIndex", "Login");
+        }
+        
         if (string.IsNullOrEmpty(envanterModel.SeriNo) || string.IsNullOrEmpty(envanterModel.Asset))
         {
             TempData["Alert"] = "Seri numarası veya asset boş olamaz!";
