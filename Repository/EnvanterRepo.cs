@@ -148,11 +148,10 @@ public class EnvanterRepo
         //envanterModel.Asset = string.IsNullOrEmpty(envanterModel.Asset) ? string.IsNullOrEmpty(GetCellBySeriNo("ENVANTER_TABLE", "Asset", envanterModel.SeriNo)) ? "Bilinmiyor" : GetCellBySeriNo("ENVANTER_TABLE", "Asset", envanterModel.SeriNo) : envanterModel.Asset;
         //envanterModel.Id = IdDeterminer(envanterModel.SeriNo);
         //envanterModel.AssignedUser = string.IsNullOrEmpty(envanterModel.AssignedUser) ?
-        //    string.IsNullOrEmpty(GetCellById("ENVANTER_TABLE", "ASSIGNED_USER", envanterModel.Id)) ? "Bilinmiyor" : GetCellById("ENVANTER_TABLE", "ASSIGNED_USER", envanterModel.Id) : envanterModel.AssignedUser;
+        //string.IsNullOrEmpty(GetCellById("ENVANTER_TABLE", "ASSIGNED_USER", envanterModel.Id)) ? "Bilinmiyor" : GetCellById("ENVANTER_TABLE", "ASSIGNED_USER", envanterModel.Id) : envanterModel.AssignedUser;
 
 
-
-
+        //Boş alanları doldurma
         foreach (PropertyInfo prop in envanterModel.GetType().GetProperties())
         {
             if (prop.PropertyType == typeof(string) && prop.CanWrite)

@@ -9,19 +9,16 @@ namespace EnvanterYonetimPaneli.Controllers;
 public class CommandsController : Controller
 {
     private readonly string? _connectionString;
-    private readonly HttpClient _http;
     private readonly KomutRepo _komutRepo;
-    private string url;
+
 
     public CommandsController(IConfiguration configuration, IHttpClientFactory factory)
     {
         _connectionString = configuration.GetConnectionString("DefaultConnection");
-        _http = factory.CreateClient();
         _komutRepo = new KomutRepo(configuration);
-        url = "http://localhost:5105/api/KomutApi";
     }
 
-    public async Task<IActionResult> CommandList(int page = 1,
+    public IActionResult CommandList(int page = 1,
                                                  string sortColumn = "Id",
                                                  string sortOrder = "desc",
                                                  string? searchedColumn = null,
@@ -34,29 +31,27 @@ public class CommandsController : Controller
             return RedirectToAction("LoginIndex", "Login");
         }
 
-        var newUrl = $"{url}/?sortColumn={sortColumn}&sortOrder={sortOrder}";
+        List<KomutModel>? commands;
 
         if (!string.IsNullOrEmpty(searchedColumn) && !string.IsNullOrEmpty(searchedValue1))
         {
-            newUrl += $"&searchedColumn={searchedColumn}&searchedValue1={searchedValue1}&searchedValue2={searchedValue2}";
+            commands = _komutRepo.GetSearchedTable("KOMUT_TABLE", searchedColumn, searchedValue1, searchedValue2);
         }
-
-        var response = await _http.GetAsync(newUrl);
-        if (!response.IsSuccessStatusCode)
+        else
         {
-            TempData["Alert"] = "Veri çekme hatası!";
-            return View(new List<KomutModel>().ToPagedList(page, 10));
+            commands = _komutRepo.GetOrderedList("KOMUT_TABLE", sortColumn, sortOrder);
         }
 
-        var json = await response.Content.ReadAsStringAsync();
-        var cmds = System.Text.Json.JsonSerializer.Deserialize<List<KomutModel>>(json);
+        commands ??= new List<KomutModel>();
+
+
 
         int pageSize = 10;
         page = Math.Max(page, 1);
 
-        if (cmds != null)
+        if (commands != null)
         {
-            IPagedList<KomutModel> pagedList = cmds.ToPagedList(page, pageSize);
+            IPagedList<KomutModel> pagedList = commands.ToPagedList(page, pageSize);
             ViewBag.SortColumn = sortColumn;
             ViewBag.SortOrder = sortOrder;
             ViewBag.SearchedColumn = searchedColumn;
@@ -88,7 +83,7 @@ public class CommandsController : Controller
         return View(model);
 
     }
-    public async Task<IActionResult> SendCommand(string command, string compName)
+    public IActionResult SendCommand(string command, string compName)
     {
         if (!UserModel.User.IsLoggedIn)
         {
@@ -103,19 +98,21 @@ public class CommandsController : Controller
                 Id = _komutRepo.IdDeterminer(),
                 CompName = compName,
                 Command = command,
-                DateSent = DateTime.Now.ToString()
+                DateSent = DateTime.Now.ToString(),
+                User = UserModel.User.Username
             };
-            model.User = UserModel.User.Username;
-            var jsonString = System.Text.Json.JsonSerializer.Serialize(model);
-            var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-            var response = await _http.PostAsync(url, content);
-            if (response.IsSuccessStatusCode)
+            try
             {
+                if(model == null)
+                    throw new Exception("Model null geldi.");
+
+                _komutRepo.AddToSql(model, false);
+
                 TempData["Success"] = "Komut başarıyla gönderildi.";
                 return RedirectToAction("CommandList", "Commands");
             }
-            else
+            catch (Exception)
             {
                 TempData["Alert"] = "Komut gönderilemedi!";
                 return RedirectToAction("Command", "Commands");

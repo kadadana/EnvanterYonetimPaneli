@@ -9,16 +9,13 @@ public class AssetSNController : Controller
     private readonly string? _connectionString;
 
     private EnvanterRepo _envanterRepo;
-    private readonly HttpClient _http;
-    private string _url;
+
 
     public AssetSNController(IConfiguration configuration, IHttpClientFactory factory)
     {
         _connectionString = configuration.GetConnectionString("DefaultConnection");
         _envanterRepo = new EnvanterRepo(configuration);
-        _http = factory.CreateClient();
 
-        _url = "http://localhost:5105/api/EnvanterApi";
 
     }
 
@@ -33,7 +30,7 @@ public class AssetSNController : Controller
 
     }
 
-    public async Task<IActionResult> MatchAssetSN(EnvanterModel envanterModel)
+    public IActionResult MatchAssetSN(EnvanterModel envanterModel)
     {
         if (!UserModel.User.IsLoggedIn)
         {
@@ -49,15 +46,21 @@ public class AssetSNController : Controller
         {
             envanterModel.Log = UserModel.User + " tarafindan yapilan asset atama islemi.";
             envanterModel.DateChanged = DateTime.Now.ToString();
+            try
+            {
+                if (envanterModel == null)
+                    throw new Exception("Model null geldi.");
 
-            var json = System.Text.Json.JsonSerializer.Serialize(envanterModel);
-            var response = await _http.PostAsync(_url, new StringContent(json, Encoding.UTF8, "application/json"));
-            System.Console.WriteLine(json);
-            if (!response.IsSuccessStatusCode)
+                _envanterRepo.AddToSql(envanterModel);
+                return RedirectToAction("Details", new { id = envanterModel.Id, page = 1 });
+            }
+            catch (System.Exception)
             {
                 TempData["Alert"] = "Asset atama sırasında bir hata oluştu!";
+                return RedirectToAction("AssetSNMatcher", "AssetSN");
             }
-            return RedirectToAction("AssetSNMatcher", "AssetSN");
+
+
 
         }
 

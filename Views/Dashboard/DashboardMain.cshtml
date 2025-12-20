@@ -50,7 +50,7 @@
                         <thead>
                             <tr>
 
-                                @foreach (var item in SqlLabels)
+                                @foreach (var item in labels)
                                 {
                             <th style="background-color: #0d6efd; color:white">
                                 <a asp-action="DashboardMain" asp-route-sortColumn="@item.Key"
@@ -62,7 +62,12 @@
                                     @item.Value @Html.Raw(ViewBag.SortColumn == @item.Key ? (ViewBag.SortOrder == "asc"
                                                                         ? "↑" : "↓") : "")</a>
                             </th>
-                                                        }
+                                }
+                                <th style="background-color: #0d6efd; color:white">
+                                    <a
+                                        style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
+                                    </a>
+                                </th>
                                 <th style="background-color: #0d6efd; color:white">
                                     <a
                                         style="color: white; text-decoration: none; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
@@ -79,13 +84,16 @@
                                     {
                                         var prop = _type.GetProperty(item.Key);
                                         <td>
-                                            @if (prop != null){
-                                            @prop.GetValue(comp)
+                                            @if (prop != null)
+                                            {
+                                                @prop.GetValue(comp)
 
-                                            }else{
+                                            }
+                                            else
+                                            {
                                                 <text>Bilinmiyor</text>
                                             }
-                                            
+
                                         </td>
                                     }
                                     <td>

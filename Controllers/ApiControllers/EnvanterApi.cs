@@ -46,6 +46,8 @@ public class EnvanterApi : ControllerBase
         if (model == null)
             return BadRequest("Gecersiz veri!");
 
+        if (string.IsNullOrWhiteSpace(model.Log))
+            model.Log = "Bilgisayardan gelen veri.";
         return Ok(_envanterRepo.AddToSql(model));
     }
 

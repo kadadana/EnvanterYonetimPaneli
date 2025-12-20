@@ -11,46 +11,40 @@ public class DashboardController : Controller
 {
     private readonly string? _connectionString;
     private readonly EnvanterRepo _envanterRepo;
-    private readonly HttpClient _http;
-    private string url;
+
 
     public DashboardController(IConfiguration configuration, IHttpClientFactory factory)
     {
         _connectionString = configuration.GetConnectionString("DefaultConnection");
         _envanterRepo = new EnvanterRepo(configuration);
-        _http = factory.CreateClient();
-        url = "http://localhost:5105/api/EnvanterApi";
+
     }
 
-    public async Task<IActionResult> DashboardMain(int page = 1,
+    public IActionResult DashboardMain(int page = 1,
                                                    string sortColumn = "ID",
                                                    string sortOrder = "asc",
                                                    string? searchedColumn = null,
                                                    string? searchedValue1 = null,
                                                    string? searchedValue2 = null)
     {
+        List<EnvanterModel>? comps;
+
         if (!UserModel.User.IsLoggedIn)
         {
             TempData["Alert"] = "Giriş Yapmalısınız!";
             return RedirectToAction("LoginIndex", "Login");
         }
 
-        var newUrl = $"{url}/?sortColumn={sortColumn}&sortOrder={sortOrder}";
 
         if (!string.IsNullOrEmpty(searchedColumn) && !string.IsNullOrEmpty(searchedValue1))
         {
-            newUrl += $"&searchedColumn={searchedColumn}&searchedValue1={searchedValue1}&searchedValue2={searchedValue2}";
+            comps = _envanterRepo.GetSearchedTable(searchedColumn, searchedValue1, searchedValue2);
         }
-
-        var response = await _http.GetAsync(newUrl);
-        if (!response.IsSuccessStatusCode)
+        else
         {
-            TempData["Alert"] = "Veri çekme hatası!";
-            return View(new List<EnvanterModel>().ToPagedList(page, 10));
+            comps = _envanterRepo.GetOrderedList(sortColumn, sortOrder);
         }
 
-        var json = await response.Content.ReadAsStringAsync();
-        var comps = System.Text.Json.JsonSerializer.Deserialize<List<EnvanterModel>>(json);
 
         int pageSize = 10;
         page = Math.Max(page, 1);
@@ -74,24 +68,16 @@ public class DashboardController : Controller
         }
     }
 
-    public async Task<IActionResult> Details(string id, int page)
+    public IActionResult Details(string id, int page)
     {
         if (!UserModel.User.IsLoggedIn)
         {
             TempData["Alert"] = "Giriş Yapmalısınız!";
             return RedirectToAction("LoginIndex", "Login");
         }
-
-        var newUrl = $"{url}/{id}";
-        var response = await _http.GetAsync(newUrl);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            TempData["Alert"] = "Veri çekme hatası!";
-            return RedirectToAction("DashboardMain", "Dashboard");
-        }
-        var json = await response.Content.ReadAsStringAsync();
-        var selectedComp = System.Text.Json.JsonSerializer.Deserialize<EnvanterModel>(json);
+        var selectedComp = _envanterRepo.GetEnvanterModelById(id);
+        if (selectedComp == null)
+            return NotFound("Kayit bulunamadi!");
 
         List<EnvanterModel>? comps = _envanterRepo.GetSortedByDate(id);
         int pageSize = 10;
@@ -141,38 +127,45 @@ public class DashboardController : Controller
 
     }
 
-    public async Task<IActionResult> Edit(EnvanterModel envanterModel)
+    public IActionResult Edit(EnvanterModel envanterModel)
     {
         if (!UserModel.User.IsLoggedIn)
         {
             TempData["Alert"] = "Giriş Yapmalısınız!";
             return RedirectToAction("LoginIndex", "Login");
         }
-        
+
         if (string.IsNullOrEmpty(envanterModel.SeriNo) || string.IsNullOrEmpty(envanterModel.Asset))
         {
             TempData["Alert"] = "Seri numarası veya asset boş olamaz!";
+            envanterModel.Log = UserModel.User.Username + " tarafindan yapilan duzenleme islemi.";
             return EditPage(envanterModel.Id);
         }
         else
         {
-            envanterModel.DateChanged = DateTime.Now.ToString();
-            envanterModel.Log = UserModel.User.Username + " tarafindan yapilan duzenleme islemi.";
-            var jsonString = System.Text.Json.JsonSerializer.Serialize(envanterModel);
-            var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
-            var response = await _http.PutAsync($"{url}/{envanterModel.Id}", content);
-
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                TempData["Alert"] = "Güncelleme hatası!";
+                envanterModel.DateChanged = DateTime.Now.ToString();
+                envanterModel.Log = UserModel.User.Username + " tarafindan yapilan duzenleme islemi.";
+
+                if (envanterModel == null)
+                    throw new Exception("Model null geldi!");
+
+                var existingComp = _envanterRepo.GetEnvanterModelById(envanterModel.Id!);
+                if (existingComp == null)
+                    throw new Exception("Kayıt bulunamadı!");
+
+                _envanterRepo.EditSql(envanterModel);
+                TempData["Info"] = "Düzenleme başarılı.";
+                return RedirectToAction("Details", new { id = envanterModel.Id, page = 1 });
+            }
+            catch (Exception)
+            {
+                TempData["Alert"] = "Düzenleme hatası!";
                 return EditPage(envanterModel.Id);
             }
-            TempData["Info"] = "Güncelleme başarılı.";
-
-            return RedirectToAction("Details", new { id = envanterModel.Id, page = 1 });
 
         }
     }
-
 
 }
