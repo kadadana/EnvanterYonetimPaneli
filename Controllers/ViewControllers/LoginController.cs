@@ -18,44 +18,34 @@ public class LoginController : Controller
 
     public IActionResult LoginIndex()
     {
-        if (!UserModel.User.IsLoggedIn)
-        {
-            return View();
-        }
-        else
+        if (HttpContext.Session.GetString("IsLoggedIn") == "true")
         {
             return RedirectToAction("DashboardMain", "Dashboard");
         }
+
+        return View();
     }
 
     [HttpPost]
     public async Task<IActionResult> LoginIndex(UserModel userInput)
     {
-        if (!UserModel.User.IsLoggedIn)
-        {
-            await _authController.ValidateUser(userInput.Username, userInput.Password);
+        bool isValid = await _authController
+                .ValidateUser(userInput.Username!, userInput.Password!);
 
-            if (UserModel.User.IsLoggedIn)
-            {
-                HttpContext.Session.SetString("IsLoggedIn", "true");
-                TempData["Info"] = "Giriş yaptınız!";
-                return RedirectToAction("DashboardMain", "Dashboard");
-            }
-            else
-            {
-                TempData["Alert"] = "Hatalı kullanıcı adı veya şifre!";
-                return View("LoginIndex");
-            }
-        }
-        else
+        if (isValid)
         {
-            TempData["Info"] = "Zaten giriş Yapılmış!";
+            HttpContext.Session.SetString("IsLoggedIn", "true");
+            HttpContext.Session.SetString("Username", userInput.Username!);
+
+            TempData["Info"] = "Giriş yaptınız!";
             return RedirectToAction("DashboardMain", "Dashboard");
         }
+
+        TempData["Alert"] = "Hatalı kullanıcı adı veya şifre!";
+        return View();
     }
     public IActionResult Logout()
     {
-        UserModel.User.IsLoggedIn = false;
         HttpContext.Session.Remove("IsLoggedIn");
         TempData["Info"] = "Çıkış yaptınız!";
         return RedirectToAction("LoginIndex", "Login");

@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using X.PagedList;
 using X.PagedList.Extensions;
 using System.Text;
+using EnvanterYonetimPaneli.Filters;
 
 namespace EnvanterYonetimPaneli.Controllers;
 
+[SessionAuthorize]
 public class CommandsController : Controller
 {
     private readonly string? _connectionString;
@@ -25,11 +27,6 @@ public class CommandsController : Controller
                                                  string? searchedValue1 = null,
                                                  string? searchedValue2 = null)
     {
-        if (!UserModel.User.IsLoggedIn)
-        {
-            TempData["Alert"] = "Giriş Yapmalısınız!";
-            return RedirectToAction("LoginIndex", "Login");
-        }
 
         List<KomutModel>? commands;
 
@@ -72,11 +69,6 @@ public class CommandsController : Controller
 
     public IActionResult CommandPage(string? id = null)
     {
-        if (!UserModel.User.IsLoggedIn)
-        {
-            TempData["Alert"] = "Giriş Yapmalısınız!";
-            return RedirectToAction("LoginIndex", "Login");
-        }
         var model = new KomutModel();
         model.CompName = id;
 
@@ -85,11 +77,6 @@ public class CommandsController : Controller
     }
     public IActionResult SendCommand(string command, string compName)
     {
-        if (!UserModel.User.IsLoggedIn)
-        {
-            TempData["Alert"] = "Giriş Yapmalısınız!";
-            return RedirectToAction("LoginIndex", "Login");
-        }
 
         if (!string.IsNullOrEmpty(command) && !string.IsNullOrEmpty(compName))
         {
@@ -99,12 +86,12 @@ public class CommandsController : Controller
                 CompName = compName,
                 Command = command,
                 DateSent = DateTime.Now.ToString(),
-                User = UserModel.User.Username
+                User = HttpContext.Session.GetString("Username")
             };
 
             try
             {
-                if(model == null)
+                if (model == null)
                     throw new Exception("Model null geldi.");
 
                 _komutRepo.AddToSql(model, false);

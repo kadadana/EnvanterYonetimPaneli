@@ -51,7 +51,7 @@ catch (Exception ex)
 }
 
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseSession();

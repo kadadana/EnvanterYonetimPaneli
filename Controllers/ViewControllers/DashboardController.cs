@@ -2,10 +2,12 @@ using EnvanterYonetimPaneli.Models;
 using Microsoft.AspNetCore.Mvc;
 using X.PagedList;
 using X.PagedList.Extensions;
-using System.Text;
+using EnvanterYonetimPaneli.Filters;
 
 
 namespace EnvanterYonetimPaneli.Controllers;
+
+[SessionAuthorize]
 
 public class DashboardController : Controller
 {
@@ -28,12 +30,6 @@ public class DashboardController : Controller
                                                    string? searchedValue2 = null)
     {
         List<EnvanterModel>? comps;
-
-        if (!UserModel.User.IsLoggedIn)
-        {
-            TempData["Alert"] = "Giriş Yapmalısınız!";
-            return RedirectToAction("LoginIndex", "Login");
-        }
 
 
         if (!string.IsNullOrEmpty(searchedColumn) && !string.IsNullOrEmpty(searchedValue1))
@@ -70,11 +66,7 @@ public class DashboardController : Controller
 
     public IActionResult Details(string id, int page)
     {
-        if (!UserModel.User.IsLoggedIn)
-        {
-            TempData["Alert"] = "Giriş Yapmalısınız!";
-            return RedirectToAction("LoginIndex", "Login");
-        }
+
         var selectedComp = _envanterRepo.GetEnvanterModelById(id);
         if (selectedComp == null)
             return NotFound("Kayit bulunamadi!");
@@ -105,11 +97,6 @@ public class DashboardController : Controller
     }
     public IActionResult EditPage(string? id = null)
     {
-        if (!UserModel.User.IsLoggedIn)
-        {
-            TempData["Alert"] = "Giriş Yapmalısınız!";
-            return RedirectToAction("LoginIndex", "Login");
-        }
 
         if (!string.IsNullOrEmpty(id))
         {
@@ -129,16 +116,10 @@ public class DashboardController : Controller
 
     public IActionResult Edit(EnvanterModel envanterModel)
     {
-        if (!UserModel.User.IsLoggedIn)
-        {
-            TempData["Alert"] = "Giriş Yapmalısınız!";
-            return RedirectToAction("LoginIndex", "Login");
-        }
 
         if (string.IsNullOrEmpty(envanterModel.SeriNo) || string.IsNullOrEmpty(envanterModel.Asset))
         {
             TempData["Alert"] = "Seri numarası veya asset boş olamaz!";
-            envanterModel.Log = UserModel.User.Username + " tarafindan yapilan duzenleme islemi.";
             return EditPage(envanterModel.Id);
         }
         else
@@ -146,7 +127,7 @@ public class DashboardController : Controller
             try
             {
                 envanterModel.DateChanged = DateTime.Now.ToString();
-                envanterModel.Log = UserModel.User.Username + " tarafindan yapilan duzenleme islemi.";
+                envanterModel.Log = HttpContext.Session.GetString("Username") + " tarafindan yapilan duzenleme islemi.";
 
                 if (envanterModel == null)
                     throw new Exception("Model null geldi!");

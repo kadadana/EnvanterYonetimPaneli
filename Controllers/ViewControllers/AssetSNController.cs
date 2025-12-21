@@ -1,9 +1,11 @@
 using System.Text;
 using EnvanterYonetimPaneli.Models;
 using Microsoft.AspNetCore.Mvc;
+using EnvanterYonetimPaneli.Filters;
 
 namespace EnvanterYonetimPaneli.Controllers;
 
+[SessionAuthorize]
 public class AssetSNController : Controller
 {
     private readonly string? _connectionString;
@@ -21,22 +23,14 @@ public class AssetSNController : Controller
 
     public IActionResult AssetSNMatcher()
     {
-        if (!UserModel.User.IsLoggedIn)
-        {
-            TempData["Alert"] = "Giriş Yapmalısınız!";
-            return RedirectToAction("LoginIndex", "Login");
-        }
+
         return View();
 
     }
 
     public IActionResult MatchAssetSN(EnvanterModel envanterModel)
     {
-        if (!UserModel.User.IsLoggedIn)
-        {
-            TempData["Alert"] = "Giriş Yapmalısınız!";
-            return RedirectToAction("LoginIndex", "Login");
-        }
+
         if (string.IsNullOrEmpty(envanterModel.SeriNo) || string.IsNullOrEmpty(envanterModel.Asset))
         {
             TempData["Alert"] = "Seri numarası veya asset boş olamaz!";
@@ -44,7 +38,7 @@ public class AssetSNController : Controller
         }
         else
         {
-            envanterModel.Log = UserModel.User + " tarafindan yapilan asset atama islemi.";
+            envanterModel.Log = HttpContext.Session.GetString("Username") + " tarafindan yapilan asset atama islemi.";
             envanterModel.DateChanged = DateTime.Now.ToString();
             try
             {
