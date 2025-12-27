@@ -66,15 +66,22 @@ public class DashboardController : Controller
 
     public IActionResult Details(string id, int page)
     {
-
+        IPagedList<EnvanterModel>? pagedList;
         var selectedComp = _envanterRepo.GetEnvanterModelById(id);
         if (selectedComp == null)
             return NotFound("Kayit bulunamadi!");
 
-        List<EnvanterModel>? comps = _envanterRepo.GetSortedByDate(id);
+        List<EnvanterModel>? history = _envanterRepo.GetEnvanterHistoryById(id);
         int pageSize = 10;
-        page = page >= 1 ? page : 1;
-        IPagedList<EnvanterModel>? pagedList = comps?.ToPagedList(page, pageSize);
+        page = Math.Max(page, 1);
+        if (history != null)
+        {
+            pagedList = history?.ToPagedList(page, pageSize);
+        }
+        else
+        {
+            pagedList = new List<EnvanterModel>().ToPagedList(page, pageSize);
+        }
 
         if (selectedComp == null)
         {
@@ -82,8 +89,6 @@ public class DashboardController : Controller
             return RedirectToAction("DashboardMain", "Dashboard");
         }
         var selectedDisks = selectedComp.Id != null ? _envanterRepo.GetDiskListById(selectedComp.Id) : null;
-
-
 
         EnvanterViewModel viewModel = new EnvanterViewModel
         {
@@ -100,10 +105,8 @@ public class DashboardController : Controller
 
         if (!string.IsNullOrEmpty(id))
         {
-            List<EnvanterModel>? compList = _envanterRepo.GetRowById(id, "ENVANTER_TABLE");
-            EnvanterModel? comp = _envanterRepo.GetModelFromList(compList);
-            return View(comp);
-
+            EnvanterModel? comp = _envanterRepo.GetLatestRowById(id);
+            return View("EditPage", comp);
         }
         else
         {
@@ -126,7 +129,7 @@ public class DashboardController : Controller
         {
             try
             {
-                envanterModel.DateChanged = DateTime.Now.ToString();
+                envanterModel.DateChanged = DateTime.Now;
                 envanterModel.Log = HttpContext.Session.GetString("Username") + " tarafindan yapilan duzenleme islemi.";
 
                 if (envanterModel == null)
@@ -136,7 +139,7 @@ public class DashboardController : Controller
                 if (existingComp == null)
                     throw new Exception("Kayıt bulunamadı!");
 
-                _envanterRepo.EditSql(envanterModel);
+                _envanterRepo.AddToSql(envanterModel);
                 TempData["Info"] = "Düzenleme başarılı.";
                 return RedirectToAction("Details", new { id = envanterModel.Id, page = 1 });
             }

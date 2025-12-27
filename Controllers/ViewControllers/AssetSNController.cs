@@ -39,7 +39,7 @@ public class AssetSNController : Controller
         else
         {
             envanterModel.Log = HttpContext.Session.GetString("Username") + " tarafindan yapilan asset atama islemi.";
-            envanterModel.DateChanged = DateTime.Now.ToString();
+            envanterModel.DateChanged = DateTime.Now;
             try
             {
                 if (envanterModel == null)

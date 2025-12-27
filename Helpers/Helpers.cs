@@ -3,7 +3,7 @@ namespace EnvanterYonetimPaneli.Helpers
 
     public static class LabelHelper
     {
-        public static Dictionary<string, string> Labels => new Dictionary<string, string>
+        public static Dictionary<string, string> ModelLabels => new Dictionary<string, string>
         {
             { "Id", "Id"},
             { "Asset", "Asset"},
@@ -25,7 +25,7 @@ namespace EnvanterYonetimPaneli.Helpers
         };
         public static Dictionary<string, string> SqlLabels => new Dictionary<string, string>
         {
-            { "ID", "Id"},
+            { "ENVANTER_ID", "Id"},
             { "ASSET", "Asset"},
             { "SERI_NO", "Seri No"},
             { "COMP_MODEL", "Bilgisayar Modeli"},
@@ -40,13 +40,13 @@ namespace EnvanterYonetimPaneli.Helpers
             { "ASSIGNED_USER", "Zimmetli Kişi"},
             { "LAST_IP_ADDRESS", "Son Ip Adresi"},
             { "DATE_CHANGED", "Değişiklik Tarihi"},
-            { "LOG", "Log"}
+            { "LOG_TEXT", "Log"}
 
 
         };
-        public static Dictionary<string, string> LabelsToSqlLabels => new Dictionary<string, string>
+        public static Dictionary<string, string> ModelLabelsToSqlLabels => new Dictionary<string, string>
         {
-            { "Id", "ID"},
+            { "Id", "ENVANTER_ID"},
             { "Asset", "ASSET"},
             { "SeriNo", "SERI_NO"},
             { "CompModel", "COMP_MODEL"},
@@ -61,7 +61,7 @@ namespace EnvanterYonetimPaneli.Helpers
             { "AssignedUser", "ASSIGNED_USER"},
             { "LastIpAddress", "LAST_IP_ADDRESS"},
             { "DateChanged", "DATE_CHANGED"},
-            { "Log", "LOG"}
+            { "Log", "LOG_TEXT"}
 
 
         };

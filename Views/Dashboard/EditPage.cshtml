@@ -4,7 +4,7 @@
 
 @model EnvanterModel
 @{
-    var labels = LabelHelper.Labels;
+    Dictionary<string, string>? labels = LabelHelper.ModelLabels;
 }
 <div class="container-fluid mt-2">
     <div class="row">
@@ -12,18 +12,18 @@
 
         @if (Model != null)
         {
-            var model = Model;
-            var type = model.GetType();
-            var leftLabels = labels.Take(labels.Count / 2);
-            var rightLabels = labels.Skip(labels.Count / 2);
+            EnvanterModel? model = Model;
+            Type? type = model.GetType();
+            IEnumerable<KeyValuePair<string, string>>? leftLabels = labels.Take(labels.Count / 2);
+            IEnumerable<KeyValuePair<string, string>>? rightLabels = labels.Skip(labels.Count / 2);
 
             <form method="post" asp-controller="Dashboard" asp-action="Edit">
                 <div class="row">
                     <div class="col-md-6">
-                        @foreach (var item in leftLabels)
+                        @foreach (KeyValuePair<string, string> item in leftLabels)
                         {
                             bool isEditable = item.Key == "Asset" || item.Key == "AssignedUser";
-                            var propertyValue = Model.GetType().GetProperty(item.Key)?.GetValue(Model, null)?.ToString() ?? "";
+                            string? propertyValue = Model.GetType().GetProperty(item.Key)?.GetValue(Model, index: null)?.ToString() ?? "";
 
                             <div class="mb-3 text-start">
                                 <label class="mb-1 form-label" for="@item.Key" style="font-weight: bold;">@item.Value</label>
@@ -33,10 +33,10 @@
                         }
                     </div>
                     <div class="col-md-6">
-                        @foreach (var item in rightLabels)
+                        @foreach (KeyValuePair<string, string> item in rightLabels)
                         {
                             bool isEditable = item.Key == "Asset" || item.Key == "AssignedUser";
-                            var propertyValue = Model.GetType().GetProperty(item.Key)?.GetValue(Model, null)?.ToString() ?? "";
+                            string? propertyValue = Model.GetType().GetProperty(item.Key)?.GetValue(Model, null)?.ToString() ?? "";
 
                             <div class="mb-3 text-start">
                                 <label class="mb-1 form-label" for="@item.Key" style="font-weight: bold;">@item.Value</label>

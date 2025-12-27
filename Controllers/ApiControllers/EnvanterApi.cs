@@ -54,24 +54,12 @@ public class EnvanterApi : ControllerBase
     [HttpGet("{id}")]
     public IActionResult GetEnvanterById(string id)
     {
+        System.Console.WriteLine("id: " + id);
         var comp = _envanterRepo.GetEnvanterModelById(id);
         if (comp == null)
             return NotFound("Kayit bulunamadi!");
 
         return Ok(comp);
-    }
-
-    [HttpPut("{id}")]
-    public IActionResult UpdateEnvanter(string id, [FromBody] EnvanterModel model)
-    {
-        if (model == null)
-            return BadRequest("Gecersiz veri!");
-
-        var existingComp = _envanterRepo.GetEnvanterModelById(id);
-        if (existingComp == null)
-            return NotFound("Kayit bulunamadi!");
-
-        return Ok(_envanterRepo.EditSql(model));
     }
 
 }

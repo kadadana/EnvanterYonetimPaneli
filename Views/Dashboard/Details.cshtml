@@ -5,7 +5,7 @@
 @using X.PagedList.Mvc.Core
 
 @{
-    var labels = LabelHelper.Labels;
+    Dictionary<string, string>? labels = LabelHelper.ModelLabels;
 }
 
 @if (Model != null)
@@ -14,13 +14,13 @@
         <div class="ms-auto">
             <div class="dropdown" style="color:#0D6EFD">
                 <a class="btn btn-secondary dropdown-toggle" style="background-color:white; color: #0D6EFD;" href="#"
-                   role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                     Menü
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                     <li>
                         <a class="dropdown-item" asp-controller="Dashboard" asp-action="EditPage"
-                           asp-route-id="@Model.SelectedComputer?.Id">Düzenle</a>
+                            asp-route-id="@Model.SelectedComputer?.Id">Düzenle</a>
                     </li>
                     <li>
                         <a class="dropdown-item logout-item" href="@Url.Action("Logout", "Login")">Çıkış Yap</a>
@@ -48,10 +48,10 @@
             </div>
 
             @{
-                var model = Model.SelectedComputer;
-                var type = model.GetType();
-                var leftLabels = labels.Take(labels.Count / 2);
-                var rightLabels = labels.Skip(labels.Count / 2);
+                EnvanterModel? model = Model.SelectedComputer;
+                Type? type = model.GetType();
+                IEnumerable<KeyValuePair<string, string>>? leftLabels = labels.Take(labels.Count / 2);
+                IEnumerable<KeyValuePair<string, string>>? rightLabels = labels.Skip(labels.Count / 2);
             }
 
             <div class="row">
@@ -75,11 +75,11 @@
                 <div class="col-md-6">
                     <table class="table">
                         <tbody>
-                            @foreach (var item in rightLabels)
+                            @foreach (KeyValuePair<string, string> item in rightLabels)
                             {
-                                var prop = type.GetProperty(item.Key);
-                                var value = prop != null ? prop.GetValue(model, null)?.ToString() : "";
-                                var displayValue = (item.Key == "RAM" || item.Key == "DiskGB") ? value + " GB" : value;
+                                System.Reflection.PropertyInfo? prop = type.GetProperty(item.Key);
+                                string? value = prop != null ? prop.GetValue(model, null)?.ToString() : "";
+                                string? displayValue = (item.Key == "RAM" || item.Key == "DiskGB") ? value + " GB" : value;
                                 <tr>
                                     <td style="font-weight: bold;">@item.Value</td>
                                     <td>@displayValue</td>
@@ -98,17 +98,16 @@
                 {
                     @foreach (var disk in Model.SelectedDisks)
                     {
-                        if (string.IsNullOrWhiteSpace(disk.TotalSizeGB) || string.IsNullOrWhiteSpace(disk.TotalFreeSpaceGB))
+                        if (!disk.TotalSizeGB.HasValue || !disk.TotalFreeSpaceGB.HasValue || disk.TotalSizeGB <= 0)
                         {
                             <p style="color: red">Disk doluluk bilgisi eksik.</p>
                         }
                         else
                         {
-                            int used = (int)(double.Parse(disk.TotalSizeGB.Split(',')[0]) -
-                                             double.Parse(disk.TotalFreeSpaceGB.Split(',')[0]));
-                            int percentage = (int)((used * 100.0) /
-                                                   double.Parse(disk.TotalSizeGB.Split(',')[0]));
-                            string bgColor = percentage >= 80 ? "red" : "bg-info";
+                            double used = disk.TotalSizeGB.Value - disk.TotalFreeSpaceGB.Value;
+                            int percentage = (int)Math.Round((used * 100f) / disk.TotalSizeGB.Value);
+
+                            string bgColor = percentage >= 80 ? "red" : "#0dcaf0"; // bg-info rengi
 
                             <div class="row align-items-center mb-3">
                                 <div class="col-md-12">
@@ -124,12 +123,12 @@
                                         <tbody>
                                             <tr>
                                                 <td>@disk.Name</td>
-                                                <td>@disk.TotalSizeGB GB</td>
-                                                <td>@disk.TotalFreeSpaceGB GB</td>
+                                                <td>@disk.TotalSizeGB.Value GB</td>
+                                                <td>@disk.TotalFreeSpaceGB.Value GB</td>
                                                 <td>
                                                     <div class="progress">
                                                         <div class="progress-bar"
-                                                             style="width: @percentage%; color: white; background-color: @bgColor">
+                                                            style="width: @percentage%; color: white; background-color: @bgColor">
                                                             @percentage%
                                                         </div>
                                                     </div>
@@ -141,6 +140,7 @@
                             </div>
                         }
                     }
+
                 }
                 else
                 {
@@ -164,22 +164,23 @@
                                 <table class="table table-bordered" style="border: 1px solid #3498db;">
                                     <thead>
                                         <tr>
-                                            @foreach (var item in labels)
+                                            @foreach (KeyValuePair<string, string> item in labels)
                                             {
-                                                <th style="background-color: #0d6efd; color: white; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
+                                                <th
+                                                    style="background-color: #0d6efd; color: white; text-shadow: 1px 1px 2px black, 0 0 25px black, 0 0 5px black;">
                                                     @item.Value
                                                 </th>
                                             }
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var comp in Model.EnvanterList)
+                                        @foreach (EnvanterModel comp in Model.EnvanterList)
                                         {
-                                            var _type = comp.GetType();
+                                            Type? _type = comp.GetType();
                                             <tr>
-                                                @foreach (var item in labels)
+                                                @foreach (KeyValuePair<string, string> item in labels)
                                                 {
-                                                    var prop = _type.GetProperty(item.Key);
+                                                    System.Reflection.PropertyInfo? prop = _type.GetProperty(item.Key);
                                                     <td>@(prop != null ? prop.GetValue(comp) : "Bilinmiyor")</td>
                                                 }
                                             </tr>
@@ -188,25 +189,24 @@
                                 </table>
                             </div>
                             <div>
-                                @Html.PagedListPager(
-                                    Model.EnvanterList,
-                                    page => Url.Action("Details", new { id = Model.SelectedComputer.Id, page }),
-                                    new PagedListRenderOptions
-                                    {
-                                        DisplayLinkToFirstPage = PagedListDisplayMode.Always,
-                                        DisplayLinkToLastPage = PagedListDisplayMode.Always,
-                                        DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
-                                        DisplayLinkToNextPage = PagedListDisplayMode.Always,
-                                        DisplayEllipsesWhenNotShowingAllPageNumbers = true,
-                                        MaximumPageNumbersToDisplay = 5,
-                                        UlElementClasses = new[] { "pagination", "justify-content-center" },
-                                        LiElementClasses = new[] { "page-item" },
-                                        PageClasses = new[] { "page-link" }
-                                    })
-                            </div>
-                        </div>
-                    </div>
-                }
+                                @Html.PagedListPager(Model.EnvanterList,
+                                page => Url.Action(action: "DashboardMain", new { page }),
+                                options: new PagedListRenderOptions
+                                {
+                                    DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                                    DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                                    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                                    DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                                    DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                    MaximumPageNumbersToDisplay = 5,
+                                    UlElementClasses = new[] { "pagination", "justify-content-center" },
+                                    LiElementClasses = new[] { "page-item" },
+                                    PageClasses = new[] { "page-link" }
+                                })
+            </div>
+        </div>
+    </div>
+        }
                 else
                 {
                     <p style="color: red">Bu bilgisayara ait geçmiş kaydı bulunmamaktadır.</p>
