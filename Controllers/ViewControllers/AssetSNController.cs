@@ -46,15 +46,14 @@ public class AssetSNController : Controller
                     throw new Exception("Model null geldi.");
 
                 _envanterRepo.AddToSql(envanterModel);
-                return RedirectToAction("Details", new { id = envanterModel.Id, page = 1 });
+                return RedirectToAction("Details", "Dashboard", new { id = envanterModel.Id, page = 1 });
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
+                System.Console.WriteLine(ex);
                 TempData["Alert"] = "Asset atama sırasında bir hata oluştu!";
                 return RedirectToAction("AssetSNMatcher", "AssetSN");
             }
-
-
 
         }
 

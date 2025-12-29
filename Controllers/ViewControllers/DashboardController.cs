@@ -24,7 +24,7 @@ public class DashboardController : Controller
 
     public IActionResult DashboardMain(int page = 1,
                                                    string sortColumn = "ID",
-                                                   string sortOrder = "asc",
+                                                   string sortOrder = "desc",
                                                    string? searchedColumn = null,
                                                    string? searchedValue1 = null,
                                                    string? searchedValue2 = null)

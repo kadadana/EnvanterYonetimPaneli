@@ -17,42 +17,6 @@ public class EnvanterRepo
         _connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new Exception("Connection string bulunamadı");
     }
-    public string AssetSNMatcher(EnvanterModel envanterModel)
-    {
-        using (SqlConnection conn = new SqlConnection(_connectionString))
-        {
-            conn.Open();
-            int count = 0;
-            string finder = "SELECT COUNT(*) FROM ENVANTER WHERE SERI_NO = @seriNo";
-            using (SqlCommand finderCmd = new SqlCommand(finder, conn))
-            {
-
-                finderCmd.Parameters.AddWithValue("@seriNo", envanterModel.SeriNo);
-                count = (int)finderCmd.ExecuteScalar();
-
-                try
-                {
-
-                    if (count <= 0)
-                    {
-                        AddToSql(envanterModel);
-                        return "Belirtilen seri no zaten veritabanında mevcut değil. Belirtilen asset numarası ile veritabanına eklenmiştir.";
-                    }
-                    else
-                    {
-                        AddToSql(envanterModel);
-                        return "Belirtilen seri no zaten veritabanında mevcut. Asset numarası değiştirildi.";
-
-                    }
-                }
-                catch (Exception ex)
-                {
-                    return "Veritabanında düzenleme yaparken bir sorun oluştu." + ex;
-                }
-
-            }
-        }
-    }
     public string AddToSql(EnvanterModel envanterModel)
     {
 
@@ -98,6 +62,7 @@ public class EnvanterRepo
 
             catch (Exception ex)
             {
+                System.Console.WriteLine("Hata oluştu: " + ex.Message);
                 return "Veriler veritabanina eklenirken bir sorunla karsilasildi." + ex;
             }
 
@@ -109,16 +74,19 @@ public class EnvanterRepo
         foreach (PropertyInfo prop in envanterModel.GetType().GetProperties())
         {
             if (!prop.CanWrite) continue;
-
-            if (prop.PropertyType == typeof(string))
+            foreach (var label in LabelHelper.ModelLabelsToSqlLabels)
             {
-                var value = prop.GetValue(envanterModel) as string;
-                if (string.IsNullOrWhiteSpace(value))
+
+                if (prop.PropertyType == typeof(string))
                 {
-                    foreach (var label in LabelHelper.ModelLabelsToSqlLabels)
+                    var value = prop.GetValue(envanterModel) as string;
+                    if (string.IsNullOrWhiteSpace(value))
                     {
-                        if (prop.Name == label.Key)
+
+                        if (prop.Name.Equals(label.Key))
                         {
+                            //System.Console.WriteLine("prop.Name: " + prop.Name + " prop.Type: " + prop.PropertyType + " label.Key: " + label.Key);
+
                             var val2 = "";
                             switch (prop.Name)
                             {
@@ -127,21 +95,28 @@ public class EnvanterRepo
                                     break;
                                 default:
                                     val2 = GetCellById<string>(label.Value, envanterModel.Id!);
-                                    System.Console.WriteLine("Val2: " + val2);
                                     prop.SetValue(envanterModel, string.IsNullOrWhiteSpace(val2) ? "Bilinmiyor" : val2);
                                     break;
                             }
                         }
+
                     }
                 }
-            }
-            else if (prop.PropertyType == typeof(double) || prop.PropertyType == typeof(double?))
-            {
-                var doubleValue = prop.GetValue(envanterModel) as double?;
-                if (doubleValue == null || doubleValue == 0)
+                else if (prop.PropertyType == typeof(double) || prop.PropertyType == typeof(double?))
                 {
-                    //TODO: sql den al
-                    prop.SetValue(envanterModel, null);
+                    if (prop.GetValue(envanterModel) == null)
+                    {
+                        if (prop.Name.Equals(label.Key))
+                        {
+                            //System.Console.WriteLine("prop.Name: " + prop.Name + " prop.Value: " + prop.GetValue(envanterModel));
+                            //System.Console.WriteLine("prop.Name: " + prop.Name + " prop.Type: " + prop.PropertyType + " label.Key: " + label.Key);
+
+                            double? retrievedValue = GetCellById<double>(label.Value, envanterModel.Id!);
+                            prop.SetValue(envanterModel, retrievedValue ?? 0.00);
+
+                        }
+                    }
+
                 }
             }
         }
@@ -155,7 +130,6 @@ public class EnvanterRepo
         " MAC, PROC_MODEL, OS_NAME, OS_VER, USERNAME, DATE_CHANGED, ASSIGNED_USER, LAST_IP_ADDRESS," +
         " LOG_TEXT FROM ENVANTER WHERE ENVANTER_ID = @id ORDER BY DATE_CHANGED DESC";
 
-            using SqlConnection connection = new SqlConnection(_connectionString);
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
@@ -207,37 +181,6 @@ public class EnvanterRepo
             System.Console.WriteLine($"Hata ({column}): " + e.Message);
             return default;
         }
-    }
-    public T? GetCellBySeriNo<T>(string column, string? seriNo)
-    {
-        try
-        {
-            using SqlConnection conn = new SqlConnection(_connectionString);
-            conn.Open();
-            string query = $"SELECT [{column}] FROM ENVANTER WHERE SERI_NO = @seriNo ORDER BY DATE_CHANGED DESC";
-            using SqlCommand cmd = new SqlCommand(query, conn);
-            cmd.Parameters.Add("@seriNo", SqlDbType.VarChar, 50).Value = seriNo;
-            object result = cmd.ExecuteScalar();
-
-            if (result == null || result == DBNull.Value)
-                return default;
-
-            return (T)Convert.ChangeType(result, typeof(T));
-        }
-        catch (Exception e)
-        {
-            System.Console.WriteLine($"Hata ({column}): " + e.Message);
-            return default;
-        }
-    }
-    public List<EnvanterModel>? GetSortedByDate(string tableName)
-    {
-        List<EnvanterModel>? envanterList;
-        SqlCommand query = new SqlCommand($"SELECT * FROM [{tableName}] ORDER BY " +
-        "DATE_CHANGED DESC", new SqlConnection(_connectionString));
-
-        envanterList = ListFillerFromTable(query);
-        return envanterList;
     }
     public List<EnvanterModel>? GetOrderedList(string modelColumnName, string method)
     {
@@ -362,32 +305,6 @@ public class EnvanterRepo
 
 
         return ListFillerFromTable(cmd);
-    }
-    public EnvanterModel? GetModelFromList(List<EnvanterModel>? envanterList)
-    {
-
-        EnvanterModel? envanterModel = new EnvanterModel();
-
-
-        envanterModel.Id = envanterList?[0].Id;
-        envanterModel.Asset = envanterList?[0].Asset;
-        envanterModel.SeriNo = envanterList?[0].SeriNo;
-        envanterModel.CompModel = envanterList?[0].CompModel;
-        envanterModel.CompName = envanterList?[0].CompName;
-        envanterModel.RAM = envanterList?[0].RAM;
-        envanterModel.DiskGB = envanterList?[0].DiskGB;
-        envanterModel.MAC = envanterList?[0].MAC;
-        envanterModel.ProcModel = envanterList?[0].ProcModel;
-        envanterModel.OsName = envanterList?[0].OsName;
-        envanterModel.OsVer = envanterList?[0].OsVer;
-        envanterModel.Username = envanterList?[0].Username;
-        envanterModel.DateChanged = envanterList?[0].DateChanged;
-        envanterModel.AssignedUser = envanterList?[0].AssignedUser;
-        envanterModel.LastIpAddress = envanterList?[0].LastIpAddress;
-        envanterModel.Log = envanterList?[0].Log;
-
-        return envanterModel;
-
     }
     public string IdDeterminer(string? seriNo)
     {
