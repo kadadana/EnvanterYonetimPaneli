@@ -63,7 +63,8 @@ public class AuthController : Controller
         }
         catch (LdapException ex)
         {
-            Console.WriteLine("Ldap sunucusuna baglanirken bir hata olustu.\n" + ex.Message);
+            Console.WriteLine("Ldap sunucusuna baglanirken bir hata olustu.\n"
+             + ex.Message);
             return false;
         }
 

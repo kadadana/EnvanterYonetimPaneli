@@ -1,16 +1,17 @@
 using EnvanterYonetimPaneli.Models;
 using Microsoft.AspNetCore.Mvc;
+using EnvanterYonetimPaneli.Filters;
 
 namespace EnvanterYonetimPaneli.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[ApiKeyAuthorize]
 public class EnvanterApi : ControllerBase
 {
     private readonly string? _connectionString;
 
     private EnvanterRepo _envanterRepo;
-
     public EnvanterApi(IConfiguration configuration)
     {
         _connectionString = configuration.GetConnectionString("DefaultConnection");
@@ -24,6 +25,8 @@ public class EnvanterApi : ControllerBase
                                          string? searchedValue1 = null,
                                          string? searchedValue2 = null)
     {
+
+
         List<EnvanterModel>? comps;
 
         if (!string.IsNullOrEmpty(searchedColumn) && !string.IsNullOrEmpty(searchedValue1))
@@ -38,6 +41,7 @@ public class EnvanterApi : ControllerBase
         comps ??= new List<EnvanterModel>();
 
         return Ok(comps);
+
     }
 
     [HttpPost]
@@ -54,12 +58,12 @@ public class EnvanterApi : ControllerBase
     [HttpGet("{id}")]
     public IActionResult GetEnvanterById(string id)
     {
-        System.Console.WriteLine("id: " + id);
         var comp = _envanterRepo.GetEnvanterModelById(id);
         if (comp == null)
             return NotFound("Kayit bulunamadi!");
 
         return Ok(comp);
     }
+
 
 }
